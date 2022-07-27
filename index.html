@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--=============== FAVICON ===============-->
+        <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+
+        <!--=============== BOXICONS ===============-->
+        <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+
+        <!--=============== SWIPER CSS ===============-->
+        <link rel="stylesheet" href="">
+
+        <!--=============== CSS ===============-->
+        <link rel="stylesheet" href="assets/css/styles.css">
+
+        <title> Bryant's Portfolio </title>
+    </head>
+    <body>
+        <!--=============== HEADER ===============-->
+        <header class="header" id="header">
+            <nav class="nav container">
+                <a href="#contact" class="nav__logo">Bryant</a>
+
+                <div class="nav__menu">
+                    <ul class="nav__list">
+                        <li class="nav__item">
+                            <a href="#home" class="nav__link active-link">
+                                <i class='bx bx-home'></i>
+                            </a>
+                        </li>
+
+                        <li class="nav__item">
+                            <a href="#about" class="nav__link">
+                                <i class='bx bx-user'></i>
+                            </a>
+                        </li>
+                        
+                        <li class="nav__item">
+                            <a href="#skills" class="nav__link ">
+                                <i class='bx bx-book'></i>
+                            </a>
+                        </li>
+                        
+                        <li class="nav__item">
+                            <a href="#work" class="nav__link">
+                                <i class='bx bx-code-curly' ></i>
+                            </a>
+                        
+                        <li class="nav__item">
+                            <a href="#contact" class="nav__link">
+                                <i class='bx bx-message-square-detail'></i>
+                            </a>
+                            
+                        </li>
+
+                        </li>
+                    </ul>
+                </div>
+                <!-- Dark Mode -->
+                <i class='bx bx-moon change-theme' id="theme-button"></i>
+            </nav>
+            
+        </header>
+
+        <!--=============== MAIN ===============-->
+        <main class="main">
+            <!--=============== HOME ===============-->
+            <section class="home section" id="home">
+                <div class="home__container container grid">
+                    <div class="home__data">
+                        <span class="home_greeting">Hello, I'm</span>
+                        <h1 class="home__name">Bryant Villarreal</h1>
+                        <h3 class="home__education">Software Developer</h3>
+
+                        <div class="home__buttons">
+                            <a href="assets/pdf/bryant-res.pdf" class="button button--ghost">
+                                Download Resume
+                            </a>
+                            <a href="#about" class="button">About Me</a>
+                        </div>
+                    </div>
+
+                    <!-- EDIT THIS WITH SELF IMAGE-->
+                    <div class="home__handle">
+                        <img src="assets/img/cat.svg" alt="" class="home__img">
+                    </div>
+
+                    <div class="home__social">
+                        <a href="https://www.linkedin.com/in/bryantavilla/" target="_blank" class="home__social-link">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                
+                        <a href="https://github.com/bryantvilla" target="_blank" class="home__social-link">
+                            <i class='bx bxl-github' ></i>
+                        </a>
+                
+                        <a href="https://www.instagram.com/bryant.pdf/" target="_blank" class="home__social-link">
+                            <i class='bx bxl-instagram' ></i>
+                        </a>
+                    </div>
+
+                    <a href="#about" class="home__scroll">
+                        <i class='bx bxs-hand-down home__scroll-icon'></i>
+                        <span class="home__scroll-name">Scroll Down</span>
+                    </a>
+                </div>
+            </section>
+            
+            <!--=============== ABOUT ===============-->
+            <section class="about section" id="about">
+                <span class="section__subtitle">My Intro</span>
+                <h2 class="section__title">About Me</h2>
+
+                <div class="about__container container grid">
+                    <img src="assets/img/about.png" alt="" class="about__img">
+                    
+                    <div class="about__data">
+                        <div class="about__info">
+                            <div class ="about__box">
+                                <i class='bx bxs-graduation about__icon' ></i>
+                                <h3 class="about__title">Education</h3>
+                                <span class="about__subtitle"> Master's in CS  (April 2023)</span>
+                            </div>
+
+                            <div class ="about__box">
+                                <i class='bx bx-coffee about__icon'></i>
+                                <h3 class="about__title">Completed Projects</h3>
+                                <span class="about__subtitle">5+</span>
+                            </div>
+
+                            <div class ="about__box">
+                                <i class='bx bx-code-block about__icon'></i>
+                                <h3 class="about__title">Developer Clubs</h3>
+                                <span class="about__subtitle">2</span>
+                            </div>
+                        </div>
+                        <p class="about__description"> 
+                            During my time as an undergraduate student at Florida International University, I became involved with the Google Student Developer Club, and Upsilon Pi Epsilon. 
+                            As a member of these organizations, I collaborated with my peers to discuss emergent topics in technology. 
+                            Some of the knowledge I have picked up from my undergraduate career include SQL, Agile, Scrum methodologies, and most importantly, 
+                            the ability to search stack overflow. I was awarded magna cum laude from Florida International University,
+                            graduating with a B.S in Computer Science holding a 3.71 GPA in May of 2022.<br>
+
+                            <br>    I am currently continuing my education at Florida International University and my goal is to obtain an M.S in Computer Science. 
+                            Throughout this program, I discovered low-level system exploits such as buffer overflows, format string attack vulnerabilities, 
+                            and SQL injections. These topics helped develop my proficiency with Unix and 
+                            I began to have a deeper understanding of computer networking and operating systems. I will graduate in April of 2023.
+                        </p>
+
+                        <a href="#contact" class="button">Contact</a>
+                    </div>
+                </div>
+            </section>
+
+            <!--=============== SKILLS ===============-->
+            <section class="skills__section" id="skills">
+                <span class="section__subtitle">My Skills</span>
+                <h2 class="section__title">My Experience</h2>
+
+                <div class="skills__container container grid">
+                    <div class="skills__content">
+                        <h3 class="skills__title">Languages</h3>
+
+                        <div class="skills__box">
+                            <div class="skills__group">
+                                <div class="skills__data">
+                                    <i class='bx bxl-python skill-icon'></i>
+
+                                    <div>
+                                        <h3 class="skills__name">Python</h3>
+                                        <span class="skills__level">Intermediate</span>
+                                    </div>
+                                    
+                                    <i class='bx bxs-game skill-icon'></i>
+                                    <div>
+                                        <h3 class="skills__name">C</h3>
+                                        <span class="skills__level">Intermediate</span>
+                                    </div>
+                                    
+                                    <i class='bx bxs-data skill-icon'></i>
+                                    <div>
+                                        <h3 class="skills__name"> PostgreSQL</h3>
+                                        <span class="skills__level">Intermediate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills__container container grid">
+                    <div class="skills__content">
+                        <h3 class="skills__title">Development Tools</h3>
+
+                        <div class="skills__box">
+                            <div class="skills__group">
+                                <div class="skills__data">
+                                    <i class='bx bxl-git skill-icon'></i>
+                                    <div>
+                                        <h3 class="skills__name">Git</h3>
+                                        <span class="skills__level">Basic</span>
+                                    </div>
+                                    
+                                    <i class='bx bxs-terminal skill-icon'></i>
+                                    <div>
+                                        <h3 class="skills__name">Linux/Unix</h3>
+                                        <span class="skills__level">Advanced</span>
+                                    </div>
+                                    
+                                    <i class='bx bxs-group skill-icon'></i>
+                                    <div>
+                                        <h3 class="skills__name">Agile & Scrum</h3>
+                                        <span class="skills__level">Intermediate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </section>
+
+            <!--=============== SERVICES ===============-->
+            <section class="services__section">
+                <span class="section__subtitle">My</span>
+                <h2 class="section__title">Development Process</h2>
+
+                <div class="services__container container grid">
+                    <div class="services__card">
+                        <h3 class="services__title">Planning</h3>
+
+                        <span class="services__button">
+                            See More <i class='bx bxs-chevron-right services__icon'></i>
+                        </span>
+                        <div class="services__model">
+                            <div class="services__model-content">
+                                <i class='bx bxs-message-square-x services__model-close'></i>
+                            
+                                <h3 class="services__model-title">Planing Phase</h3>
+                                <p class="services__model-description">
+                                    My process when evaluating the scope of a project
+                                </p>
+                                <ul class="services__model-list">
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Develop goals for project
+                                        </p>
+                                    </li>
+                                    
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Create deadlines for features
+                                        </p>
+                                    </li>
+
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Find purpose of project
+                                        </p>
+                                    </li>
+
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                           Receive Feedback
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div> 
+                        </div>
+                    </div>
+
+                    <div class="services__card">
+                        <h3 class="services__title">Analyzing<br></h3>
+
+                        <span class="services__button">
+                            See More <i class='bx bxs-chevron-right services__icon'></i>
+                        </span>
+                        <div class="services__model">
+                            <div class="services__model-content">
+                                <i class='bx bxs-message-square-x services__model-close'></i>
+                            
+                                <h3 class="services__model-title">Defining requirements</h3>
+                                <p class="services__model-description">
+                                   Determining use of project
+                                </p>
+                                <ul class="services__model-list">
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Find resources needed
+                                        </p>
+                                    </li>
+                                    
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Research needs of end users
+                                        </p>
+                                    </li>
+
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                           Evaluate alternatives
+                                        </p>
+                                    </li>
+
+                                    </li>
+                                </ul>
+                            </div> 
+                        </div>
+                    </div>
+
+                    <div class="services__card">
+                        <h3 class="services__title">Designing<br></h3>
+
+                        <span class="services__button">
+                            See More <i class='bx bxs-chevron-right services__icon'></i>
+                        </span>
+
+                        <div class="services__model">
+                            <div class="services__model-content">
+                                <i class='bx bxs-message-square-x services__model-close'></i>
+                            
+                                <h3 class="services__model-title">Design Phase</h3>
+                                <p class="services__model-description">
+                                   Things I review when designing a project
+                                </p>
+                                <ul class="services__model-list">
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            User Interface
+                                        </p>
+                                    </li>
+                                    
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Databases
+                                        </p>
+                                    </li>
+
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            System Interface
+                                        </p>
+
+                                    </li>
+
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Network Interface
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div> 
+                        </div>
+                    </div>
+
+                    <div class="services__card">
+                        <h3 class="services__title">Coding<br></h3>
+
+                        <span class="services__button">
+                            See More <i class='bx bxs-chevron-right services__icon'></i>
+                        </span>
+                        
+                        <div class="services__model">
+                            <div class="services__model-content">
+                                <i class='bx bxs-message-square-x services__model-close'></i>
+                            
+                                <h3 class="services__model-title">Writing Code</h3>
+                                <p class="services__model-description">
+                                   My Development process
+                                </p>
+                                <ul class="services__model-list">
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Build project
+                                        </p>
+                                    </li>
+                                    
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Document code for future reference
+                                        </p>
+                                    </li>
+
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Use access control to keep track of changes
+                                        </p>
+                                    </li>
+
+                    
+                                </ul>
+                            </div> 
+                        </div>
+                    </div>
+
+                    <div class="services__card">
+                        <h3 class="services__title">Testing<br></h3>
+
+                        <span class="services__button">
+                            See More <i class='bx bxs-chevron-right services__icon'></i>
+                        </span>
+                        
+                        <div class="services__model">
+                            <div class="services__model-content">
+                                <i class='bx bxs-message-square-x services__model-close'></i>
+                            
+                                <h3 class="services__model-title">Testing Project</h3>
+                                <p class="services__model-description">
+                                   Once finished coding, I begin to examine the codebase
+                                </p>
+                                <ul class="services__model-list">
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Ensure no bugs are found
+                                        </p>
+                                    </li>
+                                    
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Find any security exploits and check for sanitization issues
+                                        </p>
+                                    </li>
+
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Find edge cases 
+                                        </p>
+
+                                    </li>
+                                </ul>
+                            </div> 
+                        </div>
+                    </div>
+
+                    <div class="services__card">
+                        <h3 class="services__title">Deploying<br></h3>
+
+                        <span class="services__button">
+                            See More <i class='bx bxs-chevron-right services__icon'></i>
+                        </span>
+                        
+                        <div class="services__model">
+                            <div class="services__model-content">
+                                <i class='bx bxs-message-square-x services__model-close'></i>
+                            
+                                <h3 class="services__model-title">Initializing Deployment</h3>
+                                <p class="services__model-description">
+                                   Once testing has concluded, the project is ready for deployment
+                                </p>
+                                <ul class="services__model-list">
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Upload project to github
+                                        </p>
+                                    </li>
+                                    
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Account for bugs found during deployment
+                                        </p>
+                                    </li>
+
+                                    <li class="services__model-item">
+                                        <i class='bx bxs-label services__model-icon'></i>
+                                        <p class="services__model-info">
+                                            Fix bugs found by end users 
+                                        </p>
+
+                                    </li>
+                                </ul>
+                            </div> 
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+                </div>
+
+            </section>
+
+            <!--=============== WORK ===============-->
+            <section class="work__section" id="work">
+                <span class="section__subtitle">My Portfolio</span>
+                <h2 class="section__title">Recent Works</h2>
+
+                <div class="work__filters">
+                    <span class="work__item active-work" data-filter="all">All</span>
+                    <span class="work__item" data-filter=".algorithm"> Sorting Algorithm Visualizer</span>
+                    <span class="work__item" data-filter=".flappy"> AI plays Flappy Bird</span>
+                    <span class="work__item" data-filter=".password">Password Generator</span>
+                    <span class="work__item " data-filter=".marvel">Marvel Twitter Bot</span>
+                </div>
+
+                <div class="work__container container grid">
+                    <div class="work__card mix marvel">
+                        <img src=assets/img/work1.png class="work__img">
+
+                        <h3 class="work__title">Marvel Twitter Bot</h3>
+                        <a href="https://github.com/bryantvilla/mcu-twitter-bot" target="_blank" class="work__button">
+                            Github Repo <i class='bx bx-right-arrow-alt work__icon'></i>
+                        </a>
+                    </div>
+
+                    <div class="work__card mix algorithm">
+                        <img src=assets/img/work2.png class="work__img">
+
+                        <h3 class="work__title">Algorithm Visualizer</h3>
+                        <a href="https://github.com/bryantvilla/sorting_visualizer" target="_blank" class="work__button">
+                            Github Repo <i class='bx bx-right-arrow-alt work__icon'></i>
+                        </a>
+                    </div>
+
+                    <div class="work__card mix flappy">
+                        <img src=assets/img/work3.png class="work__img">
+
+                        <h3 class="work__title">AI playing Flappy Bird</h3>
+                        <a href="https://github.com/bryantvilla/flappyai" target="_blank" class="work__button">
+                            Github Repo <i class='bx bx-right-arrow-alt work__icon'></i>
+                        </a>
+                    </div>
+
+                    <div class="work__card mix password">
+                        <img src=assets/img/work4.png class="work__img">
+
+                        <h3 class="work__title">Password Generator</h3>
+                        <a href="https://github.com/bryantvilla/pwgen" target="_blank" class="work__button">
+                            Github Repo <i class='bx bx-right-arrow-alt work__icon'></i>
+                        </a>
+                    </div>
+
+                </div>
+            </section>
+
+            <!--=============== CONTACT ===============-->
+            <section class="contact__section" id="contact">
+                <span class="section__subtitle">Get in touch</span>
+                <h2 class="section__title">Say Hello 👋</h2>
+
+                <div class="contact__container container grid">
+                    <div class="contact__content">
+                        <h3 class="contact__title">Write me</h3>
+                        
+                        <div class="contact__info">
+                            <div class="contact__card">
+                                <i class='bx bx-mail-send contact__card-icon'></i>
+                                <h3 class="contact__card-title">Email</h3>
+                                <span class="contact__card-data">bryantavillarreal@gmail.com</span>
+
+                                <a href="mailto:bryantavillarreal@gmail.com" target="_blank" class="contact__button">
+                                    Email me <i class='bx bxs-chevron-right contact__button-icon'></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact__info">
+                            <div class="contact__card">
+                                <i class='bx bxl-whatsapp contact__card-icon'></i>
+                                <h3 class="contact__card-title">Whatsapp</h3>
+                                <span class="contact__card-data">(305) 322-6885</span>
+
+                                <a href="https://wa.me/13053226885" target="_blank" class="contact__button">
+                                    Message me <i class='bx bxs-chevron-right contact__button-icon'></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact__info">
+                            <div class="contact__card">
+                                <i class='bx bxl-twitter contact__card-icon' ></i>
+                                <h3 class="contact__card-title">Twitter</h3>
+                                <span class="contact__card-data">@PricklyGrape</span>
+
+                                <a href="https://twitter.com/messages/compose?recipient_id=3191669840" target="_blank" class="contact__button">
+                                    Tweet me <i class='bx bxs-chevron-right contact__button-icon'></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact__content">
+                        <h3 class="contact__title">Message Me</h3>
+
+                        <form action="" class="contact__form" method="POST"data-netlify="true">
+                            <div class="contact__form-div">
+                                <label for="" class="contact__form-tag">Name:</label>
+                                <input type="text" placeholder="Insert your name" class="contact__form-input">
+                            </div>
+
+                            <div class="contact__form-div">
+                                <label for="" class="contact__form-tag">Email:</label>
+                                <input type="email" placeholder="Insert your email" class="contact__form-input">
+                            </div>
+
+                            <div class="contact__form-div contact__form-area">
+                                <label for="" class="contact__form-tag">Message</label>
+                                <textarea name="" id="" cols="30" rows="10" placeholder="Write your message" class="contact__form-input"></textarea>
+                            </div>
+
+                            <button class="button">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!--=============== FOOTER ===============-->
+        <footer class="footer">
+            <div class="footer__container container">
+                <h1 class="footer__title">Bryant</h1>
+                
+                <ul class="footer__list">
+                    <li>
+                        <a href="#about" class="footer__link"></a>
+                    </li>
+                    <li>
+                        <a href="#work" class="footer__link"></a>
+                    </li>
+                    <li>
+                        <a href="#education" class="footer__link"></a>
+                    </li>
+                </ul>
+                <ul class="footer__social">
+                    <a href="https://www.linkedin.com/in/bryantavilla/" class="footer__social-link">
+                        <i class='bx bxl-linkedin' ></i>
+                    </a>
+                    <a href="https://github.com/bryantvilla" class="footer__social-link">
+                        <i class='bx bxl-github' ></i>
+                    </a>
+                    <a href="https://www.instagram.com/bryant.pdf/" class="footer__social-link">
+                        <i class='bx bxl-instagram'></i>
+                    </a>
+                </ul>
+            </div>
+
+            <span class="footer__copy">
+                &#169; Bryant. All rights reserved 
+            </span>
+        </footer>
+
+        <!--=============== SCROLLREVEAL ===============-->
+        <script src="assets/js/scrollreveal.min.js"></script>
+
+        <!--=============== SWIPER JS ===============-->
+        <script src=""></script>
+
+        <!--=============== MIXITUP FILTER ===============-->
+        <script src="assets/js/mixitup.min.js"></script>
+
+        <!--=============== MAIN JS ===============-->
+        <script src="assets/js/main.js"></script>
+    </body>
+</html>
