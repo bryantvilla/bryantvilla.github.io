@@ -1027,6 +1027,7 @@ color: var(--title-color);
     row-gap: 1rem;
   }
 
+  
   .skills__box{
     column-gap: 1rem;
   }
@@ -1035,10 +1036,7 @@ color: var(--title-color);
     font-size: var(--small-font-size);
   }
 
-  .services__container{
-    grid-template-columns: repeat(2,145px);
-    justify-content: center;
-  }
+
 
   .work__item{
     font-size: var(--small-font-size);
@@ -1047,6 +1045,13 @@ color: var(--title-color);
     column-gap: .25rem;
   }
 
+}
+
+@media screen and (max-width: 450px){
+  .services__container{
+    grid-template-columns: repeat(2,145px);
+    justify-content: center;
+  }
 }
 
 /* For medium devices */
@@ -1197,7 +1202,7 @@ color: var(--title-color);
   .about__box{
     text-align: center;
     padding: 1rem 1.25rem;
-  
+    
   }
 
   .about__description{
