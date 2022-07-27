@@ -196,7 +196,8 @@ background-color: #3d3d3d;
 color: var(--first-color);
 }
 
-.light-theme .about__description{
+.light-theme .about__description,
+.light-theme .about__icon{
   color: #3d3d3d;
 }
 
@@ -205,14 +206,19 @@ color: var(--first-color);
   color: var(--title-color);
 }
 .light-theme .services__model-title,
-.light-theme .services__model-info{
+.light-theme .services__model-info,
+.light-theme .services__icon-top,
+.light-theme .services__button{
   color: #3d3d3d;
+}
+
+.light-theme.services__title{
+  color: var(--first-color);
 }
 
 .light-theme .skills__title,
 .light-theme .skills__level,
-.light-theme .about__title,
-.light-theme .about__icon{
+.light-theme .about__title{
   color: var(--body-color);
   ;
 }
@@ -240,7 +246,6 @@ color: var(--first-color);
 .light-theme .contact__card-data,
 .light-theme .contact__button,
 .light-theme .contact__form-tag,
-.light-theme .services__title,
 .light-theme .skills__title,
 .light-theme .skills__level
 {
@@ -555,7 +560,7 @@ color: var(--first-color);
 
 .about__icon{
   font-size: 1.5rem;
-  color: var(--body-color);
+  color: var(--first-color);
   margin-bottom: .5rem;
 }
 
@@ -614,11 +619,15 @@ color: var(--first-color);
   column-gap: .5rem;
 }
 
-.skills .skill-icon{
+.skills .skill__icon{
   font-size: 1.5rem;
   color: var(--body-color);
 }
 
+.skill__icon{
+  font-size: 1.5rem;
+  color: var(--body-color);
+}
 .skills__name{
   font-size: var(--normal-font-size);
   font-weight: var(--font-medium);
@@ -641,7 +650,7 @@ color: var(--first-color);
 
 .services__card{
   background-color: var(--container-color);
-  padding: 3rem 1.5rem 1.5rem;
+  padding: 1rem 1.5rem 1.5rem;
   box-shadow: rgba(166, 38, 170, 0.4) 
   0px 5px, rgba(166, 38, 170, 0.3) 0px 10px, 
   rgba(166, 38, 170, 0.2) 0px 15px, 
@@ -654,7 +663,7 @@ color: var(--first-color);
 .services__title{
   font-size: var(--h3-font-size);
   color: var(--body-color);
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .services__button{
@@ -672,6 +681,12 @@ color: var(--first-color);
 
 .services__icon{
   transition: .4s;
+}
+
+.services__icon-top{
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--first-color);
 }
 /* Services model */
 .services__model{
@@ -708,6 +723,7 @@ color: var(--first-color);
 .services__model-description{
   font-size: var(--small-font-size);
   margin-bottom: 2rem;
+  color: var(--title-color);
 }
 
 .services__model-title{
@@ -1094,9 +1110,6 @@ color: var(--title-color);
   .services__model-description{
     padding: 0 3.5rem
   }
-  .services__model-description{
-    color: var(--title-color);
-  }
 
   .work__container{
     justify-content: center;
@@ -1223,6 +1236,7 @@ color: var(--title-color);
   }
   
   .services__card{
+    text-align: center;
     padding: 5rem 2rem 1.5rem;
   }
 
