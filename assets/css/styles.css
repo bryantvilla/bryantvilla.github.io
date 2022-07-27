@@ -121,7 +121,6 @@ img {
   color: var(--first-color);
 }
 
-
 /*========== Variables Dark theme ==========*/
 body.light-theme{
   --body-color:  #f3dfba;
