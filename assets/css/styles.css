@@ -1069,6 +1069,10 @@ color: var(--title-color);
     grid-template-columns: repeat(2,145px);
     justify-content: center;
   }
+  .skills__content{
+    padding: .5rem 1rem 1rem;
+    margin-bottom: .5rem;
+  }
 }
 
 /* For medium devices */
