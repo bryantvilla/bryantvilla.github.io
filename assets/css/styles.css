@@ -579,6 +579,7 @@ color: var(--first-color);
 .skills__container{
   row-gap: 2rem;
   padding-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .skills__content{
@@ -656,7 +657,7 @@ color: var(--first-color);
   rgba(166, 38, 170, 0.1) 0px 20px, 
   rgba(166, 38, 170, 0.05) 0px 25px;
   border-radius: 1rem;
-  margin-bottom: .5rem;
+  margin-bottom: 1.5rem;
 }
 
 .services__title{
@@ -775,6 +776,7 @@ color: var(--title-color);
   align-items: center;
   column-gap: .75;
   margin-bottom: 2rem;
+  margin: 25px;
 }
 
 .work__item{
@@ -782,7 +784,7 @@ color: var(--title-color);
   color: var(--title-color);
   padding: .25rem .75rem;
   font-weight: var(--font-medium);
-  border-radius: .5rem;
+  border-radius: .75rem;
   /*margin-left: 1rem;
     margin-right: 1rem */
 }
@@ -1093,6 +1095,7 @@ color: var(--title-color);
 
   .skills__content{
     padding: 2rem 4rem;
+    margin-bottom: 1.5rem;
   }
 
   .services__container{
@@ -1214,7 +1217,6 @@ color: var(--title-color);
   .about__box{
     text-align: center;
     padding: 1rem 1.25rem;
-    
   }
 
   .about__description{
@@ -1226,7 +1228,6 @@ color: var(--title-color);
   .skills__container{
     display: flex;
     justify-items: left;
-    
   }
 
   .services__container{
