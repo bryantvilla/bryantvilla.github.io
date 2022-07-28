@@ -1225,7 +1225,7 @@ color: var(--title-color);
 
   .skills__container{
     display: flex;
-    justify-items: center;
+    justify-items: left;
     
   }
 
@@ -1235,8 +1235,7 @@ color: var(--title-color);
   }
   
   .services__card{
-    text-align: center;
-    padding: 5rem 2rem 1.5rem;
+    padding: 3rem 2rem 1.5rem;
   }
 
   .contact__container{
