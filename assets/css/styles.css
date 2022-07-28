@@ -200,7 +200,9 @@ color: var(--first-color);
   color: #3d3d3d;
 }
 
-
+.light-theme .services__model{
+  background-color: #f3dfbf79;;
+}
 .light-theme .services__model-list{
   color: var(--title-color);
 }
@@ -692,7 +694,7 @@ color: var(--first-color);
 .services__model{
   position:fixed;
   inset: 0;
-  background-color: hsla(200,28%,16%,.7);
+  background-color: #1c1c1c79;
   padding: 2rem 1rem;
   display: grid;
   place-items: center;
@@ -704,7 +706,7 @@ color: var(--first-color);
 
 .services__model-content{
   position: relative;
-  background-color: var(--body-color);
+  background-color: var(--container-color);
   padding: 4.5rem 1.5rem 2.5rem;
   border-radius: 1.5rem;
 }
@@ -723,7 +725,7 @@ color: var(--first-color);
 .services__model-description{
   font-size: var(--small-font-size);
   margin-bottom: 2rem;
-  color: var(--title-color);
+  color: var(--body-color);
 }
 
 .services__model-title{
