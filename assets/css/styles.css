@@ -706,7 +706,7 @@ color: var(--first-color);
 
 .services__model-content{
   position: relative;
-  background-color: var(--body-color);
+  background-color: var(--container-color);
   padding: 4.5rem 1.5rem 2.5rem;
   border-radius: 1.5rem;
 }
@@ -725,7 +725,7 @@ color: var(--first-color);
 .services__model-description{
   font-size: var(--small-font-size);
   margin-bottom: 2rem;
-  color: var(--title-color);
+  color: var(--body-color);
 }
 
 .services__model-title{
