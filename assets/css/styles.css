@@ -212,6 +212,10 @@ color: var(--first-color);
 .light-theme .services__button{
   color: #3d3d3d;
 }
+.light-theme .services__model-icon,
+.light-theme .services__model-close{
+  color: #479097;
+}
 
 .light-theme.services__title{
   color: var(--first-color);
