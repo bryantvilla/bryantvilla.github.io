@@ -110,9 +110,10 @@ const sr = ScrollReveal({
 })
 
 sr.reveal('.home__data')
-sr.reveal('.home__handle', {delay: 700})
-sr.reveal('.home__social, .home__scroll', {delay: 900, origin: 'bottom'})
+sr.reveal('.home__handle', {rotate:{x:-250,y:200,z:18}})
+sr.reveal('.home__social, .home__scroll', { easing: 'ease-in' })
 sr.reveal('.about__data', {delay: 200, origin: 'right'})
+sr.reveal('.about__img, .section__title, .section__subtitle', {delay: 200, origin: 'left'})
 sr.reveal('.skills__section', {delay: 200, origin: 'left'})
 sr.reveal('.services__section', {delay: 200, origin: 'right'})
 sr.reveal('.work__section', {delay: 200, origin: 'bottom'})
