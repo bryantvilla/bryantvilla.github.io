@@ -1,707 +1,189 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#151711">
+    <title>Bryant Villarreal | Backend &amp; Platform Software Engineer</title>
+    <meta name="description" content="Bryant Villarreal, Software Engineer II at UKG. Backend engineering, identity and access management, authentication security, and enterprise SSO. M.S. in Computer Science, FIU.">
+    <link rel="canonical" href="https://bryantvilla.com/">
+    <meta property="og:url" content="https://bryantvilla.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Bryant Villarreal | Backend &amp; Platform Software Engineer">
+    <meta property="og:description" content="Building the systems behind secure access. Explore my engineering work in authentication security and enterprise SSO at UKG.">
+    <meta property="og:image" content="https://bryantvilla.com/assets/img/entrance.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Bryant Villarreal: backend engineering, identity, and enterprise SSO">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bryant Villarreal | Backend &amp; Platform Software Engineer">
+    <meta name="twitter:description" content="Building the systems behind secure access. Backend engineering, identity, and enterprise SSO at UKG.">
+    <meta name="twitter:image" content="https://bryantvilla.com/assets/img/entrance.png">
+    <meta name="twitter:image:alt" content="Bryant Villarreal: backend engineering, identity, and enterprise SSO">
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="preload" href="assets/fonts/manrope-variable.ttf" as="font" type="font/ttf" crossorigin>
+    <script>
+        try {
+            let theme = localStorage.getItem('portfolio-theme');
+            if (!theme) {
+                theme = localStorage.getItem('selected-theme');
+                if (theme && localStorage.getItem('selected-icon')) theme = theme === 'dark' ? 'light' : 'dark';
+            }
+            if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+        } catch {}
+    </script>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+            <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+            <symbol id="icon-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+            <symbol id="icon-key" viewBox="0 0 24 24"><circle cx="15.5" cy="8.5" r="5.5"/><path d="m11.5 12.5-8 8H1v-3l7.5-7.5M16 7h.01"/></symbol>
+            <symbol id="icon-person" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2H4Z"/></symbol>
+            <symbol id="icon-document" viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5V3Zm9 0v6h5M9 13h6m-6 4h6"/></symbol>
+            <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+            <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.5 14A9 9 0 0 1 10 3.5 9 9 0 1 0 20.5 14Z"/></symbol>
+        </defs>
+    </svg>
 
-
-
-   <!-- HTML Meta Tags -->
-   <title> Bryant's Portfolio </title>
-   <meta name="description" content="Includes his education, experience, 
-        skill set, and contact information">
-
-   <!-- Facebook Meta Tags -->
-   <meta property="og:url" content="https://bryantvilla.com">
-   <meta property="og:type" content="website">
-   <meta property="og:title" content=" Bryant's Portfolio ">
-   <meta property="og:description" content="Includes his education, experience, 
-         skill set, and contact information">
-   <meta property="og:image" content="https://raw.githubusercontent.com/bryantvilla/bryantvilla.github.io/b9beb75d63bb1dc89a3a7fae7d4922285c2013b2/assets/img/entrance.png">
-
-   <!-- Twitter Meta Tags -->
-   <meta name="twitter:card" content="summary_large_image">
-   <meta property="twitter:domain" content="bryantvilla.com">
-   <meta property="twitter:url" content="https://bryantvilla.com">
-   <meta name="twitter:title" content=" Bryant's Portfolio ">
-   <meta name="twitter:description" content="Includes his education, experience, 
-         skill set, and contact information">
-   <meta name="twitter:image" content="https://raw.githubusercontent.com/bryantvilla/bryantvilla.github.io/b9beb75d63bb1dc89a3a7fae7d4922285c2013b2/assets/img/entrance.png">
-
-        
-
-        <!--=============== FAVICON ===============-->
-        <link rel="icon" href="assets/img/favicon.png?" type="image/png">
-
-        <!--=============== BOXICONS ===============-->
-        <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
-
-        <!--=============== CSS ===============-->
-        <link rel="stylesheet" href="assets/css/styles.css">
-    </head>
-    <body>
-        <!--=============== HEADER ===============-->
-        <header class="header" id="header">
-            <nav class="nav container">
-                <a href="#contact" class="nav__logo">Bryant</a>
-
-                <div class="nav__menu">
-                    <ul class="nav__list">
-                        <li class="nav__item">
-                            <a href="#home" class="nav__link active-link">
-                                <i class='bx bx-home'></i>
-                            </a>
-                        </li>
-
-                        <li class="nav__item">
-                            <a href="#about" class="nav__link">
-                                <i class='bx bx-user'></i>
-                            </a>
-                        </li>
-                        
-                        <li class="nav__item">
-                            <a href="#skills" class="nav__link ">
-                                <i class='bx bx-book'></i>
-                            </a>
-                        </li>
-                        
-                        <li class="nav__item">
-                            <a href="#work" class="nav__link">
-                                <i class='bx bx-code-curly' ></i>
-                            </a>
-                        
-                        <li class="nav__item">
-                            <a href="#contact" class="nav__link">
-                                <i class='bx bx-message-square-detail'></i>
-                            </a>
-                            
-                        </li>
-
-                        </li>
-                    </ul>
-                </div>
-                <!-- Dark Mode -->
-                <i class='bx bx-moon change-theme' id="theme-button"></i>
+    <header class="site-header" id="header">
+        <div class="header-inner container">
+            <a href="#home" class="wordmark">Bryant Villarreal<span aria-hidden="true">.</span></a>
+            <nav class="site-nav" aria-label="Main navigation">
+                <a class="nav-link" href="#work">Work</a>
+                <a class="nav-link" href="#about">About</a>
+                <a class="nav-link" href="#contact">Contact</a>
+                <a class="nav-resume" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Resume <span aria-hidden="true">↗</span></a>
             </nav>
-            
-        </header>
+            <button class="theme-toggle" id="theme-button" type="button" aria-label="Switch to light theme" hidden>
+                <svg class="icon theme-sun" aria-hidden="true"><use href="#icon-sun"></use></svg>
+                <svg class="icon theme-moon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+        </div>
+    </header>
 
-        <!--=============== MAIN ===============-->
-        <main class="main">
-            <!--=============== HOME ===============-->
-            <section class="home section" id="home">
-                <div class="home__container container grid">
-                    <div class="home__data">
-                        <span class="home_greeting">Hello, I'm</span>
-                        <h1 class="home__name">Bryant Villarreal</h1>
-                        <h3 class="home__education">Software Developer</h3>
-
-                        <div class="home__buttons">
-                            <a href="assets/pdf/bryant-res.pdf" target='_blank' class="button button--ghost">
-                                Open Resume
-                            </a>
-                            <a href="#about" class="button">About Me</a>
-                        </div>
-                    </div>
-
-                    <!-- EDIT THIS WITH SELF IMAGE-->
-                    <div class="home__handle">
-                        <img src="assets/img/cat.svg" alt="" class="home__img">
-                    </div>
-
-                    <div class="home__social">
-                        <a href="https://www.linkedin.com/in/bryantavilla/" target="_blank" class="home__social-link">
-                            <i class="fa-brands fa-linkedin-in"></i>
-                        </a>
-                
-                        <a href="https://github.com/bryantvilla" target="_blank" class="home__social-link">
-                            <i class="fa-brands fa-github-alt "></i>
-                        </a>
-                
-                        <a href="https://www.instagram.com/bryant.pdf/" target="_blank" class="home__social-link">
-                            <i class="fa-brands fa-instagram"></i>
-                        </a>
-                    </div>
-
-                    <a href="#about" class="home__scroll">
-                        <i class="fa-solid fa-hand-point-down fa-bounce home__scroll-icon" style="--fa-animation-duration: 3s;"></i>
-                        <span class="home__scroll-name">Scroll Down</span>
-                    </a>
+    <main id="main">
+        <section class="hero container" id="home" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <p class="eyebrow hero-eyebrow">Backend &amp; platform engineering</p>
+                <h1 id="hero-title"><span>Building the</span> <span>systems behind</span> <span>secure access.</span></h1>
+                <p class="hero-description">I'm Bryant, a Software Engineer II at UKG working in identity and access management. My focus is backend services, authentication security, and enterprise SSO.</p>
+                <div class="hero-actions">
+                    <a href="#work" class="button button-primary">Explore my work <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
+                    <a href="#contact" class="text-link">Get in touch <span aria-hidden="true">↗</span></a>
                 </div>
-            </section>
-            
-            <!--=============== ABOUT ===============-->
-            <section class="about__section" id="about">
-                <span class="section__subtitle">My Intro</span>
-                <h2 class="section__title">About Me</h2>
-
-                <div class="about__container container grid">
-                    <img src="assets/img/about.jpg" alt="" class="about__img">
-                    
-                    <div class="about__data">
-                        <div class="about__info">
-                            <div class ="about__box">
-                                <i class="fa-solid fa-user-graduate about__icon"></i>
-                                <h3 class="about__title">Education</h3>
-                                <span class="about__subtitle"> Master's in CS  (April 2023)</span>
-                            </div>
-
-                            <div class ="about__box">
-                                <i class="fa-solid fa-hat-wizard about__icon"></i>
-                                <h3 class="about__title">Completed Projects</h3>
-                                <span class="about__subtitle">5+</span>
-                            </div>
-
-                            <div class ="about__box">
-                                <i class="fa-solid fa-people-group about__icon"></i>
-                                <h3 class="about__title">Student Clubs</h3>
-                                <span class="about__subtitle">2</span>
-                            </div>
-                        </div>
-                        <p class="about__description"> 
-                            I am currently continuing my education at Florida International University and my goal is to obtain an M.S in Computer Science. 
-                            Throughout this program, I discovered low-level system exploits such as buffer overflows, format string attack vulnerabilities, 
-                            and SQL injections. These topics helped develop my proficiency with Unix and 
-                            I began to have a deeper understanding of computer networking and operating systems. I will graduate April 2023.<br>
-
-                            <br>During my time as an undergraduate student at Florida International University, I became involved with the Google Student Developer Club, and Upsilon Pi Epsilon. 
-                            As a member of these organizations, I collaborated with my peers to discuss emergent topics in technology. 
-                            Some of the knowledge I have picked up from my undergraduate career include SQL, Agile, Scrum methodologies, and most importantly, 
-                            the ability to search stack overflow. I was awarded magna cum laude from Florida International University,
-                            graduating with a B.S in Computer Science holding a 3.71 GPA in May of 2022.
-
-                           
-                        </p>
-
-                        <a href="#contact" class="button">Contact</a>
-                    </div>
-                </div>
-            </section>
-
-            <!--=============== SKILLS ===============-->
-            <section class="skills__section" id="skills">
-                <span class="section__subtitle">My Skills</span>
-                <h2 class="section__title">My Experience</h2>
-
-                <div class="skills__container container grid">
-                    <div class="skills__content">
-                        <h3 class="skills__title">Languages</h3>
-
-                        <div class="skills__box">
-                            <div class="skills__group">
-                                <div class="skills__data">
-                                    <i class="fa-brands fa-python skill__icon"></i>
-
-                                    <div>
-                                        <h3 class="skills__name">Python</h3>
-                                        <span class="skills__level">Intermediate</span>
-                                    </div>
-                                    
-                                    <i class='bx bxs-game skill__icon'></i>
-                                    <div>
-                                        <h3 class="skills__name">C</h3>
-                                        <span class="skills__level">Intermediate</span>
-                                    </div>
-                                    
-                                    <i class="fa-solid fa-database skill__icon"></i>
-                                    <div>
-                                        <h3 class="skills__name"> PostgreSQL</h3>
-                                        <span class="skills__level">Intermediate</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="skills__container container grid">
-                    <div class="skills__content">
-                        <h3 class="skills__title">Development Tools</h3>
-
-                        <div class="skills__box">
-                            <div class="skills__group">
-                                <div class="skills__data">
-                                    <i class="fa-solid fa-code-merge skill__icon"></i>
-                                    <div>
-                                        <h3 class="skills__name">Git</h3>
-                                        <span class="skills__level">Basic</span>
-                                    </div>
-                                    
-                                    <i class='bx bxs-terminal skill__icon'></i>
-                                    <div>
-                                        <h3 class="skills__name">Linux/Unix</h3>
-                                        <span class="skills__level">Advanced</span>
-                                    </div>
-                                    
-                                    <i class='bx bxs-group skill__icon'></i>
-                                    <div>
-                                        <h3 class="skills__name">Agile & Scrum</h3>
-                                        <span class="skills__level">Intermediate</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </section>
-
-            <!--=============== SERVICES ===============-->
-            <section class="services__section">
-                <span class="section__subtitle">My</span>
-                <h2 class="section__title">Development Process</h2>
-
-                <div class="services__container container grid">
-                    <div class="services__card">
-                        <i class="fa-solid fa-seedling services__icon-top"></i>
-                        <h3 class="services__title">Planning</h3>
-
-                        <span class="services__button">
-                            See More <i class='bx bxs-chevron-right services__icon'></i>
-                        </span>
-                        <div class="services__model">
-                            <div class="services__model-content">
-                                <i class='bx bxs-message-square-x services__model-close'></i>
-                            
-                                <h3 class="services__model-title">Planing Phase</h3>
-                                <p class="services__model-description">
-                                    My process when evaluating the scope of a project
-                                </p>
-                                <ul class="services__model-list">
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Develop goals for project
-                                        </p>
-                                    </li>
-                                    
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Create deadlines for features
-                                        </p>
-                                    </li>
-
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Find purpose of project
-                                        </p>
-                                    </li>
-
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                           Receive Feedback
-                                        </p>
-                                    </li>
-                                </ul>
-                            </div> 
-                        </div>
-                    </div>
-
-                    <div class="services__card">
-                        <i class='bx bxs-receipt services__icon-top'></i>
-                        <h3 class="services__title">Analyzing<br></h3>
-
-                        <span class="services__button">
-                            See More <i class='bx bxs-chevron-right services__icon'></i>
-                        </span>
-                        <div class="services__model">
-                            <div class="services__model-content">
-                                <i class='bx bxs-message-square-x services__model-close'></i>
-                            
-                                <h3 class="services__model-title">Defining requirements</h3>
-                                <p class="services__model-description">
-                                   Determining use of project
-                                </p>
-                                <ul class="services__model-list">
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Find resources needed
-                                        </p>
-                                    </li>
-                                    
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Research needs of end users
-                                        </p>
-                                    </li>
-
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                           Evaluate alternatives
-                                        </p>
-                                    </li>
-
-                                    </li>
-                                </ul>
-                            </div> 
-                        </div>
-                    </div>
-
-                    <div class="services__card">
-                        <i class="fa-solid fa-paintbrush services__icon-top"></i>
-                        <h3 class="services__title">Designing<br></h3>
-
-                        <span class="services__button">
-                            See More <i class='bx bxs-chevron-right services__icon'></i>
-                        </span>
-
-                        <div class="services__model">
-                            <div class="services__model-content">
-                                <i class='bx bxs-message-square-x services__model-close'></i>
-                            
-                                <h3 class="services__model-title">Design Phase</h3>
-                                <p class="services__model-description">
-                                   Things I review when designing a project
-                                </p>
-                                <ul class="services__model-list">
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            User Interface
-                                        </p>
-                                    </li>
-                                    
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Databases
-                                        </p>
-                                    </li>
-
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            System Interface
-                                        </p>
-
-                                    </li>
-
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Network Interface
-                                        </p>
-                                    </li>
-                                </ul>
-                            </div> 
-                        </div>
-                    </div>
-
-                    <div class="services__card">
-                        <i class="fa-solid fa-laptop-code services__icon-top"></i>
-                        <h3 class="services__title">Coding<br></h3>
-
-                        <span class="services__button">
-                            See More <i class='bx bxs-chevron-right services__icon'></i>
-                        </span>
-                        
-                        <div class="services__model">
-                            <div class="services__model-content">
-                                <i class='bx bxs-message-square-x services__model-close'></i>
-                            
-                                <h3 class="services__model-title">Writing Code</h3>
-                                <p class="services__model-description">
-                                   My Development process
-                                </p>
-                                <ul class="services__model-list">
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Build project
-                                        </p>
-                                    </li>
-                                    
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Document code for future reference
-                                        </p>
-                                    </li>
-
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Use access control to keep track of changes
-                                        </p>
-                                    </li>
-
-                    
-                                </ul>
-                            </div> 
-                        </div>
-                    </div>
-
-                    <div class="services__card">
-                        <i class="fa-solid fa-bug-slash services__icon-top"></i>
-                        <h3 class="services__title">Testing<br></h3>
-
-                        <span class="services__button">
-                            See More <i class='bx bxs-chevron-right services__icon'></i>
-                        </span>
-                        
-                        <div class="services__model">
-                            <div class="services__model-content">
-                                <i class='bx bxs-message-square-x services__model-close'></i>
-                            
-                                <h3 class="services__model-title">Testing Project</h3>
-                                <p class="services__model-description">
-                                   Once finished coding, I begin to examine the codebase
-                                </p>
-                                <ul class="services__model-list">
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Ensure no bugs are found
-                                        </p>
-                                    </li>
-                                    
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Find any security exploits and check for sanitization issues
-                                        </p>
-                                    </li>
-
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Find edge cases 
-                                        </p>
-
-                                    </li>
-                                </ul>
-                            </div> 
-                        </div>
-                    </div>
-
-                    <div class="services__card">
-                        <i class="fa-solid fa-paper-plane services__icon-top"></i>
-                        <h3 class="services__title">Deploying<br></h3>
-
-                        <span class="services__button">
-                            See More <i class='bx bxs-chevron-right services__icon'></i>
-                        </span>
-                        
-                        <div class="services__model">
-                            <div class="services__model-content">
-                                <i class='bx bxs-message-square-x services__model-close'></i>
-                            
-                                <h3 class="services__model-title">Initializing Deployment</h3>
-                                <p class="services__model-description">
-                                   Once testing has concluded, the project is ready for deployment
-                                </p>
-                                <ul class="services__model-list">
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Upload project to github
-                                        </p>
-                                    </li>
-                                    
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Account for bugs found during deployment
-                                        </p>
-                                    </li>
-
-                                    <li class="services__model-item">
-                                        <i class='bx bxs-label services__model-icon'></i>
-                                        <p class="services__model-info">
-                                            Fix bugs found by end users 
-                                        </p>
-
-                                    </li>
-                                </ul>
-                            </div> 
-                        </div>
-                    </div>
-
-                    
-                </div>
-
-                </div>
-
-            </section>
-
-            <!--=============== WORK ===============-->
-            <section class="work__section" id="work">
-                <span class="section__subtitle">My Portfolio</span>
-                <h2 class="section__title">Recent Works</h2>
-
-                <div class="work__filters">
-                    <span class="work__item active-work" data-filter="all">All</span>
-                    <span class="work__item" data-filter=".algorithm"> Sorting Algorithm Visualizer</span>
-                    <span class="work__item" data-filter=".flappy"> AI plays Flappy Bird</span>
-                    <span class="work__item" data-filter=".password">Password Generator</span>
-                    <span class="work__item " data-filter=".marvel">Marvel Twitter Bot</span>
-                </div>
-
-                <div class="work__container container grid">
-                    <div class="work__card mix marvel">
-                        <img src=assets/img/work1.png class="work__img">
-
-                        <h3 class="work__title">Marvel Twitter Bot</h3>
-                        <a href="https://github.com/bryantvilla/mcu-twitter-bot" target="_blank" class="work__button">
-                            Github Repo <i class='bx bx-right-arrow-alt work__icon'></i>
-                        </a>
-                    </div>
-
-                    <div class="work__card mix algorithm">
-                        <img src=assets/img/work2.png class="work__img">
-
-                        <h3 class="work__title">Algorithm Visualizer</h3>
-                        <a href="https://github.com/bryantvilla/sorting_visualizer" target="_blank" class="work__button">
-                            Github Repo <i class='bx bx-right-arrow-alt work__icon'></i>
-                        </a>
-                    </div>
-
-                    <div class="work__card mix flappy">
-                        <img src=assets/img/work3.png class="work__img">
-
-                        <h3 class="work__title">AI playing Flappy Bird</h3>
-                        <a href="https://github.com/bryantvilla/flappyai" target="_blank" class="work__button">
-                            Github Repo <i class='bx bx-right-arrow-alt work__icon'></i>
-                        </a>
-                    </div>
-
-                    <div class="work__card mix password">
-                        <img src=assets/img/work4.png class="work__img">
-
-                        <h3 class="work__title">Password Generator</h3>
-                        <a href="https://github.com/bryantvilla/pwgen" target="_blank" class="work__button">
-                            Github Repo <i class='bx bx-right-arrow-alt work__icon'></i>
-                        </a>
-                    </div>
-
-                </div>
-            </section>
-
-            <!--=============== CONTACT ===============-->
-            <section class="contact__section" id="contact">
-                <span class="section__subtitle">Get in touch</span>
-                <h2 class="section__title">Say Hello 👋</h2>
-
-                <div class="contact__container container grid">
-                    <div class="contact__content">
-                        <h3 class="contact__title">Write me</h3>
-                        
-                        <div class="contact__info">
-                            <div class="contact__card">
-                                <i class="fa-solid fa-envelopes-bulk contact__card-icon"></i>
-                                <h3 class="contact__card-title">Email</h3>
-                                <span class="contact__card-data">bryantavillarreal@gmail.com</span>
-
-                                <a href="mailto:bryantavillarreal@gmail.com" target="_blank" class="contact__button">
-                                    Email me <i class='bx bxs-chevron-right contact__button-icon'></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="contact__info">
-                            <div class="contact__card">
-                                <i class="fa-brands fa-whatsapp contact__card-icon"></i>
-                                <h3 class="contact__card-title">Whatsapp</h3>
-                                <span class="contact__card-data">(305) 322-6885</span>
-
-                                <a href="https://wa.me/13053226885" target="_blank" class="contact__button">
-                                    Message me <i class='bx bxs-chevron-right contact__button-icon'></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="contact__info">
-                            <div class="contact__card">
-                                <i class="fa-brands fa-twitter contact__card-icon"></i>
-                                <h3 class="contact__card-title">Twitter</h3>
-                                <span class="contact__card-data">@PricklyGrape</span>
-
-                                <a href="https://twitter.com/messages/compose?recipient_id=3191669840" target="_blank" class="contact__button">
-                                    Tweet me <i class='bx bxs-chevron-right contact__button-icon'></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="contact__content">
-                        <h3 class="contact__title">Message Me</h3>
-
-                        <form name="portfolio_contact" method="POST" action="https://formspree.io/f/mvolejnv" class="contact__form" >
-                            <div class="contact__form-div">
-                                <label for="name" class="contact__form-tag" >Name:</label>
-                                <input type="text" placeholder="Insert your name" name ="name" class="contact__form-input" required>
-                            </div>
-
-                            <div class="contact__form-div">
-                                <label for="email" class="contact__form-tag">Email:</label>
-                                <input type="email" placeholder="Insert your email" name="email" class="contact__form-input" required>
-                            </div>
-
-                            <div class="contact__form-div contact__form-area">
-                                <label for="message-title" class="contact__form-tag">Message</label>
-                                <textarea name="message" id="message-input" cols="30" rows="10" placeholder="Write your message" class="contact__form-input"></textarea required>
-                            </div>
-
-                            <button type="submit" class="button">Send Message</button>
-                        </form>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!--=============== FOOTER ===============-->
-        <footer class="footer">
-            <div class="footer__container container">
-                <h1 class="footer__title">Bryant</h1>
-                
-                <ul class="footer__list">
-                    <li>
-                        <a href="#about" class="footer__link"></a>
-                    </li>
-                    <li>
-                        <a href="#work" class="footer__link"></a>
-                    </li>
-                    <li>
-                        <a href="#education" class="footer__link"></a>
-                    </li>
-                </ul>
-                <ul class="footer__social">
-                    <a href="https://www.linkedin.com/in/bryantavilla/" class="footer__social-link">
-                        <i class="fa-brands fa-linkedin-in"></i>
-                    </a>
-                    <a href="https://github.com/bryantvilla" class="footer__social-link">
-                        <i class="fa-brands fa-github-alt "></i>
-                    </a>
-                    <a href="https://www.instagram.com/bryant.pdf/" class="footer__social-link">
-                        <i class="fa-brands fa-instagram"></i>
-                    </a>
-                </ul>
+                <p class="hero-tenure">UKG <span aria-hidden="true">/</span> <time datetime="2022-09">September 2022</time> &ndash; present</p>
             </div>
 
-            <span class="footer__copy">
-                &#169; Bryant. All rights reserved 
-            </span>
-        </footer>
+            <figure class="system-figure" aria-labelledby="system-caption">
+                <div class="figure-heading"><span class="eyebrow">System focus</span><span class="figure-index" aria-hidden="true">01 / IAM</span></div>
+                <div class="system-map" aria-hidden="true">
+                    <div class="identity-data">
+                        <svg viewBox="0 0 64 64" class="database-icon"><ellipse cx="32" cy="12" rx="22" ry="8"/><path d="M10 12v36c0 11 44 11 44 0V12M10 24c0 11 44 11 44 0M10 36c0 11 44 11 44 0"/></svg>
+                        <span>Users &amp; policies</span>
+                    </div>
+                    <div class="vertical-connector"></div>
+                    <div class="system-node request-node"><svg class="icon" aria-hidden="true"><use href="#icon-person"></use></svg><span>Request</span></div>
+                    <svg class="icon flow-arrow arrow-one" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+                    <div class="system-node identity-node"><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg><span>Identity</span></div>
+                    <svg class="icon flow-arrow arrow-two" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+                    <div class="system-node access-node"><svg class="icon" aria-hidden="true"><use href="#icon-key"></use></svg><span>Access</span></div>
+                    <svg class="system-branches" viewBox="0 0 400 52" preserveAspectRatio="none"><path d="M200 0v26M100 52V26h200v26"/></svg>
+                    <div class="system-capabilities"><span>Authentication</span><span>Authorization</span></div>
+                </div>
+                <figcaption id="system-caption"><span>Identity &amp; access management</span><span>Conceptual flow</span></figcaption>
+            </figure>
+        </section>
 
-        <!--=============== SCROLLREVEAL ===============-->
-        <script src="assets/js/scrollreveal.min.js"></script>
+        <section class="work section-border" id="work" aria-labelledby="work-title">
+            <div class="container">
+                <div class="section-heading">
+                    <div><p class="eyebrow">Professional work / UKG</p><h2 id="work-title">Engineering trust.</h2></div>
+                    <p>Selected contributions to the authentication and identity systems that enterprise applications depend on.</p>
+                </div>
 
-        <!--=============== SWIPER JS ===============-->
-        <script src=""></script>
+                <details class="work-item" id="authentication-security">
+                    <summary>
+                        <span class="work-symbol" aria-hidden="true"><svg class="icon"><use href="#icon-shield"></use></svg></span>
+                        <span class="work-overview"><span class="work-category">Authentication security</span><span class="work-title">Strengthening access controls</span><span class="work-description">Security improvements around IP-based access controls in enterprise authentication flows.</span></span>
+                        <span class="work-technologies">Authentication<br>Access policies</span>
+                        <span class="disclosure-action"><span class="read-label"><span class="when-closed">Read more</span><span class="when-open">Close details</span></span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></span>
+                    </summary>
+                    <div class="work-detail">
+                        <div><h3>The problem</h3><p>IP-based access policies depend on trustworthy request context. The authentication layer needs to apply those policies consistently.</p></div>
+                        <div><h3>My contribution</h3><p>At UKG, I contributed to security improvements around IP-based access controls in enterprise authentication flows, with a focus on the boundary between incoming requests and access decisions.</p></div>
+                        <p class="work-takeaway"><span>Engineering focus</span> Request trust, policy enforcement, and authentication security.</p>
+                    </div>
+                </details>
 
-        <!--=============== MIXITUP FILTER ===============-->
-        <script src="assets/js/mixitup.min.js"></script>
+                <details class="work-item" id="enterprise-sso">
+                    <summary>
+                        <span class="work-symbol" aria-hidden="true"><svg class="icon"><use href="#icon-document"></use></svg></span>
+                        <span class="work-overview"><span class="work-category">Enterprise single sign-on</span><span class="work-title">Making certificate rotation smoother</span><span class="work-description">SAML multi-certificate support and coordinated service changes for enterprise SSO.</span></span>
+                        <span class="work-technologies">SAML / Auth0<br>Kafka / Java</span>
+                        <span class="disclosure-action"><span class="read-label"><span class="when-closed">Read more</span><span class="when-open">Close details</span></span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></span>
+                    </summary>
+                    <div class="work-detail">
+                        <div><h3>The problem</h3><p>Enterprise SSO needs to keep working while certificates change. Supporting certificate overlap also requires validation and coordinated updates across services.</p></div>
+                        <div><h3>My contribution</h3><p>I contributed to SAML multi-certificate support across Auth0 integration, database migrations, and Kafka events. The work included CA-signed certificate validation and resilience handling to support uninterrupted certificate rotation.</p></div>
+                        <p class="work-takeaway"><span>Engineering focus</span> Service coordination, certificate validation, and continuity during change.</p>
+                    </div>
+                </details>
+                <div class="work-footer"><p>Software Engineer II <span aria-hidden="true">·</span> Identity &amp; Access Management <span aria-hidden="true">·</span> UKG</p><a class="text-link" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Full experience in my resume <span aria-hidden="true">↗</span></a></div>
+            </div>
+        </section>
 
-        <!--=============== MAIN JS ===============-->
-        <script src="assets/js/main.js"></script>
+        <section class="toolkit container section-spacing" id="skills" aria-labelledby="skills-title">
+            <div class="toolkit-intro"><p class="eyebrow">Tools &amp; practice</p><h2 id="skills-title">From service code<br>to delivery.</h2><p>My work spans backend implementation, automated testing, and the systems that support a release.</p></div>
+            <dl class="toolkit-list">
+                <div><dt>Backend &amp; identity</dt><dd>Java, Spring Boot, Auth0, SAML / SSO, Kafka, JPA, Hibernate</dd></div>
+                <div><dt>Testing &amp; delivery</dt><dd>JUnit, Mockito, GitHub Actions, Docker, Git, Gradle, Maven</dd></div>
+                <div><dt>AI in my workflow</dt><dd>Codex and Claude Code are part of my day-to-day software development workflow.</dd></div>
+                <div><dt>Additional background</dt><dd>Python, C, PostgreSQL, MySQL, Linux / Unix, Agile &amp; Scrum</dd></div>
+            </dl>
+        </section>
 
-        <!--=============== FONT AWESOME ===============-->
-        <script src="https://kit.fontawesome.com/4cbb22fd28.js" crossorigin="anonymous"></script>
-    </body>
+        <section class="about section-border" id="about" aria-labelledby="about-title">
+            <div class="container about-layout">
+                <div class="portrait-column"><img class="portrait" src="assets/img/about.jpg" width="1000" height="726" alt="Bryant Villarreal" loading="lazy"><p class="portrait-caption">Bryant Villarreal<br><span>Software engineer. Always learning.</span></p></div>
+                <div class="about-copy">
+                    <p class="eyebrow">The person behind the work</p><h2 id="about-title">A foundation in CS.<br>A focus on real systems.</h2>
+                    <p>I'm a Software Engineer II at UKG, where I've worked since September 2022. I became an Associate Software Engineer in May 2023 and was promoted to Software Engineer II in January 2025. Identity and access management brings together the parts of software engineering I care about: security, backend systems, and the details that make them work together.</p>
+                    <p>I completed my master's in Computer Science at Florida International University in December 2025. My academic background includes software security, computer networking, and operating systems.</p>
+                    <div class="education" id="education" aria-labelledby="education-title">
+                        <h3 class="eyebrow" id="education-title">Education / Florida International University</h3>
+                        <div class="education-item"><div><h4>M.S. in Computer Science</h4><p>Florida International University</p></div><time datetime="2025-12">December 2025</time></div>
+                        <div class="education-item"><div><h4>B.S. in Computer Science</h4><p>Magna cum laude <span aria-hidden="true">·</span> GPA 3.71</p></div><time datetime="2022-05">May 2022</time></div>
+                    </div>
+                    <details class="archive" id="undergraduate-work">
+                        <summary><span>Undergraduate project archive</span><span class="archive-sign" aria-hidden="true">+</span></summary>
+                        <p>Projects from my undergraduate years at FIU, completed before joining UKG.</p>
+                        <ul>
+                            <li><a href="https://github.com/bryantvilla/sorting_visualizer" target="_blank" rel="noopener noreferrer">Sorting Algorithm Visualizer <span aria-hidden="true">↗</span></a></li>
+                            <li><a href="https://github.com/bryantvilla/pwgen" target="_blank" rel="noopener noreferrer">Password Generator <span aria-hidden="true">↗</span></a></li>
+                            <li><a href="https://github.com/bryantvilla/flappyai" target="_blank" rel="noopener noreferrer">AI Playing Flappy Bird <span aria-hidden="true">↗</span></a></li>
+                            <li><a href="https://github.com/bryantvilla/mcu-twitter-bot" target="_blank" rel="noopener noreferrer">Marvel Twitter Bot <span aria-hidden="true">↗</span></a></li>
+                        </ul>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact container section-spacing" id="contact" aria-labelledby="contact-title">
+            <div class="contact-copy"><p class="eyebrow">What comes next</p><h2 id="contact-title">Let's talk about<br>what's next.</h2><p>I'm interested in backend and platform engineering roles on teams building AI products and large-scale systems.</p><a class="contact-email text-link" href="mailto:bryantavillarreal@gmail.com">bryantavillarreal@gmail.com <span aria-hidden="true">↗</span></a><div class="social-links"><a class="text-link" href="https://www.linkedin.com/in/bryantavilla/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/bryantvilla" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div>
+            <form name="portfolio_contact" method="POST" action="https://formspree.io/f/mvolejnv" class="contact-form" aria-label="Send Bryant a message">
+                <div class="form-heading"><h3>Send a message</h3><p>All fields are required.</p></div>
+                <div class="form-row"><div class="form-field"><label for="name">Name</label><input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required></div><div class="form-field"><label for="email">Email</label><input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required></div></div>
+                <div class="form-field"><label for="message-input">Message</label><textarea name="message" id="message-input" rows="4" placeholder="Tell me what you're working on." required></textarea></div>
+                <button type="submit" class="button button-primary">Send message <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer section-border"><div class="container footer-inner"><a class="wordmark" href="#home">Bryant Villarreal<span aria-hidden="true">.</span></a><p>Backend engineering. Security at the core.</p><a class="text-link" href="#home">Back to top <span aria-hidden="true">↑</span></a></div></footer>
+</body>
 </html>
