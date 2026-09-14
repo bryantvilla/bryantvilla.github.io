@@ -1,120 +1,51 @@
-/*=============== CHANGE BACKGROUND HEADER ===============*/
-function scrollHeader(){
-    const header = document.getElementById('header')
-    // When the scroll is greater than 50 viewport height, add the scroll-header class to the header tag
-    if(this.scrollY >= 50) header.classList.add('scroll-header'); else header.classList.remove('scroll-header')
-}
-window.addEventListener('scroll', scrollHeader)
-/*=============== SERVICES MODEL ===============*/
-const modelViews = document.querySelectorAll('.services__model'),
-      modelBtns = document.querySelectorAll('.services__button'),
-      modelClose = document.querySelectorAll('.services__model-close');
+/* The HTML, native disclosures, and contact form also work without JavaScript. */
+const themeButton = document.getElementById('theme-button');
+const themeColor = document.querySelector('meta[name="theme-color"]');
 
-let model = function(modelClick){
-    modelViews[modelClick].classList.add('active-model')
+function updateTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    themeButton.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+    themeColor.setAttribute('content', theme === 'dark' ? '#151711' : '#f5f7f0');
 }
 
-modelBtns.forEach((mb,i) =>{
-    mb.addEventListener('click',() =>{
-        model(i)
-    })
-})
-
-modelClose.forEach((mc) =>{
-    mc.addEventListener('click',() =>{
-        modelViews.forEach((mv) =>{
-            mv.classList.remove('active-model')
-        })
-    })
-})
-/*=============== MIXITUP FILTER PORTFOLIO ===============*/
-let mixerPortfolio = mixitup('.work__container', {
-    selectors: {
-        target: '.work__card'
-    },
-    animation: {
-        duration: 300
+updateTheme(document.documentElement.dataset.theme);
+themeButton.hidden = false;
+themeButton.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    updateTheme(nextTheme);
+    try {
+        localStorage.setItem('portfolio-theme', nextTheme);
+    } catch {
+        // The theme still works for this visit when storage is unavailable.
     }
 });
 
+const header = document.getElementById('header');
+const navigation = [...document.querySelectorAll('.nav-link')].map(link => ({
+    link,
+    section: document.querySelector(link.getAttribute('href'))
+}));
+let scheduled = false;
 
-/* Link active work */ 
-const linkWork=document.querySelectorAll('.work__item')
-
-function activeWork(){
-    linkWork.forEach(l=> l.classList.remove('active-work'))
-    this.classList.add('active-work')
+function updateNavigation() {
+    scheduled = false;
+    header.classList.toggle('is-scrolled', window.scrollY > 12);
+    const offset = header.getBoundingClientRect().height + 32;
+    const current = [...navigation].reverse().find(item => item.section.getBoundingClientRect().top <= offset);
+    navigation.forEach(({ link }) => {
+        if (link === current?.link) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+    });
 }
 
-linkWork.forEach(l=> l.addEventListener('click',activeWork))
-
-
-/*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
-const sections = document.querySelectorAll('section[id]')
-
-function scrollActive(){
-    const scrollY = window.pageYOffset
-
-    sections.forEach(current =>{
-        const sectionHeight = current.offsetHeight,
-              sectionTop = current.offsetTop - 58,
-              sectionId = current.getAttribute('id')
-
-        if(scrollY > sectionTop && scrollY <= sectionTop + sectionHeight){
-            document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.add('active-link')
-        }else{
-            document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.remove('active-link')
-        }
-    })
-}
-window.addEventListener('scroll', scrollActive)
-
-/*=============== LIGHT DARK THEME ===============*/ 
-const themeButton = document.getElementById('theme-button')
-const lightTheme = 'light-theme'
-const iconTheme = 'bx-sun'
-
-// Previously selected topic (if user selected)
-const selectedTheme = localStorage.getItem('selected-theme')
-const selectedIcon = localStorage.getItem('selected-icon')
-
-// We obtain the current theme that the interface has by validating the dark-theme class
-const getCurrentTheme = () => document.body.classList.contains(lightTheme) ? 'dark' : 'light'
-const getCurrentIcon = () => themeButton.classList.contains(iconTheme) ? 'bx bx-moon' : 'bx bx-sun'
-
-// We validate if the user previously chose a topic
-if (selectedTheme) {
-  // If the validation is fulfilled, we ask what the issue was to know if we activated or deactivated the dark
-  document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](lightTheme)
-  themeButton.classList[selectedIcon === 'bx bx-moon' ? 'add' : 'remove'](iconTheme)
+function scheduleNavigation() {
+    if (!scheduled) {
+        scheduled = true;
+        requestAnimationFrame(updateNavigation);
+    }
 }
 
-// Activate / deactivate the theme manually with the button
-themeButton.addEventListener('click', () => {
-    // Add or remove the dark / icon theme
-    document.body.classList.toggle(lightTheme)
-    themeButton.classList.toggle(iconTheme)
-    // We save the theme and the current icon that the user chose
-    localStorage.setItem('selected-theme', getCurrentTheme())
-    localStorage.setItem('selected-icon', getCurrentIcon())
-})
-
-
-/*=============== SCROLL REVEAL ANIMATION ===============*/
-const sr = ScrollReveal({
-    origin: 'top',
-    distance: '60px',
-    duration: 2500,
-    delay: 400,
-    //reset: true
-})
-
-sr.reveal('.home__data')
-sr.reveal('.home__handle', {rotate:{x:-250,y:200,z:18}})
-sr.reveal('.home__social, .home__scroll', { easing: 'ease-in' })
-sr.reveal('.about__data', {delay: 200, origin: 'right'})
-sr.reveal('.about__img, .section__title, .section__subtitle', {delay: 200, origin: 'left'})
-sr.reveal('.skills__section', {delay: 200, origin: 'left'})
-sr.reveal('.services__section', {delay: 200, origin: 'right'})
-sr.reveal('.work__section', {delay: 200, origin: 'bottom'})
-sr.reveal('.contact__section', {delay: 100, origin: 'top'})
+window.addEventListener('scroll', scheduleNavigation, { passive: true });
+window.addEventListener('resize', scheduleNavigation);
+window.addEventListener('load', updateNavigation);
+updateNavigation();

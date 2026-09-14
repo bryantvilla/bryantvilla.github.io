@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Bryant Villarreal | Backend &amp; Platform Engineering Resume</title>
+    <style>
+        @page { size: letter; margin: .45in .55in; }
+        * { box-sizing: border-box; }
+        body { max-width: 7.8in; margin: 2rem auto; padding: 0 1rem; font: 10.5pt/1.34 Arial, sans-serif; color: #293227; background: #fafaf8; }
+        h1 { margin: 0; font-size: 24pt; letter-spacing: -.035em; line-height: 1.15; }
+        h2 { margin: 10pt 0 5pt; padding-bottom: 3pt; border-bottom: 1px solid #adb6a8; font-size: 11pt; color: #3d563b; }
+        h3 { display: inline; margin: 0; font-size: 10.5pt; }
+        p { margin: 4pt 0; }
+        a { color: inherit; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        ul { margin: 6pt 0 0; padding-left: 14pt; }
+        li { margin-bottom: 4pt; padding-left: 1pt; }
+        .headline { font-size: 11.5pt; margin: 3pt 0 5pt; color: #3d563b; }
+        .contact { font-size: 9.25pt; margin: 2pt 0; }
+        .row { display: flex; justify-content: space-between; gap: 12pt; align-items: baseline; }
+        .education article + article { margin-top: 6pt; }
+        .date { flex-shrink: 0; font-size: 9.5pt; }
+        .detail { margin-top: 1pt; }
+        .career { margin: 6pt 0 6pt; }
+        .career .row + .row { margin-top: 2pt; }
+        .contributions-label { margin-top: 8pt; }
+        .skills p { margin: 3pt 0; }
+        article { break-inside: avoid; }
+        button { margin-bottom: 1.5rem; padding: .65rem 1rem; border: 1px solid #3d563b; border-radius: .3rem; background: #3d563b; color: #fafaf8; font: inherit; cursor: pointer; }
+        :focus-visible { outline: 2px solid #3d563b; outline-offset: 3px; }
+        @media (max-width: 540px) { .row { flex-direction: column; gap: 0; } }
+        @media print { body { margin: 0; padding: 0; max-width: none; background: transparent; font-family: Arial, sans-serif; } button { display: none; } }
+    </style>
+</head>
+<body>
+    <button type="button" onclick="window.print()">Print or save as PDF</button>
+    <header>
+        <h1>Bryant Villarreal</h1>
+        <p class="headline">Software Engineer II &middot; Backend &amp; Platform Engineering</p>
+        <p class="contact"><a href="mailto:bryantavillarreal@gmail.com">bryantavillarreal@gmail.com</a> &middot; (305) 322-6885 &middot; Miami, FL</p>
+        <p class="contact"><a href="https://bryantvilla.com">bryantvilla.com</a> &middot; <a href="https://www.linkedin.com/in/bryant-villarreal/">linkedin.com/in/bryant-villarreal</a> &middot; <a href="https://github.com/bryantvilla">github.com/bryantvilla</a></p>
+    </header>
+    <main>
+        <section aria-labelledby="summary">
+            <h2 id="summary">Summary</h2>
+            <p>Software Engineer II building identity and access management (IAM) services at UKG with Java, Spring Boot, and Auth0. Experience in authentication security, enterprise single sign-on (SSO), and changes spanning services, Kafka events, and database migrations.</p>
+        </section>
+
+        <section aria-labelledby="experience">
+            <h2 id="experience">Professional Experience</h2>
+            <article>
+                <div class="row"><h3>UKG &middot; Identity &amp; Access Management</h3><span class="date">September 2022 &ndash; Present</span></div>
+                <div class="career" aria-label="Career progression at UKG">
+                    <div class="row"><strong>Software Engineer II</strong><span class="date">January 2025 &ndash; Present</span></div>
+                    <div class="row"><span>Associate Software Engineer</span><span class="date">May 2023 &ndash; December 2024</span></div>
+                    <div class="row"><span>Software Engineer Intern</span><span class="date">Joined September 2022</span></div>
+                </div>
+                <p class="contributions-label"><strong>Engineering contributions</strong></p>
+                <ul>
+                    <li><strong>Enterprise SSO:</strong> Contributed to SAML multi-certificate support spanning Auth0 integration, database migrations, and Kafka events, supporting certificate rotation without interrupting enterprise sign-in.</li>
+                    <li><strong>Certificate validation and rollout:</strong> Contributed to certificate authority (CA) validation, feature flags, and resilience handling in the SAML certificate workflow, addressing certificate trust and controlled feature rollout.</li>
+                    <li><strong>Authentication security:</strong> Contributed to security improvements for IP-based access controls in enterprise authentication flows, addressing request trust and enforcement of access policies.</li>
+                    <li><strong>Identity integration troubleshooting:</strong> Worked on mobile SSO login failures involving OAuth-provider deprecation and SAML redirect flows.</li>
+                    <li><strong>Backend development:</strong> Develop Java and Spring Boot applications for authentication, authorization, and user management, integrating with Auth0 as part of UKG's IAM platform.</li>
+                    <li><strong>Automated testing:</strong> Write unit tests with JUnit and Mockito for Java and Spring Boot applications.</li>
+                    <li><strong>Continuous integration and delivery (CI/CD):</strong> Use GitHub Actions and Docker to automate application builds, testing, and deployment.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="skills" aria-labelledby="skills">
+            <h2 id="skills">Technical Skills</h2>
+            <p><strong>Languages &amp; backend:</strong> Java, Python, C, Spring Boot, JPA, Hibernate</p>
+            <p><strong>Identity &amp; security:</strong> Auth0, SAML, single sign-on (SSO), authentication, authorization, certificate validation</p>
+            <p><strong>Data &amp; messaging:</strong> Kafka, database migrations, PostgreSQL, MySQL</p>
+            <p><strong>Testing &amp; delivery:</strong> JUnit, Mockito, GitHub Actions, CI/CD, Docker, Git, Gradle, Maven, Linux / Unix</p>
+            <p><strong>AI development tools:</strong> Codex, Claude Code</p>
+        </section>
+
+        <section class="education" aria-labelledby="education">
+            <h2 id="education">Education</h2>
+            <article>
+                <div class="row"><h3>Master of Science in Computer Science</h3><span class="date">December 2025</span></div>
+                <p class="detail">Florida International University</p>
+            </article>
+            <article>
+                <div class="row"><h3>Bachelor of Science in Computer Science</h3><span class="date">May 2022</span></div>
+                <p class="detail">Florida International University &middot; Magna cum laude &middot; GPA: 3.71</p>
+            </article>
+        </section>
+
+    </main>
+</body>
+</html>
