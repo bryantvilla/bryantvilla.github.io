@@ -582,6 +582,48 @@
         });
     });
 
+    const globeElement = document.getElementById('terminal-globe');
+    if (globeElement) {
+        const globeFrames = [
+            "   .-##...-.   \n (####......#) \n(#####........)\n(.............)\n(###..........)\n (###........) \n   '-.....-'   ",
+            "   .-...##-.   \n (##......###) \n(##..........#)\n(.............)\n(#............)\n (...........) \n   '-.....-'   ",
+            "   .-.####-.   \n (.....#####.) \n(........###..)\n(...........##)\n(...........##)\n (..........#) \n   '-.....-'   ",
+            "   .-#####-.   \n (..######...) \n(.....###.....)\n(........#####)\n(........####.)\n (.......###.) \n   '-.....-'   ",
+            "   .-###..-.   \n (####......#) \n(.###.......##)\n(....######...)\n(....#####....)\n (....###....) \n   '-.....-'   ",
+            "   .-#...#-.   \n (##.....####) \n(#.......#####)\n(.#####.....##)\n(.#####.....##)\n (.###.....##) \n   '-.....-'   ",
+            "   .-..###-.   \n (....#######) \n(....#######.#)\n(##......###..)\n(##......###..)\n (#......##..) \n   '-.....-'   ",
+            "   .-#####-.   \n (.######.###) \n(.#######.####)\n(....####.....)\n(....####.....)\n (...####....) \n   '-.....-'   ",
+            "   .-#####-.   \n (####.######) \n(####..#######)\n(.###.........)\n(.###........#)\n (.##.......#) \n   '-.....-'   ",
+            "   .-#####-.   \n (#.#########) \n(#.###########)\n(#............)\n(#........####)\n (#.......###) \n   '-.....-'   ",
+            "   .-#####-.   \n (##########.) \n(############.)\n(.............)\n(......####...)\n (.....####..) \n   '-.....-'   ",
+            "   .-####.-.   \n (########...) \n(#########....)\n(.............)\n(..#####......)\n (..####.....) \n   '-.....-'   "
+        ];
+        let currentGlobeFrame = 0;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let globeInterval = null;
+
+        function startGlobe() {
+            if (prefersReducedMotion.matches || globeInterval) return;
+            globeInterval = setInterval(() => {
+                currentGlobeFrame = (currentGlobeFrame + 1) % globeFrames.length;
+                globeElement.textContent = globeFrames[currentGlobeFrame];
+            }, 200);
+        }
+
+        function stopGlobe() {
+            if (globeInterval) {
+                clearInterval(globeInterval);
+                globeInterval = null;
+            }
+        }
+
+        startGlobe();
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stopGlobe();
+            else startGlobe();
+        });
+    }
+
     function updateClock() {
         const now = new Date();
         const clock = document.getElementById('system-clock');
