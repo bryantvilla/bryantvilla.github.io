@@ -1,189 +1,236 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-wallpaper="chrome">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="color-scheme" content="dark light">
-    <meta name="theme-color" content="#151711">
-    <title>Bryant Villarreal | Backend &amp; Platform Software Engineer</title>
-    <meta name="description" content="Bryant Villarreal, Software Engineer II at UKG. Backend engineering, identity and access management, authentication security, and enterprise SSO. M.S. in Computer Science, FIU.">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#cedae8">
+    <title>bryantOS | Bryant Villarreal, Software Engineer</title>
+    <meta name="description" content="A little nostalgia. A lot of engineering. Explore Bryant Villarreal's interactive desktop portfolio: backend systems, authentication security, and enterprise SSO at UKG.">
     <link rel="canonical" href="https://bryantvilla.com/">
     <meta property="og:url" content="https://bryantvilla.com/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Bryant Villarreal | Backend &amp; Platform Software Engineer">
-    <meta property="og:description" content="Building the systems behind secure access. Explore my engineering work in authentication security and enterprise SSO at UKG.">
+    <meta property="og:title" content="bryantOS | Bryant Villarreal, Software Engineer">
+    <meta property="og:description" content="A little nostalgia. A lot of engineering. Step inside my interactive desktop portfolio.">
     <meta property="og:image" content="https://bryantvilla.com/assets/img/entrance.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Bryant Villarreal: backend engineering, identity, and enterprise SSO">
+    <meta property="og:image:alt" content="Bryant's chrome desktop with an interactive portfolio terminal">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Bryant Villarreal | Backend &amp; Platform Software Engineer">
-    <meta name="twitter:description" content="Building the systems behind secure access. Backend engineering, identity, and enterprise SSO at UKG.">
+    <meta name="twitter:title" content="bryantOS | Bryant Villarreal, Software Engineer">
+    <meta name="twitter:description" content="A little nostalgia. A lot of engineering. Step inside my interactive desktop portfolio.">
     <meta name="twitter:image" content="https://bryantvilla.com/assets/img/entrance.png">
-    <meta name="twitter:image:alt" content="Bryant Villarreal: backend engineering, identity, and enterprise SSO">
+    <meta name="twitter:image:alt" content="Bryant's chrome desktop with an interactive portfolio terminal">
     <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-    <link rel="preload" href="assets/fonts/manrope-variable.ttf" as="font" type="font/ttf" crossorigin>
-    <script>
-        try {
-            let theme = localStorage.getItem('portfolio-theme');
-            if (!theme) {
-                theme = localStorage.getItem('selected-theme');
-                if (theme && localStorage.getItem('selected-icon')) theme = theme === 'dark' ? 'light' : 'dark';
-            }
-            if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
-        } catch {}
-    </script>
     <link rel="stylesheet" href="assets/css/styles.css">
     <script src="assets/js/main.js" defer></script>
 </head>
 <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <a class="skip-link" href="#terminal" data-open="terminal">Skip to terminal</a>
+    <svg class="svg-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
-            <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
-            <symbol id="icon-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
-            <symbol id="icon-key" viewBox="0 0 24 24"><circle cx="15.5" cy="8.5" r="5.5"/><path d="m11.5 12.5-8 8H1v-3l7.5-7.5M16 7h.01"/></symbol>
-            <symbol id="icon-person" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2H4Z"/></symbol>
-            <symbol id="icon-document" viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5V3Zm9 0v6h5M9 13h6m-6 4h6"/></symbol>
-            <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
-            <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.5 14A9 9 0 0 1 10 3.5 9 9 0 1 0 20.5 14Z"/></symbol>
+            <linearGradient id="icon-metal" x2=".25" y2="1"><stop stop-color="#fbfdff"/><stop offset=".44" stop-color="#b5c4d7"/><stop offset=".5" stop-color="#6a7c99"/><stop offset=".57" stop-color="#edf5ff"/><stop offset="1" stop-color="#94a4bb"/></linearGradient>
+            <linearGradient id="icon-blue" x2=".3" y2="1"><stop stop-color="#91d9fc"/><stop offset=".45" stop-color="#459aeb"/><stop offset="1" stop-color="#1756ac"/></linearGradient>
+            <linearGradient id="icon-folder" x2="0" y2="1"><stop stop-color="#fff3a2"/><stop offset=".4" stop-color="#ffd973"/><stop offset="1" stop-color="#e6a843"/></linearGradient>
+            <linearGradient id="icon-paper" x2=".7" y2="1"><stop stop-color="#fcfeff"/><stop offset="1" stop-color="#ccdef1"/></linearGradient>
+            <radialGradient id="icon-disc" cx=".3" cy=".25"><stop stop-color="#fafcff"/><stop offset=".34" stop-color="#c4dfef"/><stop offset=".55" stop-color="#8c93ae"/><stop offset=".72" stop-color="#edf1ff"/><stop offset="1" stop-color="#8cabc1"/></radialGradient>
+            <symbol id="icon-computer" viewBox="0 0 48 48">
+                <path d="M17 34h13l2 7H14z" fill="url(#icon-metal)" stroke="#61748e"/>
+                <path d="m6 3 35 1 2 30-39 1z" fill="url(#icon-metal)" stroke="#526986"/>
+                <path d="M9 7h28l1 22H8z" fill="url(#icon-blue)" stroke="#465c78"/>
+                <path d="M9 23q12-12 28-2v7H9z" fill="#8bb967"/><path d="M9 25q14-8 28-1v4H9z" fill="#62954e"/>
+                <path d="M11 9h23" stroke="#d2eeff" opacity=".7"/><path d="m12 41 22-1 6 5H8z" fill="url(#icon-metal)" stroke="#61748e"/>
+                <path d="M33 32h4" stroke="#a0f496" stroke-width="2"/>
+            </symbol>
+            <symbol id="icon-folder-shape" viewBox="0 0 48 48">
+                <path d="M4 12V7h15l5 5h18v29H4z" fill="#d9aa53" stroke="#9b742e"/>
+                <path d="M8 15V9h15l3 4h13v24H8z" fill="url(#icon-paper)" stroke="#a1adbb"/>
+                <path d="m4 17 41-2-5 27H3z" fill="url(#icon-folder)" stroke="#a78038"/>
+                <path d="m5 19 37-2" fill="none" stroke="#fff9ce"/>
+            </symbol>
+            <symbol id="icon-terminal" viewBox="0 0 48 48">
+                <rect x="3" y="5" width="42" height="36" rx="2" fill="url(#icon-metal)" stroke="#667997"/>
+                <path d="M5 7h38v6H5z" fill="url(#icon-blue)"/><path d="M6 15h36v22H6z" fill="#122334"/>
+                <path d="m11 21 5 4-5 4m10 0h8" fill="none" stroke="#d8edff" stroke-width="2.5"/>
+                <path d="M37 10h4" stroke="#e5f4fc"/>
+            </symbol>
+            <symbol id="icon-document" viewBox="0 0 48 48">
+                <path d="M9 3h22l9 9v33H9z" fill="url(#icon-paper)" stroke="#7286a1"/>
+                <path d="M31 3v10h9" fill="#9bb9de" stroke="#7286a1"/>
+                <path d="M15 20h18M15 25h18M15 30h18M15 35h12" stroke="#7c9bbf" stroke-width="2"/>
+                <path d="M12 4v39" stroke="#f6fbff"/>
+            </symbol>
+            <symbol id="icon-disc-shape" viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="21" fill="url(#icon-disc)" stroke="#7486a0"/>
+                <path d="m10 10 11 11M27 27l12 11" stroke="#f5e2f9" stroke-width="6" opacity=".6"/>
+                <path d="m7 16 14 7m7 3 14 7" stroke="#e3fffe" stroke-width="4" opacity=".8"/>
+                <circle cx="24" cy="24" r="7" fill="#a9bed1" stroke="#eaf4fc"/><circle cx="24" cy="24" r="3" fill="#e8f1f9" stroke="#8a9aad"/>
+            </symbol>
+            <symbol id="icon-mail" viewBox="0 0 48 48">
+                <path d="M3 12h41v28H3z" fill="url(#icon-paper)" stroke="#617c9e"/>
+                <path d="m4 38 16-15h8l15 15" fill="url(#icon-blue)" stroke="#6386b1"/>
+                <path d="m3 12 21 18 20-18" fill="url(#icon-paper)" stroke="#617c9e"/>
+                <path d="m5 13 19 14 18-14" fill="none" stroke="#f8fcff"/>
+            </symbol>
+            <symbol id="icon-linkedin" viewBox="0 0 48 48">
+                <rect x="4" y="3" width="40" height="41" rx="5" fill="url(#icon-metal)" stroke="#61748e"/>
+                <rect x="7" y="6" width="34" height="34" rx="3" fill="url(#icon-blue)" stroke="#3c74a9"/>
+                <path d="M10 8h28" stroke="#c9edff" opacity=".8"/>
+                <circle cx="15" cy="16" r="2.5" fill="#f5faff"/>
+                <path d="M12.5 21h5v14h-5zM21 21h5v2c1-2 3-2.5 4.5-2.5 4 0 5.5 2.5 5.5 6V35h-5v-8c0-1.5-.5-2.5-2-2.5s-3 1-3 3V35h-5z" fill="#f5faff"/>
+            </symbol>
+            <symbol id="icon-github" viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="21" fill="url(#icon-metal)" stroke="#61748e"/>
+                <circle cx="24" cy="23" r="17.5" fill="#263b54" stroke="#e3effb"/>
+                <path d="M14 18c-1-3-.5-6 .5-7 3 0 5 2 6 3a20 20 0 0 1 7 0c1-1 3-3 6-3 1 2 1.5 4 .5 7 2 2 3 4 3 7 0 6-4 8-10 8 2 1 2 3 2 6H19c0-3 0-5 2-6-6 0-10-2-10-8 0-3 1-5 3-7Z" fill="#eaf3fc"/>
+                <path d="M20 36c-7 3-8-5-12-4" fill="none" stroke="#eaf3fc" stroke-width="3" stroke-linecap="round"/>
+                <path d="M11 10c6-5 17-6 25 0" fill="none" stroke="#f5faff" opacity=".6"/>
+            </symbol>
+            <symbol id="icon-instagram" viewBox="0 0 48 48">
+                <rect x="4" y="5" width="40" height="38" rx="7" fill="url(#icon-metal)" stroke="#61748e"/>
+                <path d="M11 8h26a4 4 0 0 1 4 4v7H7v-7a4 4 0 0 1 4-4Z" fill="#8c769d"/>
+                <path d="M11 8v11" stroke="#e5a59d" stroke-width="3"/><path d="M14 8v11" stroke="#e9d7a2" stroke-width="3"/><path d="M17 8v11" stroke="#94bdad" stroke-width="3"/><path d="M20 8v11" stroke="#89b7d7" stroke-width="3"/>
+                <rect x="32" y="10" width="6" height="5" rx="1" fill="#273e57" stroke="#d9e8f5"/>
+                <circle cx="24" cy="26" r="12" fill="url(#icon-metal)" stroke="#71869e"/>
+                <circle cx="24" cy="26" r="8.5" fill="url(#icon-blue)" stroke="#324e72" stroke-width="2"/>
+                <circle cx="24" cy="26" r="4" fill="#273e57"/><circle cx="21" cy="23" r="2" fill="#dcf4ff"/>
+                <path d="M9 39h30" stroke="#f5faff" opacity=".8"/>
+            </symbol>
+            <symbol id="icon-star" viewBox="0 0 48 48"><path d="m24 2 5 17 17 5-17 5-5 17-5-17L2 24l17-5z" fill="url(#icon-metal)" stroke="#7188a5"/></symbol>
+            <symbol id="icon-grid" viewBox="0 0 24 24"><path d="M3 4h8v7H3zm10 0h8v7h-8zM3 13h8v7H3zm10 0h8v7h-8z" fill="currentColor"/></symbol>
         </defs>
     </svg>
 
-    <header class="site-header" id="header">
-        <div class="header-inner container">
-            <a href="#home" class="wordmark">Bryant Villarreal<span aria-hidden="true">.</span></a>
-            <nav class="site-nav" aria-label="Main navigation">
-                <a class="nav-link" href="#work">Work</a>
-                <a class="nav-link" href="#about">About</a>
-                <a class="nav-link" href="#contact">Contact</a>
-                <a class="nav-resume" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Resume <span aria-hidden="true">↗</span></a>
-            </nav>
-            <button class="theme-toggle" id="theme-button" type="button" aria-label="Switch to light theme" hidden>
-                <svg class="icon theme-sun" aria-hidden="true"><use href="#icon-sun"></use></svg>
-                <svg class="icon theme-moon" aria-hidden="true"><use href="#icon-moon"></use></svg>
-            </button>
-        </div>
-    </header>
+    <main class="desktop" id="desktop" aria-label="Bryant's portfolio desktop">
+        <div class="desktop-wallpaper" aria-hidden="true"></div>
+        <header class="desktop-header">
+            <a class="brand" href="#terminal" data-open="terminal" aria-label="bryantOS home terminal">
+                <svg class="chrome-wordmark" viewBox="0 0 410 108" role="img" aria-labelledby="wordmark-title">
+                    <title id="wordmark-title">bryantOS</title>
+                    <defs>
+                        <linearGradient id="wordmark-chrome" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fbfdff"/><stop offset=".27" stop-color="#e0eaf4"/><stop offset=".46" stop-color="#71849f"/><stop offset=".49" stop-color="#d8e6f5"/><stop offset=".53" stop-color="#f7fcff"/><stop offset=".59" stop-color="#7b8fa9"/><stop offset=".83" stop-color="#d7e5f4"/><stop offset="1" stop-color="#9caec3"/></linearGradient>
+                    </defs>
+                    <text x="10" y="81" class="wordmark-extrusion">bryant<tspan class="wordmark-os">OS</tspan></text>
+                    <text x="8" y="77" class="wordmark-face" fill="url(#wordmark-chrome)">bryant<tspan class="wordmark-os">OS</tspan></text>
+                    <path d="m377 4 3 10 10 3-10 3-3 10-3-10-10-3 10-3z" fill="#f5faff" stroke="#8b9fb6"/>
+                </svg>
+                <span class="brand-caption">PERSONAL PORTFOLIO <span>CHROME EDITION</span></span>
+            </a>
+            <div class="desktop-meta"><span class="online-label"><i></i> All systems live.</span><span>Built for the web. Inspired by another era.</span></div>
+        </header>
 
-    <main id="main">
-        <section class="hero container" id="home" aria-labelledby="hero-title">
-            <div class="hero-copy">
-                <p class="eyebrow hero-eyebrow">Backend &amp; platform engineering</p>
-                <h1 id="hero-title"><span>Building the</span> <span>systems behind</span> <span>secure access.</span></h1>
-                <p class="hero-description">I'm Bryant, a Software Engineer II at UKG working in identity and access management. My focus is backend services, authentication security, and enterprise SSO.</p>
-                <div class="hero-actions">
-                    <a href="#work" class="button button-primary">Explore my work <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
-                    <a href="#contact" class="text-link">Get in touch <span aria-hidden="true">↗</span></a>
+        <nav class="desktop-shortcuts" aria-label="Desktop shortcuts">
+            <a href="#about" data-open="about" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-computer"/></svg><span>About me</span></a>
+            <a href="#work" data-open="work" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span>My work</span></a>
+            <a href="#skills" data-open="skills" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-disc-shape"/></svg><span>My toolkit</span></a>
+            <a href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Resume.pdf</span></a>
+            <a href="#contact" data-open="contact" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-mail"/></svg><span>Contact me</span></a>
+            <a href="https://www.linkedin.com/in/bryant-villarreal/" target="_blank" rel="noopener noreferrer" class="desktop-icon" aria-label="LinkedIn (opens in a new tab)"><svg aria-hidden="true"><use href="#icon-linkedin"/></svg><span>LinkedIn</span></a>
+            <a href="https://github.com/bryantvilla" target="_blank" rel="noopener noreferrer" class="desktop-icon" aria-label="GitHub (opens in a new tab)"><svg aria-hidden="true"><use href="#icon-github"/></svg><span>GitHub</span></a>
+            <a href="https://www.instagram.com/bryant.pdf/" target="_blank" rel="noopener noreferrer" class="desktop-icon" aria-label="Instagram (opens in a new tab)"><svg aria-hidden="true"><use href="#icon-instagram"/></svg><span>Instagram</span></a>
+        </nav>
+
+        <section class="os-window terminal-window" id="terminal" data-window="terminal" data-title="Terminal" data-icon="terminal" aria-labelledby="terminal-window-title">
+            <div class="title-bar"><h2 id="terminal-window-title"><svg aria-hidden="true"><use href="#icon-terminal"/></svg> C:&#92;Bryant&#92;portfolio.exe</h2><div class="window-controls"></div></div>
+            <nav class="window-menu terminal-menu" aria-label="Terminal shortcuts"><a href="#about" data-open="about">About</a><a href="#work" data-open="work">Work</a><a href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Resume</a><button type="button" data-command="help" class="js-only">Help</button><span class="menu-right">portfolio.exe</span></nav>
+            <div class="terminal-screen">
+                <div class="terminal-transcript" id="terminal-screen" tabindex="0" aria-label="Terminal output and introduction">
+                <div class="terminal-welcome" id="terminal-welcome">
+                    <div class="terminal-system-line"><span>bryantOS [Version 2.0.26]</span><span class="terminal-live"><i></i> Session active</span></div>
+                    <p class="boot-line"><span>✓</span> Last login: Sun Sep 13 21:27:28 on ttys004</p>
+                    <div class="terminal-intro">
+                        <p class="command-echo"><span>C:&#92;Bryant&gt;</span> whoami</p>
+                        <div class="intro-heading"><h1>Bryant<br>Villarreal<span class="heading-cursor" aria-hidden="true">_</span></h1><span class="terminal-asterisk" aria-hidden="true">✳</span></div>
+                        <p class="terminal-role">Software Engineer II <span>@ UKG</span></p>
+                        <p class="terminal-bio">I build the systems behind secure access.<br>Backend engineering, identity &amp; a healthy curiosity<br class="desktop-break"> for how things work.</p>
+                    </div>
+                    <div class="terminal-guidance"><p>Welcome to my corner of the internet.</p><p>Type <button type="button" data-command="help" class="inline-command js-only">help</button><span class="no-js-only">a command</span> to look around, or take a shortcut:</p></div>
+                    <div class="command-shortcuts"><a href="#work" data-open="work"><span aria-hidden="true">↗</span> explore work</a><a href="#about" data-open="about"><span aria-hidden="true">☺</span> about me</a><a href="#contact" data-open="contact"><span aria-hidden="true">✉</span> say hello</a></div>
                 </div>
-                <p class="hero-tenure">UKG <span aria-hidden="true">/</span> <time datetime="2022-09">September 2022</time> &ndash; present</p>
+                <div id="terminal-output" class="terminal-output" role="log" aria-label="Command results" aria-live="polite" aria-relevant="additions"></div>
+                </div>
+                <form class="terminal-form js-only" id="terminal-form" autocomplete="off">
+                    <label for="terminal-input"><span class="prompt-user">visitor</span><span class="prompt-location">@bryantOS</span><span class="prompt-symbol">:~$</span></label>
+                    <input id="terminal-input" name="command" type="text" maxlength="240" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Terminal command" aria-describedby="terminal-hint" placeholder="Type a command..." enterkeyhint="send">
+                    <button type="submit" class="terminal-submit" aria-label="Run command">↵</button>
+                </form>
             </div>
-
-            <figure class="system-figure" aria-labelledby="system-caption">
-                <div class="figure-heading"><span class="eyebrow">System focus</span><span class="figure-index" aria-hidden="true">01 / IAM</span></div>
-                <div class="system-map" aria-hidden="true">
-                    <div class="identity-data">
-                        <svg viewBox="0 0 64 64" class="database-icon"><ellipse cx="32" cy="12" rx="22" ry="8"/><path d="M10 12v36c0 11 44 11 44 0V12M10 24c0 11 44 11 44 0M10 36c0 11 44 11 44 0"/></svg>
-                        <span>Users &amp; policies</span>
-                    </div>
-                    <div class="vertical-connector"></div>
-                    <div class="system-node request-node"><svg class="icon" aria-hidden="true"><use href="#icon-person"></use></svg><span>Request</span></div>
-                    <svg class="icon flow-arrow arrow-one" aria-hidden="true"><use href="#icon-arrow"></use></svg>
-                    <div class="system-node identity-node"><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg><span>Identity</span></div>
-                    <svg class="icon flow-arrow arrow-two" aria-hidden="true"><use href="#icon-arrow"></use></svg>
-                    <div class="system-node access-node"><svg class="icon" aria-hidden="true"><use href="#icon-key"></use></svg><span>Access</span></div>
-                    <svg class="system-branches" viewBox="0 0 400 52" preserveAspectRatio="none"><path d="M200 0v26M100 52V26h200v26"/></svg>
-                    <div class="system-capabilities"><span>Authentication</span><span>Authorization</span></div>
-                </div>
-                <figcaption id="system-caption"><span>Identity &amp; access management</span><span>Conceptual flow</span></figcaption>
-            </figure>
+            <div class="window-status terminal-status"><span><i class="status-led"></i> Ready.</span><span id="terminal-hint">Tab autocomplete <span class="status-separator">|</span> ↑↓ history</span></div>
         </section>
 
-        <section class="work section-border" id="work" aria-labelledby="work-title">
-            <div class="container">
-                <div class="section-heading">
-                    <div><p class="eyebrow">Professional work / UKG</p><h2 id="work-title">Engineering trust.</h2></div>
-                    <p>Selected contributions to the authentication and identity systems that enterprise applications depend on.</p>
-                </div>
-
-                <details class="work-item" id="authentication-security">
-                    <summary>
-                        <span class="work-symbol" aria-hidden="true"><svg class="icon"><use href="#icon-shield"></use></svg></span>
-                        <span class="work-overview"><span class="work-category">Authentication security</span><span class="work-title">Strengthening access controls</span><span class="work-description">Security improvements around IP-based access controls in enterprise authentication flows.</span></span>
-                        <span class="work-technologies">Authentication<br>Access policies</span>
-                        <span class="disclosure-action"><span class="read-label"><span class="when-closed">Read more</span><span class="when-open">Close details</span></span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></span>
-                    </summary>
-                    <div class="work-detail">
-                        <div><h3>The problem</h3><p>IP-based access policies depend on trustworthy request context. The authentication layer needs to apply those policies consistently.</p></div>
-                        <div><h3>My contribution</h3><p>At UKG, I contributed to security improvements around IP-based access controls in enterprise authentication flows, with a focus on the boundary between incoming requests and access decisions.</p></div>
-                        <p class="work-takeaway"><span>Engineering focus</span> Request trust, policy enforcement, and authentication security.</p>
-                    </div>
-                </details>
-
-                <details class="work-item" id="enterprise-sso">
-                    <summary>
-                        <span class="work-symbol" aria-hidden="true"><svg class="icon"><use href="#icon-document"></use></svg></span>
-                        <span class="work-overview"><span class="work-category">Enterprise single sign-on</span><span class="work-title">Making certificate rotation smoother</span><span class="work-description">SAML multi-certificate support and coordinated service changes for enterprise SSO.</span></span>
-                        <span class="work-technologies">SAML / Auth0<br>Kafka / Java</span>
-                        <span class="disclosure-action"><span class="read-label"><span class="when-closed">Read more</span><span class="when-open">Close details</span></span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></span>
-                    </summary>
-                    <div class="work-detail">
-                        <div><h3>The problem</h3><p>Enterprise SSO needs to keep working while certificates change. Supporting certificate overlap also requires validation and coordinated updates across services.</p></div>
-                        <div><h3>My contribution</h3><p>I contributed to SAML multi-certificate support across Auth0 integration, database migrations, and Kafka events. The work included CA-signed certificate validation and resilience handling to support uninterrupted certificate rotation.</p></div>
-                        <p class="work-takeaway"><span>Engineering focus</span> Service coordination, certificate validation, and continuity during change.</p>
-                    </div>
-                </details>
-                <div class="work-footer"><p>Software Engineer II <span aria-hidden="true">·</span> Identity &amp; Access Management <span aria-hidden="true">·</span> UKG</p><a class="text-link" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Full experience in my resume <span aria-hidden="true">↗</span></a></div>
-            </div>
+        <section class="os-window readme-window" id="readme" data-window="readme" data-title="Read me" data-icon="document" aria-labelledby="readme-window-title">
+            <div class="title-bar"><h2 id="readme-window-title"><svg aria-hidden="true"><use href="#icon-document"/></svg> readme.txt</h2><div class="window-controls"></div></div>
+            <nav class="window-menu" aria-label="Read me shortcuts"><a href="#about" data-open="about">About</a><a href="#work" data-open="work">Work</a><a href="#contact" data-open="contact">Contact</a></nav>
+            <div class="readme-body"><span class="readme-stamp">a note from the developer</span><h2>Hey, you found<br>my desktop<span>!</span></h2><p>I'm Bryant. I write backend code, untangle systems, and miss the early internet.</p><p>Make yourself at home.<br>There's a little of me in every window.</p><a href="#work" data-open="work" class="readme-link">Start with my work <span aria-hidden="true">↗</span></a><div class="readme-signature"><span>Enjoy your stay.</span><svg aria-hidden="true"><use href="#icon-star"/></svg></div></div>
+            <div class="window-status"><span>1 note, just for you</span><span>UTF-8</span></div>
         </section>
 
-        <section class="toolkit container section-spacing" id="skills" aria-labelledby="skills-title">
-            <div class="toolkit-intro"><p class="eyebrow">Tools &amp; practice</p><h2 id="skills-title">From service code<br>to delivery.</h2><p>My work spans backend implementation, automated testing, and the systems that support a release.</p></div>
-            <dl class="toolkit-list">
-                <div><dt>Backend &amp; identity</dt><dd>Java, Spring Boot, Auth0, SAML / SSO, Kafka, JPA, Hibernate</dd></div>
-                <div><dt>Testing &amp; delivery</dt><dd>JUnit, Mockito, GitHub Actions, Docker, Git, Gradle, Maven</dd></div>
-                <div><dt>AI in my workflow</dt><dd>Codex and Claude Code are part of my day-to-day software development workflow.</dd></div>
-                <div><dt>Additional background</dt><dd>Python, C, PostgreSQL, MySQL, Linux / Unix, Agile &amp; Scrum</dd></div>
-            </dl>
+        <section class="os-window content-window" id="about" data-window="about" data-title="About me" data-icon="computer" aria-labelledby="about-window-title">
+            <div class="title-bar"><h2 id="about-window-title"><svg aria-hidden="true"><use href="#icon-computer"/></svg> About Bryant</h2><div class="window-controls"></div></div>
+            <div class="explorer-address"><span>Address</span><span>C:&#92;Bryant&#92;About me</span></div>
+            <div class="window-body">
+                <p class="section-label">THE PERSON BEHIND THE PROMPT</p>
+                <div class="about-intro"><div><h2>A foundation in CS.<br>A focus on real systems.</h2><p>I'm Bryant Villarreal, a Software Engineer II at UKG. Identity and access management brings together the parts of engineering I care about: security, backend systems, and the details that make them work together.</p></div><img src="assets/img/about.jpg" width="1000" height="726" alt="Bryant Villarreal" loading="lazy"></div>
+                <h3>Experience.log</h3>
+                <ol class="experience-list"><li><div><strong>Software Engineer II</strong><span>UKG · Identity &amp; Access Management</span></div><span>Jan 2025 → present</span></li><li><div><strong>Associate Software Engineer</strong><span>UKG</span></div><span>May 2023 → Dec 2024</span></li><li><div><strong>Joined UKG</strong><span>The beginning of my professional journey</span></div><span>Sep 2022</span></li></ol>
+                <h3>Education.txt</h3>
+                <dl class="education-list"><div><dt>M.S. in Computer Science</dt><dd>Florida International University · December 2025</dd></div><div><dt>B.S. in Computer Science</dt><dd>Florida International University · May 2022<br>Magna cum laude · GPA 3.71</dd></div></dl>
+                <p>My academic background includes software security, computer networking, and operating systems. This desktop probably gives that last one away.</p>
+                <a class="xp-button" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Open my resume <span aria-hidden="true">↗</span></a>
+            </div><div class="window-status"><span>Bryant Villarreal</span><span>Always learning.</span></div>
         </section>
 
-        <section class="about section-border" id="about" aria-labelledby="about-title">
-            <div class="container about-layout">
-                <div class="portrait-column"><img class="portrait" src="assets/img/about.jpg" width="1000" height="726" alt="Bryant Villarreal" loading="lazy"><p class="portrait-caption">Bryant Villarreal<br><span>Software engineer. Always learning.</span></p></div>
-                <div class="about-copy">
-                    <p class="eyebrow">The person behind the work</p><h2 id="about-title">A foundation in CS.<br>A focus on real systems.</h2>
-                    <p>I'm a Software Engineer II at UKG, where I've worked since September 2022. I became an Associate Software Engineer in May 2023 and was promoted to Software Engineer II in January 2025. Identity and access management brings together the parts of software engineering I care about: security, backend systems, and the details that make them work together.</p>
-                    <p>I completed my master's in Computer Science at Florida International University in December 2025. My academic background includes software security, computer networking, and operating systems.</p>
-                    <div class="education" id="education" aria-labelledby="education-title">
-                        <h3 class="eyebrow" id="education-title">Education / Florida International University</h3>
-                        <div class="education-item"><div><h4>M.S. in Computer Science</h4><p>Florida International University</p></div><time datetime="2025-12">December 2025</time></div>
-                        <div class="education-item"><div><h4>B.S. in Computer Science</h4><p>Magna cum laude <span aria-hidden="true">·</span> GPA 3.71</p></div><time datetime="2022-05">May 2022</time></div>
-                    </div>
-                    <details class="archive" id="undergraduate-work">
-                        <summary><span>Undergraduate project archive</span><span class="archive-sign" aria-hidden="true">+</span></summary>
-                        <p>Projects from my undergraduate years at FIU, completed before joining UKG.</p>
-                        <ul>
-                            <li><a href="https://github.com/bryantvilla/sorting_visualizer" target="_blank" rel="noopener noreferrer">Sorting Algorithm Visualizer <span aria-hidden="true">↗</span></a></li>
-                            <li><a href="https://github.com/bryantvilla/pwgen" target="_blank" rel="noopener noreferrer">Password Generator <span aria-hidden="true">↗</span></a></li>
-                            <li><a href="https://github.com/bryantvilla/flappyai" target="_blank" rel="noopener noreferrer">AI Playing Flappy Bird <span aria-hidden="true">↗</span></a></li>
-                            <li><a href="https://github.com/bryantvilla/mcu-twitter-bot" target="_blank" rel="noopener noreferrer">Marvel Twitter Bot <span aria-hidden="true">↗</span></a></li>
-                        </ul>
-                    </details>
-                </div>
-            </div>
+        <section class="os-window content-window" id="work" data-window="work" data-title="My work" data-icon="folder-shape" aria-labelledby="work-window-title">
+            <div class="title-bar"><h2 id="work-window-title"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg> My work</h2><div class="window-controls"></div></div>
+            <div class="explorer-address"><span>Address</span><span>C:&#92;Bryant&#92;Work&#92;UKG</span></div>
+            <div class="window-body">
+                <p class="section-label">BACKEND &amp; PLATFORM ENGINEERING</p><h2>Engineering trust.</h2><p>Selected contributions to the authentication and identity systems that enterprise applications depend on.</p>
+                <details class="work-item" id="authentication-security"><summary><span class="file-number">01</span><span><small>Authentication security</small><strong>Strengthening access controls</strong><span>Request trust · Access policies</span></span><span class="expand-sign" aria-hidden="true">+</span></summary><div class="work-detail"><h3>The problem</h3><p>IP-based access policies depend on trustworthy request context. The authentication layer needs to apply those policies consistently.</p><h3>My contribution</h3><p>At UKG, I contributed to security improvements around IP-based access controls in enterprise authentication flows, with a focus on the boundary between incoming requests and access decisions.</p><p class="work-focus"><strong>Engineering focus:</strong> Request trust, policy enforcement, and authentication security.</p></div></details>
+                <details class="work-item" id="enterprise-sso"><summary><span class="file-number">02</span><span><small>Enterprise single sign-on</small><strong>Making certificate rotation smoother</strong><span>SAML · Auth0 · Kafka · Java</span></span><span class="expand-sign" aria-hidden="true">+</span></summary><div class="work-detail"><h3>The problem</h3><p>Enterprise SSO needs to keep working while certificates change. Supporting certificate overlap also requires validation and coordinated updates across services.</p><h3>My contribution</h3><p>I contributed to SAML multi-certificate support across Auth0 integration, database migrations, and Kafka events. The work included CA-signed certificate validation and resilience handling to support uninterrupted certificate rotation.</p><p class="work-focus"><strong>Engineering focus:</strong> Service coordination, certificate validation, and continuity during change.</p></div></details>
+                <div class="section-actions"><a class="xp-button" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Full experience ↗</a><a href="#archive" data-open="archive" class="plain-link">Open undergraduate archive →</a></div>
+            </div><div class="window-status"><span>2 selected contributions</span><span>UKG · 2022 → present</span></div>
         </section>
 
-        <section class="contact container section-spacing" id="contact" aria-labelledby="contact-title">
-            <div class="contact-copy"><p class="eyebrow">What comes next</p><h2 id="contact-title">Let's talk about<br>what's next.</h2><p>I'm interested in backend and platform engineering roles on teams building AI products and large-scale systems.</p><a class="contact-email text-link" href="mailto:bryantavillarreal@gmail.com">bryantavillarreal@gmail.com <span aria-hidden="true">↗</span></a><div class="social-links"><a class="text-link" href="https://www.linkedin.com/in/bryant-villarreal/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/bryantvilla" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div>
-            <form name="portfolio_contact" method="POST" action="https://formspree.io/f/mvolejnv" class="contact-form" aria-label="Send Bryant a message">
-                <div class="form-heading"><h3>Send a message</h3><p>All fields are required.</p></div>
-                <div class="form-row"><div class="form-field"><label for="name">Name</label><input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required></div><div class="form-field"><label for="email">Email</label><input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required></div></div>
-                <div class="form-field"><label for="message-input">Message</label><textarea name="message" id="message-input" rows="4" placeholder="Tell me what you're working on." required></textarea></div>
-                <button type="submit" class="button button-primary">Send message <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
-            </form>
+        <section class="os-window content-window" id="skills" data-window="skills" data-title="My toolkit" data-icon="disc-shape" aria-labelledby="skills-window-title">
+            <div class="title-bar"><h2 id="skills-window-title"><svg aria-hidden="true"><use href="#icon-disc-shape"/></svg> My toolkit</h2><div class="window-controls"></div></div>
+            <div class="explorer-address"><span>Address</span><span>C:&#92;Bryant&#92;Toolkit</span></div>
+            <div class="window-body"><p class="section-label">TOOLS &amp; PRACTICE</p><h2>From service code<br>to delivery.</h2><p>My work spans backend implementation, automated testing, and the systems that support a release.</p>
+                <dl class="toolkit-list"><div><dt><span>01</span> Backend &amp; identity</dt><dd>Java, Spring Boot, Auth0, SAML / SSO, Kafka, JPA, Hibernate</dd></div><div><dt><span>02</span> Testing &amp; delivery</dt><dd>JUnit, Mockito, GitHub Actions, Docker, Git, Gradle, Maven</dd></div><div><dt><span>03</span> AI in my workflow</dt><dd>Codex and Claude Code are part of my day-to-day software development workflow.</dd></div><div><dt><span>04</span> Additional background</dt><dd>Python, C, PostgreSQL, MySQL, Linux / Unix, Agile &amp; Scrum</dd></div></dl>
+            </div><div class="window-status"><span>Tools I work with</span><span>Learning never stops.</span></div>
         </section>
+
+        <section class="os-window content-window" id="archive" data-window="archive" data-title="Project archive" data-icon="folder-shape" aria-labelledby="archive-window-title">
+            <div class="title-bar"><h2 id="archive-window-title"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg> Undergraduate project archive</h2><div class="window-controls"></div></div>
+            <div class="explorer-address"><span>Address</span><span>C:&#92;Bryant&#92;Work&#92;Archive</span></div>
+            <div class="window-body"><p class="section-label">THE EARLY BUILDS</p><h2>From the archives.</h2><p>Projects from my undergraduate years at Florida International University, completed before joining UKG.</p>
+                <ul class="project-files"><li><a href="https://github.com/bryantvilla/sorting_visualizer" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>Sorting Algorithm Visualizer</strong><small>sorting_visualizer</small></span><span aria-hidden="true">↗</span></a></li><li><a href="https://github.com/bryantvilla/pwgen" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>Password Generator</strong><small>pwgen</small></span><span aria-hidden="true">↗</span></a></li><li><a href="https://github.com/bryantvilla/flappyai" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>AI Playing Flappy Bird</strong><small>flappyai</small></span><span aria-hidden="true">↗</span></a></li><li><a href="https://github.com/bryantvilla/mcu-twitter-bot" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>Marvel Twitter Bot</strong><small>mcu-twitter-bot</small></span><span aria-hidden="true">↗</span></a></li></ul>
+                <a href="#work" data-open="work" class="plain-link">← Back to professional work</a>
+            </div><div class="window-status"><span>4 projects</span><span>Undergraduate work · FIU</span></div>
+        </section>
+
+        <section class="os-window content-window contact-window" id="contact" data-window="contact" data-title="Contact me" data-icon="mail" aria-labelledby="contact-window-title">
+            <div class="title-bar"><h2 id="contact-window-title"><svg aria-hidden="true"><use href="#icon-mail"/></svg> New message · Let's talk</h2><div class="window-controls"></div></div>
+            <div class="window-body"><p class="section-label">MY INBOX IS OPEN</p><h2>Let's talk about<br>what's next.</h2><p>I'm interested in backend and platform engineering roles on teams building AI products and large-scale systems.</p>
+                <div class="contact-links"><a href="mailto:bryantavillarreal@gmail.com">bryantavillarreal@gmail.com ↗</a><div><a href="https://www.linkedin.com/in/bryant-villarreal/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/bryantvilla" target="_blank" rel="noopener noreferrer">GitHub ↗</a><button type="button" id="copy-email" class="js-only">Copy email</button></div></div>
+                <form name="portfolio_contact" method="POST" action="https://formspree.io/f/mvolejnv" class="contact-form" aria-label="Send Bryant a message"><p class="form-note">Send a message. All fields are required.</p><div class="form-row"><div class="form-field"><label for="name">From</label><input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required></div><div class="form-field"><label for="email">Your email</label><input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required></div></div><div class="form-field"><label for="message-input">Message</label><textarea name="message" id="message-input" rows="4" placeholder="Tell me what you're working on." required></textarea></div><button type="submit" class="xp-button primary-button"><svg aria-hidden="true"><use href="#icon-mail"/></svg> Send message</button></form>
+            </div><div class="window-status"><span>Good conversations start with hello.</span><span>☺</span></div>
+        </section>
+
+        <div class="desktop-footer"><span>YOUR BROWSER IS THE COMPUTER.</span><button id="wallpaper-button" type="button" class="js-only" aria-label="Switch to midnight wallpaper"><svg aria-hidden="true"><use href="#icon-star"/></svg><span>Change the scenery</span></button></div>
     </main>
 
-    <footer class="site-footer section-border"><div class="container footer-inner"><a class="wordmark" href="#home">Bryant Villarreal<span aria-hidden="true">.</span></a><p>Backend engineering. Security at the core.</p><a class="text-link" href="#home">Back to top <span aria-hidden="true">↑</span></a></div></footer>
+    <nav class="start-menu" id="start-menu" aria-label="Start menu" hidden>
+        <div class="start-profile"><svg aria-hidden="true"><use href="#icon-computer"/></svg><div><strong>Bryant Villarreal</strong><span>Welcome to bryantOS</span></div></div>
+        <div class="start-links"><a href="#terminal" data-open="terminal"><svg aria-hidden="true"><use href="#icon-terminal"/></svg><span><strong>Terminal</strong><small>Find your way around</small></span></a><a href="#work" data-open="work"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>My work</strong><small>Professional contributions</small></span></a><a href="#about" data-open="about"><svg aria-hidden="true"><use href="#icon-computer"/></svg><span>About me</span></a><a href="#skills" data-open="skills"><svg aria-hidden="true"><use href="#icon-disc-shape"/></svg><span>My toolkit</span></a><a href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Resume.pdf ↗</span></a><a href="#contact" data-open="contact"><svg aria-hidden="true"><use href="#icon-mail"/></svg><span>Contact me</span></a><a href="#readme" data-open="readme"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Read me</span></a></div>
+        <div class="start-footer"><button type="button" id="reset-desktop">↻ Reset desktop</button><span>Chrome edition</span></div>
+    </nav>
+    <footer class="taskbar js-only" aria-label="Desktop taskbar">
+        <button class="start-button" id="start-button" type="button" aria-controls="start-menu" aria-expanded="false"><svg aria-hidden="true"><use href="#icon-grid"/></svg><span>start</span></button>
+        <button type="button" class="show-desktop" id="show-desktop" aria-label="Show desktop" title="Show desktop"><svg aria-hidden="true"><use href="#icon-computer"/></svg></button>
+        <div class="taskbar-divider"></div><div class="taskbar-tasks" id="taskbar-tasks" aria-label="Open windows"></div>
+        <div class="system-tray"><svg class="tray-connection" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v9m5-13v13m5-17v17m5-12v12" fill="none" stroke="currentColor" stroke-width="2.5"/></svg><span class="tray-edition">EN</span><time id="system-clock">12:00 PM</time><button type="button" id="tray-desktop" aria-label="Show desktop" title="Show desktop"></button></div>
+    </footer>
+    <p class="sr-only" id="os-announcement" role="status" aria-live="polite"></p>
+    <noscript><p class="noscript-note">The full portfolio is available below. Enable JavaScript to use the interactive desktop and terminal.</p></noscript>
 </body>
 </html>
