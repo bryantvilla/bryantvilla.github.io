@@ -14,17 +14,19 @@ A personal engineering portfolio centered on Bryant's professional identity and 
 
 ## Brand Personality
 
-Precise, capable, candid. The user requested a dark, restrained, technical redesign and delegated the final choice between two visual previews. The selected direction combines a strong introduction with a conceptual identity-system diagram.
+Reflective, tactile, curious. The current direction is a chrome Y2K portfolio presented as a Windows XP-inspired operating system, with an interactive terminal as the main introduction. The desktop should express personality and nostalgia while making Bryant's professional engineering experience easy to explore. This direction supersedes the previous restrained, dark layout.
 
 ## Anti-references
 
-Avoid the previous student-portfolio presentation, cartoon hero, floating icon navigation, repeated project cards, decorative glows, invented impact metrics, and claims of AI research or model-development experience. AI coding tools describe the development workflow, not a separate professional specialization.
+Avoid a generic landing-page layout, repetitive project cards, excessive animation, inaccessible novelty interactions, invented impact metrics, and claims of AI research or model-development experience. The desktop icons are functional navigation. AI coding tools describe the development workflow, not a separate professional specialization.
 
 ## Design Principles
 
 - Lead with concrete professional engineering work.
 - Explain the problem, contribution, and engineering considerations clearly.
-- Distinguish conceptual illustrations from an employer's architecture.
+- Treat the desktop as a personal interface, not a representation of an employer's architecture.
+- Make typing optional: every portfolio section must also be reachable with a click or keyboard navigation.
+- Keep the command prompt visible, including on short screens.
 - Keep the resume and contact information easy to find.
 - Present undergraduate work as a small archive.
 

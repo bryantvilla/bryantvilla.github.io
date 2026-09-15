@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="210" y1="80" x2="1460" y2="1000" gradientUnits="userSpaceOnUse"><stop stop-color="#e4ebf1"/><stop offset=".46" stop-color="#c6d6e7"/><stop offset="1" stop-color="#adbed4"/></linearGradient>
+    <radialGradient id="light" cx=".43" cy=".44" r=".65"><stop stop-color="#f7fafc" stop-opacity=".92"/><stop offset="1" stop-color="#e5eef8" stop-opacity="0"/></radialGradient>
+    <linearGradient id="chrome" x1="-100" y1="-190" x2="120" y2="200" gradientUnits="userSpaceOnUse"><stop stop-color="#f7fcff"/><stop offset=".13" stop-color="#a7bbd2"/><stop offset=".24" stop-color="#f4fbff"/><stop offset=".39" stop-color="#7288a3"/><stop offset=".46" stop-color="#283d58"/><stop offset=".49" stop-color="#f2f9fe"/><stop offset=".54" stop-color="#d5e6f4"/><stop offset=".66" stop-color="#fafcfd"/><stop offset=".8" stop-color="#859db8"/><stop offset=".92" stop-color="#dcecf7"/><stop offset="1" stop-color="#607b9b"/></linearGradient>
+    <linearGradient id="edge" x1="0" y1="-200" x2="0" y2="200" gradientUnits="userSpaceOnUse"><stop stop-color="#f9fcff"/><stop offset=".4" stop-color="#a5b7c9"/><stop offset=".55" stop-color="#fbfdff"/><stop offset="1" stop-color="#71869e"/></linearGradient>
+    <linearGradient id="star-metal" x2=".6" y2="1"><stop stop-color="#f9fcff"/><stop offset=".36" stop-color="#b2c6da"/><stop offset=".48" stop-color="#5f7895"/><stop offset=".51" stop-color="#f6fbff"/><stop offset=".75" stop-color="#9db5cc"/><stop offset="1" stop-color="#dbe9f3"/></linearGradient>
+    <linearGradient id="grid-fade" x2="0" y2="1"><stop stop-color="#e7f0f9" stop-opacity="0"/><stop offset="1" stop-color="#e7f0f9" stop-opacity=".65"/></linearGradient>
+    <mask id="grid-mask"><rect width="1600" height="1000" fill="url(#grid-fade)"/></mask>
+    <filter id="orb-shadow" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="18"/></filter>
+    <filter id="star-shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dy="10" stdDeviation="6" flood-color="#607895" flood-opacity=".2"/></filter>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h1600v1000H0z"/><path fill="url(#light)" d="M0 0h1600v1000H0z"/>
+  <g stroke="#edf5fd" stroke-width="1" mask="url(#grid-mask)" opacity=".54"><path d="M0 580h1600M0 625h1600M0 679h1600M0 745h1600M0 825h1600M0 923h1600M50 1000l550-460M260 1000l390-460M470 1000l230-460M680 1000l70-460M890 1000l-90-460M1100 1000l-250-460M1310 1000l-410-460M1520 1000l-570-460"/></g>
+  <ellipse cx="1300" cy="620" rx="235" ry="33" fill="#778ca8" opacity=".18" filter="url(#orb-shadow)"/>
+  <g transform="translate(1310 244) rotate(-34)">
+    <path d="M-334 0a334 174 0 1 0 668 0 334 174 0 1 0-668 0Zm55 0a279 119 0 1 1 558 0 279 119 0 1 1-558 0Z" fill="url(#chrome)" fill-rule="evenodd" stroke="url(#edge)" stroke-width="2"/>
+    <ellipse rx="325" ry="165" stroke="#f8fcff" stroke-opacity=".86" stroke-width="2"/>
+    <ellipse rx="281" ry="121" stroke="#657e9a" stroke-opacity=".45" stroke-width="2"/>
+    <path d="M-301-72C-252-166-15-202 172-139" stroke="#f9fdff" stroke-width="4" stroke-linecap="round" opacity=".75"/>
+  </g>
+  <g transform="translate(1346 257) rotate(37) scale(.76)">
+    <path d="M-307 0a307 180 0 1 0 614 0 307 180 0 1 0-614 0Zm44 0a263 135 0 1 1 526 0 263 135 0 1 1-526 0Z" fill="url(#chrome)" fill-rule="evenodd" stroke="url(#edge)" stroke-width="2"/>
+    <ellipse rx="300" ry="172" stroke="#f7fcff" stroke-width="2" opacity=".8"/>
+    <path d="M-286-48c39-115 324-172 494-74" stroke="#f9fcff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+  </g>
+  <g fill="url(#star-metal)" stroke="#9cb1c7" filter="url(#star-shadow)">
+    <path d="m1140 716 22 63 64 23-64 22-22 64-23-64-64-22 64-23Z"/>
+    <path d="m1410 102 9 27 28 10-28 9-9 28-10-28-27-9 27-10Z"/>
+  </g>
+  <g fill="#f5faff"><path d="m1196 132 3 16 16 3-16 3-3 16-3-16-16-3 16-3Z"/><path d="m1469 408 3 17 17 3-17 3-3 17-3-17-17-3 17-3Z"/><path d="m408 799 2 10 10 2-10 2-2 10-2-10-10-2 10-2Z"/><circle cx="1024" cy="115" r="2"/><circle cx="1458" cy="632" r="2"/><circle cx="902" cy="814" r="2"/></g>
+  <path d="M970 37h32m-16-16v32M1526 742h22m-11-11v22" stroke="#8ca3bd" opacity=".6"/>
+  <ellipse cx="1270" cy="253" rx="447" ry="266" transform="rotate(-25 1270 253)" stroke="#eff7ff" stroke-opacity=".5"/>
+</svg>
