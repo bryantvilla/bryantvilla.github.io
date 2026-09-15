@@ -12,6 +12,9 @@
     const startMenu = document.getElementById('start-menu');
     const announcement = document.getElementById('os-announcement');
     const windows = new Map();
+    const motions = new Map();
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const motionEase = 'cubic-bezier(.22, 1, .36, 1)';
     const commandHistory = [];
     let historyIndex = 0;
     let historyDraft = '';
@@ -20,6 +23,7 @@
     let desktopSnapshot = null;
     let activeDrag = null;
     let activeResize = null;
+    let startOpen = false;
 
     function makeIcon(name) {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -32,11 +36,104 @@
 
     function announce(message) { announcement.textContent = message; }
 
+    function canAnimate() {
+        return !reducedMotion.matches && !document.hidden && typeof desktop.animate === 'function';
+    }
+
+    function finishMotion(element) { motions.get(element)?.finish(); }
+
+    // Canceling also runs cleanup, so interrupted exits cannot hide a reopened app.
+    function animateElement(element, keyframes, { duration = 320, delay = 0, complete = () => {} } = {}) {
+        finishMotion(element);
+        if (!canAnimate()) { complete(); return; }
+        const animation = element.animate(keyframes, { duration, delay, easing: motionEase, fill: 'both' });
+        const finish = () => {
+            if (motions.get(element)?.animation !== animation) return;
+            motions.delete(element);
+            animation.cancel();
+            complete();
+        };
+        motions.set(element, { animation, finish });
+        animation.finished.then(finish, finish);
+    }
+
+    function finishAllMotion() { [...motions.keys()].forEach(finishMotion); }
+    reducedMotion.addEventListener('change', () => {
+        if (reducedMotion.matches) finishAllMotion();
+    });
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) finishAllMotion();
+    });
+    window.addEventListener('beforeprint', finishAllMotion);
+
+    function captureWindow(state) {
+        return { bounds: state.element.getBoundingClientRect(), opacity: getComputedStyle(state.element).opacity };
+    }
+
+    // FLIP: apply the final layout once, then animate only its transform and opacity.
+    function windowKeyframe(bounds, destination, opacity = 1) {
+        return {
+            transform: `translate(${bounds.left - destination.left}px, ${bounds.top - destination.top}px) scale(${bounds.width / destination.width}, ${bounds.height / destination.height})`,
+            transformOrigin: 'top left', opacity
+        };
+    }
+
+    function arrivalBounds(bounds) {
+        return { left: bounds.left + bounds.width * .02, top: bounds.top + bounds.height * .02 + 10, width: bounds.width * .96, height: bounds.height * .96 };
+    }
+
+    function taskBounds(state) {
+        const bounds = state.task.getBoundingClientRect();
+        const strip = taskbar.getBoundingClientRect();
+        const width = Math.min(bounds.width, strip.width);
+        // On narrow screens, an offscreen task lands at the nearest visible edge.
+        return { left: Math.max(strip.left, Math.min(bounds.left, strip.right - width)), top: bounds.top, width, height: bounds.height };
+    }
+
+    function animateWindowIn(state, from = null, delay = 0) {
+        const bounds = state.element.getBoundingClientRect();
+        animateElement(state.element, [
+            windowKeyframe(from?.bounds || arrivalBounds(bounds), bounds, from?.opacity ?? 0),
+            windowKeyframe(bounds, bounds)
+        ], { delay });
+    }
+
+    function revealWindow(state) {
+        if (state.open && !state.minimized) return;
+        const restoring = state.minimized;
+        const from = state.exiting ? captureWindow(state) : null;
+        finishMotion(state.element);
+        state.open = true;
+        state.minimized = false;
+        syncWindows();
+        constrainWindow(state);
+        animateWindowIn(state, from || (restoring ? { bounds: taskBounds(state), opacity: .15 } : null));
+    }
+
+    function dismissWindow(state, close = false) {
+        const from = captureWindow(state);
+        finishMotion(state.element);
+        const bounds = state.element.getBoundingClientRect();
+        const destination = close ? arrivalBounds(bounds) : taskBounds(state);
+        state.exiting = canAnimate();
+        state.minimized = !close;
+        if (close) state.open = false;
+        animateElement(state.element, [
+            windowKeyframe(from.bounds, bounds, from.opacity),
+            ...(!close ? [{ opacity: .8, offset: .65 }] : []),
+            windowKeyframe(destination, bounds, 0)
+        ], {
+            duration: close ? 180 : 260,
+            complete: () => { state.exiting = false; syncWindows(); }
+        });
+    }
+
     function syncWindows() {
         windows.forEach((state, id) => {
             const visible = state.open && !state.minimized;
-            state.element.hidden = !visible;
-            state.element.classList.toggle('is-active', visible && activeWindow === id);
+            state.element.hidden = !visible && !state.exiting;
+            state.element.inert = !visible;
+            if (!state.exiting) state.element.classList.toggle('is-active', visible && activeWindow === id);
             state.task.hidden = !state.open;
             state.task.setAttribute('aria-pressed', String(visible && activeWindow === id));
             state.task.setAttribute('aria-label', (visible && activeWindow === id ? 'Minimize ' : 'Restore ') + state.title);
@@ -75,6 +172,7 @@
 
     function constrainWindow(state) {
         const element = state.element;
+        finishMotion(element);
         if (element.hidden || element.classList.contains('is-maximized')) return;
         const area = desktop.getBoundingClientRect();
         if (element.classList.contains('is-resized')) {
@@ -95,11 +193,8 @@
         const state = windows.get(id);
         if (!state) return false;
         if (!state.open || state.minimized) state.returnFocus = document.activeElement;
-        state.open = true;
-        state.minimized = false;
         desktopSnapshot = null;
-        state.element.hidden = false;
-        constrainWindow(state);
+        revealWindow(state);
         focusWindow(id, focus);
         if (updateHash) updateLocation(id);
         announce(state.title + ' opened.');
@@ -115,7 +210,7 @@
 
     function restoreFocus(state) {
         const previous = state.returnFocus;
-        if (previous instanceof HTMLElement && previous.isConnected && previous.getClientRects().length && !previous.closest('[hidden]')) {
+        if (previous instanceof HTMLElement && previous.isConnected && previous.getClientRects().length && !previous.closest('[hidden], [inert]')) {
             previous.focus({ preventScroll: true });
         } else if (activeWindow) {
             windows.get(activeWindow).task.focus({ preventScroll: true });
@@ -128,9 +223,8 @@
         finishDrag();
         finishResize();
         const state = windows.get(id);
-        if (!state) return;
-        state.minimized = !close;
-        if (close) state.open = false;
+        if (!state || !state.open || state.minimized) return;
+        dismissWindow(state, close);
         desktopSnapshot = null;
         if (activeWindow === id) chooseNextWindow();
         else syncWindows();
@@ -142,12 +236,16 @@
         finishDrag();
         finishResize();
         const state = windows.get(id);
+        if (!state || !state.open || state.minimized) return;
+        const from = captureWindow(state);
+        finishMotion(state.element);
         const maximized = state.element.classList.toggle('is-maximized');
         const button = state.element.querySelector('.control-maximize');
         button.setAttribute('aria-label', (maximized ? 'Restore size of ' : 'Maximize ') + state.title);
         button.title = maximized ? 'Restore down' : 'Maximize';
         if (!maximized) constrainWindow(state);
         focusWindow(id);
+        animateWindowIn(state, from);
         announce(state.title + (maximized ? ' maximized.' : ' restored to its previous size.'));
     }
 
@@ -171,10 +269,10 @@
             if (event.button !== 0 || event.target.closest('button') || state.element.classList.contains('is-maximized')) return;
             finishDrag();
             finishResize();
+            finishMotion(state.element);
             const bounds = state.element.getBoundingClientRect();
             const area = desktop.getBoundingClientRect();
             event.preventDefault();
-            state.element.style.animation = 'none';
             state.element.style.willChange = 'transform';
             state.element.classList.add('is-dragging');
             activeDrag = {
@@ -271,6 +369,7 @@
                     event.preventDefault();
                     finishDrag();
                     finishResize();
+                    finishMotion(state.element);
                     const [dx, dy] = directions[event.key];
                     applyWindowBounds(state.element, resizedBounds(windowBounds(state.element), 'se', dx, dy));
                     announceSize(state);
@@ -288,7 +387,6 @@
                 if (direction === 'se') handle.focus({ preventScroll: true });
                 constrainWindow(state);
                 const origin = windowBounds(state.element);
-                state.element.style.animation = 'none';
                 applyWindowBounds(state.element, origin);
                 state.element.classList.add('is-resizing');
                 activeResize = { state, handle, direction, origin, bounds: origin, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, frame: 0 };
@@ -312,7 +410,7 @@
         const id = element.dataset.window;
         const state = {
             element, title: element.dataset.title, open: id === 'terminal' || (id === 'readme' && window.innerWidth > 1050),
-            minimized: false, layer: index + 1, returnFocus: null, task: document.createElement('button')
+            minimized: false, exiting: false, layer: index + 1, returnFocus: null, task: document.createElement('button')
         };
         state.task.type = 'button';
         state.task.className = 'taskbar-task';
@@ -354,27 +452,39 @@
         attachResizing(state);
     });
 
+    function setStartOpen(open) {
+        const current = motions.has(startMenu) ? getComputedStyle(startMenu) : null;
+        const from = current ? { transform: current.transform, opacity: current.opacity }
+            : { transform: open ? 'translateY(10px) scale(.98)' : 'none', opacity: open ? 0 : 1 };
+        finishMotion(startMenu);
+        startOpen = open;
+        startMenu.hidden = false;
+        startMenu.inert = !open;
+        startButton.setAttribute('aria-expanded', String(open));
+        animateElement(startMenu, [from, { transform: open ? 'none' : 'translateY(8px) scale(.98)', opacity: open ? 1 : 0 }], {
+            duration: open ? 220 : 150,
+            complete: () => { startMenu.hidden = !startOpen; }
+        });
+    }
+
     function closeStart(restore = false) {
-        const wasOpen = !startMenu.hidden;
-        startMenu.hidden = true;
-        startButton.setAttribute('aria-expanded', 'false');
-        if (restore && wasOpen) startButton.focus({ preventScroll: true });
+        if (!startOpen) return;
+        setStartOpen(false);
+        if (restore) startButton.focus({ preventScroll: true });
     }
 
     startButton.addEventListener('click', () => {
-        const willOpen = startMenu.hidden;
-        startMenu.hidden = !willOpen;
-        startButton.setAttribute('aria-expanded', String(willOpen));
-        if (willOpen) startMenu.querySelector('a').focus({ preventScroll: true });
+        setStartOpen(!startOpen);
+        if (startOpen) startMenu.querySelector('a').focus({ preventScroll: true });
     });
     document.addEventListener('pointerdown', event => {
         if (!startMenu.contains(event.target) && !startButton.contains(event.target)) closeStart();
     });
     document.addEventListener('focusin', event => {
-        if (!startMenu.hidden && !startMenu.contains(event.target) && !startButton.contains(event.target)) closeStart();
+        if (startOpen && !startMenu.contains(event.target) && !startButton.contains(event.target)) closeStart();
     });
     document.addEventListener('keydown', event => {
-        if (event.key === 'Escape' && !startMenu.hidden) {
+        if (event.key === 'Escape' && startOpen) {
             event.preventDefault();
             closeStart(true);
         }
@@ -403,7 +513,8 @@
         const visible = [...windows.entries()].filter(([, state]) => state.open && !state.minimized).map(([id]) => id);
         if (visible.length) {
             desktopSnapshot = { ids: visible, active: activeWindow };
-            visible.forEach(id => { windows.get(id).minimized = true; });
+            if (document.activeElement.closest('[data-window]')) startButton.focus({ preventScroll: true });
+            visible.forEach(id => dismissWindow(windows.get(id)));
             activeWindow = null;
             syncWindows();
             announce('Desktop shown. Use the taskbar or Start to restore a window.');
@@ -411,10 +522,9 @@
             const snapshot = desktopSnapshot;
             desktopSnapshot = null;
             const restore = snapshot ? snapshot.ids : [...windows.entries()].filter(([, state]) => state.open).map(([id]) => id);
-            restore.forEach(id => { windows.get(id).minimized = false; });
+            restore.forEach(id => revealWindow(windows.get(id)));
             if (restore.length) focusWindow(snapshot?.active || restore[restore.length - 1]);
             else openWindow('terminal');
-            windows.forEach(constrainWindow);
             announce('Windows restored.');
         }
     }
@@ -654,6 +764,89 @@
         }
     });
 
+    const contactForm = document.forms.portfolio_contact;
+    const contactWindow = document.getElementById('contact');
+    const contactFeedback = document.getElementById('contact-feedback');
+    const contactSubmit = contactForm.querySelector('[type="submit"]');
+    const contactSubmitLabel = document.getElementById('contact-submit-label');
+    const contactDelivery = document.getElementById('contact-delivery-status');
+    const sendAnother = document.getElementById('send-another');
+    let sendingMessage = false;
+
+    function showContactFeedback(success, title, message) {
+        contactWindow.dataset.delivery = success ? 'sent' : 'error';
+        contactFeedback.hidden = false;
+        document.getElementById('contact-feedback-mark').textContent = success ? '✓' : '!';
+        document.getElementById('contact-feedback-title').textContent = title;
+        document.getElementById('contact-feedback-message').textContent = message;
+        sendAnother.hidden = !success;
+        contactDelivery.textContent = success ? 'Message sent' : 'Check your message';
+        announce(title + ' ' + message);
+        // A response must not pull visitors away from another app they opened.
+        if (activeWindow === 'contact' && !contactWindow.inert) {
+            contactFeedback.focus({ preventScroll: true });
+            contactFeedback.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+            animateElement(contactFeedback, [{ opacity: 0, transform: 'translateY(5px)' }, { opacity: 1, transform: 'none' }], { duration: 220 });
+        }
+    }
+
+    contactForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (sendingMessage || !contactForm.reportValidity()) return;
+        const data = new FormData(contactForm);
+        const fields = [...contactForm.querySelectorAll('input, textarea')];
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+        sendingMessage = true;
+        contactFeedback.hidden = true;
+        contactSubmit.disabled = true;
+        fields.forEach(field => { field.readOnly = true; });
+        contactForm.setAttribute('aria-busy', 'true');
+        contactWindow.dataset.delivery = 'sending';
+        contactSubmitLabel.textContent = 'Sending…';
+        contactDelivery.textContent = 'Sending message…';
+        announce('Sending your message.');
+        try {
+            const response = await fetch(contactForm.action, {
+                method: 'POST', body: data, headers: { Accept: 'application/json' }, signal: controller.signal
+            });
+            const result = await response.json().catch(error => {
+                if (error.name === 'AbortError') throw error;
+                return null;
+            });
+            if (response.ok && result?.ok === true) {
+                contactForm.reset();
+                contactForm.hidden = true;
+                showContactFeedback(true, 'Message sent!', 'Thanks for reaching out. I’ll reply to ' + data.get('email') + '.');
+            } else if (!response.ok || result?.ok === false || result?.errors?.length) {
+                const errors = Array.isArray(result?.errors) ? result.errors.map(error => error?.message).filter(message => typeof message === 'string').join(' ') : '';
+                showContactFeedback(false, 'Couldn’t send your message.', (errors || 'Please try again in a moment.') + ' Your draft is still here. You can also use the email link below.');
+            } else {
+                showContactFeedback(false, 'Couldn’t confirm delivery.', 'The server returned an unexpected response. Your draft is still here. Try again, or use the email link below.');
+            }
+        } catch (error) {
+            const reason = error.name === 'AbortError' ? 'The request took too long.' : 'The connection was interrupted.';
+            showContactFeedback(false, 'Couldn’t confirm delivery.', reason + ' Your draft is still here. Try again, or use the email link below.');
+        } finally {
+            clearTimeout(timeout);
+            sendingMessage = false;
+            fields.forEach(field => { field.readOnly = false; });
+            contactForm.removeAttribute('aria-busy');
+            contactSubmit.disabled = false;
+            contactSubmitLabel.textContent = contactForm.hidden ? 'Send message' : 'Try again';
+        }
+    });
+
+    sendAnother.addEventListener('click', () => {
+        finishMotion(contactFeedback);
+        contactFeedback.hidden = true;
+        contactForm.hidden = false;
+        delete contactWindow.dataset.delivery;
+        contactSubmitLabel.textContent = 'Send message';
+        contactDelivery.textContent = 'Ready to send';
+        contactForm.elements.name.focus();
+    });
+
     const resumeDocument = document.getElementById('resume-document');
     document.getElementById('print-resume').addEventListener('click', () => {
         resumeDocument.contentWindow.focus();
@@ -674,6 +867,7 @@
     document.getElementById('reset-desktop').addEventListener('click', () => {
         finishDrag();
         finishResize();
+        finishAllMotion();
         windows.forEach((state, id) => {
             state.open = id === 'terminal' || (id === 'readme' && window.innerWidth > 1050);
             state.minimized = false;
@@ -688,6 +882,9 @@
         desktopSnapshot = null;
         closeStart();
         focusWindow('terminal');
+        windows.forEach(state => {
+            if (state.open) animateWindowIn(state);
+        });
         terminalScreen.scrollTop = 0;
         updateLocation('terminal');
         startButton.focus({ preventScroll: true });
@@ -718,6 +915,7 @@
             resizeFrame = 0;
             finishDrag();
             finishResize();
+            finishAllMotion();
             windows.forEach(constrainWindow);
         });
     });
@@ -776,11 +974,10 @@
             "           $$$#########$$$$$$           \n         ##*****!***********####        \n       *!!!!!!!!!!!!!!!!!!!!!****       \n      ===!====;;;;;;;;;====!!!!!!!      \n     ;==;;::::~~~~~~~~~::::;;;==!==     \n     ;;::~--,,,.......,,--~~~::;;;=;    \n     :~~-,,.....          .,,-~~::;;    \n     --,,..  ...,       .....,,--~~:    \n      ,,...  ...:!#$$#!~...  ..,,--     \n       ........-;!#$$#!;........,,      \n          ..,,-:=!*!*!=;~,.......       \n            .,,~:;=!!=;:~-,..           \n                 .,,,,,..               \n                                        \n                                        \n                                        "
         ];
         let currentDonutFrame = 0;
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let donutInterval = null;
 
         function startDonut() {
-            if (prefersReducedMotion.matches || donutInterval) return;
+            if (reducedMotion.matches || document.hidden || donutInterval) return;
             donutInterval = setInterval(() => {
                 currentDonutFrame = (currentDonutFrame + 1) % donutFrames.length;
                 donutElement.textContent = donutFrames[currentDonutFrame];
@@ -795,6 +992,10 @@
         }
 
         startDonut();
+        reducedMotion.addEventListener('change', () => {
+            if (reducedMotion.matches) stopDonut();
+            else startDonut();
+        });
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) stopDonut();
             else startDonut();
@@ -815,4 +1016,11 @@
     document.documentElement.classList.add('os-ready');
     focusWindow('terminal');
     routeHash();
+    let entranceDelay = 0;
+    windows.forEach(state => {
+        if (state.open && !state.minimized && !motions.has(state.element)) {
+            animateWindowIn(state, null, entranceDelay);
+            entranceDelay += 70;
+        }
+    });
 })();
