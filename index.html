@@ -72,6 +72,28 @@
                 <path d="m3 12 21 18 20-18" fill="url(#icon-paper)" stroke="#617c9e"/>
                 <path d="m5 13 19 14 18-14" fill="none" stroke="#f8fcff"/>
             </symbol>
+            <symbol id="icon-myspace" viewBox="0 0 48 48">
+                <path d="M3 39v-9c0-5 4-8 8-8s8 3 8 8v9z" fill="url(#icon-metal)" stroke="#536f98"/>
+                <circle cx="11" cy="15" r="6" fill="url(#icon-metal)" stroke="#536f98"/>
+                <path d="M15 42V29c0-6 4-10 10-10s10 4 10 10v13z" fill="url(#icon-blue)" stroke="#315e9d"/>
+                <circle cx="25" cy="11" r="7" fill="url(#icon-blue)" stroke="#315e9d"/>
+                <path d="M29 45V30c0-6 4-10 9-10s8 4 8 10v15z" fill="url(#icon-blue)" stroke="#315e9d"/>
+                <circle cx="38" cy="11" r="8" fill="url(#icon-blue)" stroke="#315e9d"/>
+                <path d="M33 29c0-3 2-5 5-5M19 28c0-3 2-5 5-5" fill="none" stroke="#c6eaff" stroke-linecap="round"/>
+            </symbol>
+            <symbol id="icon-aim" viewBox="0 0 48 48">
+                <circle cx="32" cy="8" r="6" fill="url(#icon-folder)" stroke="#967022"/>
+                <path d="m24 15 8 3 6 10 7 3-3 6-10-5-5-7-3 9 8 9-6 4-12-13 3-10-6 4-7-2 2-6 6 1z" fill="url(#icon-folder)" stroke="#967022" stroke-linejoin="round"/>
+                <path d="m16 31 6 5-10 10-7-2z" fill="url(#icon-folder)" stroke="#967022" stroke-linejoin="round"/>
+                <path d="m23 18-3 10m9-23 3-1" stroke="#fff4bc" stroke-width="2" stroke-linecap="round"/>
+            </symbol>
+            <symbol id="icon-word" viewBox="0 0 48 48">
+                <path d="M13 3h23l8 8v33H13z" fill="url(#icon-paper)" stroke="#607c9f"/>
+                <path d="M36 3v9h8M20 17h17M20 22h17M20 27h17M20 32h17M20 37h12" fill="none" stroke="#7e9cbf" stroke-width="1.5"/>
+                <rect x="2" y="11" width="25" height="29" rx="2" fill="url(#icon-blue)" stroke="#315e9d"/>
+                <path d="m6 18 3 14h3l3-9 3 9h3l3-14h-4l-1 8-3-8h-3l-3 8-1-8z" fill="#f3f8fd"/>
+                <path d="M5 13h19" stroke="#c6eaff"/>
+            </symbol>
             <symbol id="icon-linkedin" viewBox="0 0 48 48">
                 <rect x="4" y="3" width="40" height="41" rx="5" fill="url(#icon-metal)" stroke="#61748e"/>
                 <rect x="7" y="6" width="34" height="34" rx="3" fill="url(#icon-blue)" stroke="#3c74a9"/>
@@ -120,11 +142,11 @@
         </header>
 
         <nav class="desktop-shortcuts" aria-label="Desktop shortcuts">
-            <a href="#about" data-open="about" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-computer"/></svg><span>About me</span></a>
+            <a href="#about" data-open="about" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-myspace"/></svg><span>About me</span></a>
             <a href="#work" data-open="work" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span>My work</span></a>
             <a href="#skills" data-open="skills" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-disc-shape"/></svg><span>My toolkit</span></a>
-            <a href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Resume.pdf</span></a>
-            <a href="#contact" data-open="contact" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-mail"/></svg><span>Contact me</span></a>
+            <a href="#resume" data-open="resume" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-word"/></svg><span>Resume.doc</span></a>
+            <a href="#contact" data-open="contact" class="desktop-icon"><svg aria-hidden="true"><use href="#icon-aim"/></svg><span>Contact me</span></a>
             <a href="https://www.linkedin.com/in/bryant-villarreal/" target="_blank" rel="noopener noreferrer" class="desktop-icon" aria-label="LinkedIn (opens in a new tab)"><svg aria-hidden="true"><use href="#icon-linkedin"/></svg><span>LinkedIn</span></a>
             <a href="https://github.com/bryantvilla" target="_blank" rel="noopener noreferrer" class="desktop-icon" aria-label="GitHub (opens in a new tab)"><svg aria-hidden="true"><use href="#icon-github"/></svg><span>GitHub</span></a>
             <a href="https://www.instagram.com/bryant.pdf/" target="_blank" rel="noopener noreferrer" class="desktop-icon" aria-label="Instagram (opens in a new tab)"><svg aria-hidden="true"><use href="#icon-instagram"/></svg><span>Instagram</span></a>
@@ -132,7 +154,7 @@
 
         <section class="os-window terminal-window" id="terminal" data-window="terminal" data-title="Terminal" data-icon="terminal" aria-labelledby="terminal-window-title">
             <div class="title-bar"><h2 id="terminal-window-title"><svg aria-hidden="true"><use href="#icon-terminal"/></svg> C:&#92;Bryant&#92;portfolio.exe</h2><div class="window-controls"></div></div>
-            <nav class="window-menu terminal-menu" aria-label="Terminal shortcuts"><a href="#about" data-open="about">About</a><a href="#work" data-open="work">Work</a><a href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Resume</a><button type="button" data-command="help" class="js-only">Help</button><span class="menu-right">portfolio.exe</span></nav>
+            <nav class="window-menu terminal-menu" aria-label="Terminal shortcuts"><a href="#about" data-open="about">About</a><a href="#work" data-open="work">Work</a><a href="#resume" data-open="resume">Resume</a><button type="button" data-command="help" class="js-only">Help</button><span class="menu-right">portfolio.exe</span></nav>
             <div class="terminal-screen">
                 <div class="terminal-transcript" id="terminal-screen" tabindex="0" aria-label="Terminal output and introduction">
                 <div class="terminal-welcome" id="terminal-welcome">
@@ -180,19 +202,26 @@
             <div class="window-status"><span>1 note, just for you</span><span>UTF-8</span></div>
         </section>
 
-        <section class="os-window content-window" id="about" data-window="about" data-title="About me" data-icon="computer" aria-labelledby="about-window-title">
-            <div class="title-bar"><h2 id="about-window-title"><svg aria-hidden="true"><use href="#icon-computer"/></svg> About Bryant</h2><div class="window-controls"></div></div>
-            <div class="explorer-address"><span>Address</span><span>C:&#92;Bryant&#92;About me</span></div>
-            <div class="window-body">
-                <p class="section-label">THE PERSON BEHIND THE PROMPT</p>
-                <div class="about-intro"><div><h2>A foundation in CS.<br>A focus on real systems.</h2><p>I'm Bryant Villarreal, a Software Engineer II at UKG. Identity and access management brings together the parts of engineering I care about: security, backend systems, and the details that make them work together.</p></div><img src="assets/img/about.jpg" width="1000" height="726" alt="Bryant Villarreal" loading="lazy"></div>
-                <h3>Experience.log</h3>
-                <ol class="experience-list"><li><div><strong>Software Engineer II</strong><span>UKG · Identity &amp; Access Management</span></div><span>Jan 2025 → present</span></li><li><div><strong>Associate Software Engineer</strong><span>UKG</span></div><span>May 2023 → Dec 2024</span></li><li><div><strong>Joined UKG</strong><span>The beginning of my professional journey</span></div><span>Sep 2022</span></li></ol>
-                <h3>Education.txt</h3>
-                <dl class="education-list"><div><dt>M.S. in Computer Science</dt><dd>Florida International University · December 2025</dd></div><div><dt>B.S. in Computer Science</dt><dd>Florida International University · May 2022<br>Magna cum laude · GPA 3.71</dd></div></dl>
-                <p>My academic background includes software security, computer networking, and operating systems. This desktop probably gives that last one away.</p>
-                <a class="xp-button" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Open my resume <span aria-hidden="true">↗</span></a>
-            </div><div class="window-status"><span>Bryant Villarreal</span><span>Always learning.</span></div>
+        <section class="os-window content-window about-window" id="about" data-window="about" data-title="About me" data-icon="myspace" aria-labelledby="about-window-title">
+            <div class="title-bar"><h2 id="about-window-title"><svg aria-hidden="true"><use href="#icon-myspace"/></svg> Bryant's profile · Myspace</h2><div class="window-controls"></div></div>
+            <div class="explorer-address"><span>Address</span><span>bryantvilla.com/#about</span><svg aria-hidden="true"><use href="#icon-myspace"/></svg></div>
+            <div class="window-body myspace-page">
+                <header class="myspace-header"><div class="myspace-brand"><svg aria-hidden="true"><use href="#icon-myspace"/></svg><span>myspace<small>a place for my corner of the internet.</small></span></div><span class="myspace-edition">bryantOS edition</span></header>
+                <nav class="myspace-nav" aria-label="Profile shortcuts"><a href="#terminal" data-open="terminal">Home</a><a href="#work" data-open="work">My work</a><a href="#resume" data-open="resume">Resume</a><a href="#contact" data-open="contact">Send a message</a></nav>
+                <div class="myspace-layout">
+                    <aside class="myspace-sidebar" aria-label="Bryant's profile details">
+                        <div class="myspace-profile"><h2>Bryant Villarreal</h2><p class="profile-quote">“Curious about systems.<br>Serious about the details.”</p><div class="profile-photo-row"><img src="assets/img/about.jpg" width="1000" height="726" alt="Bryant Villarreal" loading="lazy"><div><strong>Software Engineer II</strong><span>UKG</span><span>Miami, FL</span><a href="#contact" data-open="contact"><i class="status-led"></i> Say hello!</a></div></div><p class="profile-mood"><strong>Mood:</strong> curious <span aria-hidden="true">☺</span></p></div>
+                        <section class="myspace-panel"><h3>Contacting Bryant</h3><div class="profile-contact"><a href="#contact" data-open="contact"><svg aria-hidden="true"><use href="#icon-aim"/></svg>Send message</a><a href="#resume" data-open="resume"><svg aria-hidden="true"><use href="#icon-word"/></svg>View resume</a><a href="https://www.linkedin.com/in/bryant-villarreal/" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-linkedin"/></svg>LinkedIn ↗</a><a href="https://github.com/bryantvilla" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-github"/></svg>GitHub ↗</a></div></section>
+                        <section class="myspace-panel"><h3>Bryant's interests</h3><dl class="profile-interests"><div><dt>General</dt><dd>Backend systems, security, figuring out how things work.</dd></div><div><dt>Currently</dt><dd>Identity &amp; access management at UKG.</dd></div><div><dt>Soft spot</dt><dd>The early internet. You might have noticed.</dd></div></dl></section>
+                    </aside>
+                    <div class="myspace-main">
+                        <div class="profile-intro-banner">A foundation in CS. A focus on real systems.</div>
+                        <section class="myspace-blurbs"><h3>Bryant's blurbs</h3><h4>About me:</h4><p>I'm Bryant Villarreal, a Software Engineer II at UKG. Identity and access management brings together the parts of engineering I care about: security, backend systems, and the details that make them work together.</p><p>My academic background includes software security, computer networking, and operating systems. This desktop probably gives that last one away.</p><h4>Who I'd like to meet:</h4><p>People building AI products and large-scale systems. I'm interested in backend and platform engineering roles, and always happy to talk about the work.</p></section>
+                        <section class="myspace-panel profile-history"><h3>Bryant's experience</h3><ol class="experience-list"><li><div><strong>Software Engineer II</strong><span>UKG · Identity &amp; Access Management</span></div><span>Jan 2025 → present</span></li><li><div><strong>Associate Software Engineer</strong><span>UKG</span></div><span>May 2023 → Dec 2024</span></li><li><div><strong>Joined UKG</strong><span>The beginning of my professional journey</span></div><span>Sep 2022</span></li></ol><a href="#work" data-open="work">View my engineering contributions →</a></section>
+                        <section class="myspace-panel profile-history"><h3>Bryant's schools</h3><dl class="education-list"><div><dt>M.S. in Computer Science</dt><dd>Florida International University · December 2025</dd></div><div><dt>B.S. in Computer Science</dt><dd>Florida International University · May 2022<br>Magna cum laude · GPA 3.71</dd></div></dl></section>
+                    </div>
+                </div><footer class="myspace-footer">Thanks for stopping by my space.</footer>
+            </div><div class="window-status"><span><i class="status-led"></i> Profile loaded</span><span>Always learning.</span></div>
         </section>
 
         <section class="os-window content-window" id="work" data-window="work" data-title="My work" data-icon="folder-shape" aria-labelledby="work-window-title">
@@ -202,7 +231,7 @@
                 <p class="section-label">BACKEND &amp; PLATFORM ENGINEERING</p><h2>Engineering trust.</h2><p>Selected contributions to the authentication and identity systems that enterprise applications depend on.</p>
                 <details class="work-item" id="authentication-security"><summary><span class="file-number">01</span><span><small>Authentication security</small><strong>Strengthening access controls</strong><span>Request trust · Access policies</span></span><span class="expand-sign" aria-hidden="true">+</span></summary><div class="work-detail"><h3>The problem</h3><p>IP-based access policies depend on trustworthy request context. The authentication layer needs to apply those policies consistently.</p><h3>My contribution</h3><p>At UKG, I contributed to security improvements around IP-based access controls in enterprise authentication flows, with a focus on the boundary between incoming requests and access decisions.</p><p class="work-focus"><strong>Engineering focus:</strong> Request trust, policy enforcement, and authentication security.</p></div></details>
                 <details class="work-item" id="enterprise-sso"><summary><span class="file-number">02</span><span><small>Enterprise single sign-on</small><strong>Making certificate rotation smoother</strong><span>SAML · Auth0 · Kafka · Java</span></span><span class="expand-sign" aria-hidden="true">+</span></summary><div class="work-detail"><h3>The problem</h3><p>Enterprise SSO needs to keep working while certificates change. Supporting certificate overlap also requires validation and coordinated updates across services.</p><h3>My contribution</h3><p>I contributed to SAML multi-certificate support across Auth0 integration, database migrations, and Kafka events. The work included CA-signed certificate validation and resilience handling to support uninterrupted certificate rotation.</p><p class="work-focus"><strong>Engineering focus:</strong> Service coordination, certificate validation, and continuity during change.</p></div></details>
-                <div class="section-actions"><a class="xp-button" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer">Full experience ↗</a><a href="#archive" data-open="archive" class="plain-link">Open undergraduate archive →</a></div>
+                <div class="section-actions"><a class="xp-button" href="#resume" data-open="resume">Full experience →</a><a href="#archive" data-open="archive" class="plain-link">Open undergraduate archive →</a></div>
             </div><div class="window-status"><span>2 selected contributions</span><span>UKG · 2022 → present</span></div>
         </section>
 
@@ -223,12 +252,37 @@
             </div><div class="window-status"><span>4 projects</span><span>Undergraduate work · FIU</span></div>
         </section>
 
-        <section class="os-window content-window contact-window" id="contact" data-window="contact" data-title="Contact me" data-icon="mail" aria-labelledby="contact-window-title">
-            <div class="title-bar"><h2 id="contact-window-title"><svg aria-hidden="true"><use href="#icon-mail"/></svg> New message · Let's talk</h2><div class="window-controls"></div></div>
-            <div class="window-body"><p class="section-label">MY INBOX IS OPEN</p><h2>Let's talk about<br>what's next.</h2><p>I'm interested in backend and platform engineering roles on teams building AI products and large-scale systems.</p>
-                <div class="contact-links"><a href="mailto:bryantavillarreal@gmail.com">bryantavillarreal@gmail.com ↗</a><div><a href="https://www.linkedin.com/in/bryant-villarreal/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/bryantvilla" target="_blank" rel="noopener noreferrer">GitHub ↗</a><button type="button" id="copy-email" class="js-only">Copy email</button></div></div>
-                <form name="portfolio_contact" method="POST" action="https://formspree.io/f/mvolejnv" class="contact-form" aria-label="Send Bryant a message"><p class="form-note">Send a message. All fields are required.</p><div class="form-row"><div class="form-field"><label for="name">From</label><input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required></div><div class="form-field"><label for="email">Your email</label><input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required></div></div><div class="form-field"><label for="message-input">Message</label><textarea name="message" id="message-input" rows="4" placeholder="Tell me what you're working on." required></textarea></div><button type="submit" class="xp-button primary-button"><svg aria-hidden="true"><use href="#icon-mail"/></svg> Send message</button></form>
-            </div><div class="window-status"><span>Good conversations start with hello.</span><span>☺</span></div>
+        <section class="os-window content-window contact-window" id="contact" data-window="contact" data-title="Contact me" data-icon="aim" aria-labelledby="contact-window-title">
+            <div class="title-bar"><h2 id="contact-window-title"><svg aria-hidden="true"><use href="#icon-aim"/></svg> bryantvilla · Instant Message</h2><div class="window-controls"></div></div>
+            <nav class="window-menu" aria-label="Messenger shortcuts"><a href="#about" data-open="about">Buddy info</a><a href="#resume" data-open="resume">Resume</a><a href="mailto:bryantavillarreal@gmail.com">Email</a><span class="menu-right">AIM</span></nav>
+            <div class="window-body aim-body">
+                <header class="aim-header"><svg aria-hidden="true"><use href="#icon-aim"/></svg><div><h2>Send an instant hello.</h2><p>To: <strong>bryantvilla</strong></p></div><span class="aim-wordmark" aria-label="AOL Instant Messenger">AIM<small>Instant Messenger</small></span></header>
+                <div class="aim-layout">
+                    <aside class="aim-buddies" aria-label="Buddy links"><h3>Buddy List</h3><p class="buddy-group">▾ On this desktop</p><a href="#about" data-open="about"><svg aria-hidden="true"><use href="#icon-myspace"/></svg>My profile</a><a href="#work" data-open="work"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg>My work</a><p class="buddy-group">▾ Find me on</p><a href="https://www.linkedin.com/in/bryant-villarreal/" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-linkedin"/></svg>LinkedIn ↗</a><a href="https://github.com/bryantvilla" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-github"/></svg>GitHub ↗</a><div class="aim-buddy-note"><svg aria-hidden="true"><use href="#icon-aim"/></svg><span>Good conversations<br>start with hello.</span></div></aside>
+                    <div class="aim-conversation"><div class="aim-away"><span class="aim-away-label">bryantvilla's away message:</span><p>Let's talk about what's next. I'm interested in backend and platform engineering roles on teams building AI products and large-scale systems.</p><small>Leave a message below. It goes straight to my inbox.</small></div>
+                        <form name="portfolio_contact" method="POST" action="https://formspree.io/f/mvolejnv" class="contact-form aim-form" aria-label="Send Bryant a message">
+                            <p class="form-note" id="contact-form-note">All fields are required.</p>
+                            <div class="form-row"><div class="form-field"><label for="name">Your name</label><input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required></div><div class="form-field"><label for="email">Reply to</label><input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required></div></div>
+                            <div class="form-field aim-message-field"><label for="message-input"><span>Message</span><span aria-hidden="true">☺</span></label><textarea name="message" id="message-input" rows="5" placeholder="Hey Bryant!" aria-describedby="contact-form-note" required></textarea></div>
+                            <div class="aim-send-row"><span>Delivered by email</span><button type="submit" class="xp-button primary-button"><svg aria-hidden="true"><use href="#icon-aim"/></svg><span class="send-progress" aria-hidden="true"></span><span id="contact-submit-label">Send message</span></button></div>
+                        </form>
+                        <div class="aim-feedback" id="contact-feedback" tabindex="-1" aria-labelledby="contact-feedback-title" aria-describedby="contact-feedback-message" hidden>
+                            <span class="delivery-mark" id="contact-feedback-mark" aria-hidden="true">✓</span>
+                            <div><h3 id="contact-feedback-title"></h3><p id="contact-feedback-message"></p><button type="button" class="xp-button" id="send-another" hidden>Send another message</button></div>
+                        </div>
+                        <div class="contact-links aim-email"><a href="mailto:bryantavillarreal@gmail.com">bryantavillarreal@gmail.com</a><button type="button" id="copy-email" class="js-only">Copy email</button></div>
+                    </div>
+                </div>
+            </div><div class="window-status"><span><i class="status-led"></i><span id="contact-delivery-status">Ready to send</span></span><span>No screen name needed.</span></div>
+        </section>
+
+        <section class="os-window content-window resume-window" id="resume" data-window="resume" data-title="Resume.doc" data-icon="word" aria-labelledby="resume-window-title">
+            <div class="title-bar"><h2 id="resume-window-title"><svg aria-hidden="true"><use href="#icon-word"/></svg> Bryant_Villarreal_Resume.doc · Word</h2><div class="window-controls"></div></div>
+            <nav class="window-menu word-menu" aria-label="Resume sections"><a href="assets/resume.html#summary" target="resume-document">Summary</a><a href="assets/resume.html#experience" target="resume-document">Experience</a><a href="assets/resume.html#skills" target="resume-document">Skills</a><a href="assets/resume.html#education" target="resume-document">Education</a></nav>
+            <div class="word-toolbar"><div class="word-format"><svg aria-hidden="true"><use href="#icon-word"/></svg><span>Print layout</span><span class="word-typeface">Arial <span>10.5</span></span></div><div class="word-actions"><button type="button" class="xp-button js-only" id="print-resume">Print</button><a class="xp-button primary-button" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer" aria-label="Open resume PDF in a new tab">Open PDF <span aria-hidden="true">↗</span></a></div></div>
+            <div class="word-ruler" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
+            <iframe class="resume-document" id="resume-document" name="resume-document" src="assets/resume.html" title="Bryant Villarreal's resume document" loading="lazy"></iframe>
+            <div class="window-status"><span>Print layout · Read only</span><span>English (U.S.)</span></div>
         </section>
 
         <div class="desktop-footer"><span>YOUR BROWSER IS THE COMPUTER.</span><button id="wallpaper-button" type="button" class="js-only" aria-label="Switch to midnight wallpaper"><svg aria-hidden="true"><use href="#icon-star"/></svg><span>Change the scenery</span></button></div>
@@ -236,7 +290,7 @@
 
     <nav class="start-menu" id="start-menu" aria-label="Start menu" hidden>
         <div class="start-profile"><svg aria-hidden="true"><use href="#icon-computer"/></svg><div><strong>Bryant Villarreal</strong><span>Welcome to bryantOS</span></div></div>
-        <div class="start-links"><a href="#terminal" data-open="terminal"><svg aria-hidden="true"><use href="#icon-terminal"/></svg><span><strong>Terminal</strong><small>Find your way around</small></span></a><a href="#work" data-open="work"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>My work</strong><small>Professional contributions</small></span></a><a href="#about" data-open="about"><svg aria-hidden="true"><use href="#icon-computer"/></svg><span>About me</span></a><a href="#skills" data-open="skills"><svg aria-hidden="true"><use href="#icon-disc-shape"/></svg><span>My toolkit</span></a><a href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Resume.pdf ↗</span></a><a href="#contact" data-open="contact"><svg aria-hidden="true"><use href="#icon-mail"/></svg><span>Contact me</span></a><a href="#readme" data-open="readme"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Read me</span></a></div>
+        <div class="start-links"><a href="#terminal" data-open="terminal"><svg aria-hidden="true"><use href="#icon-terminal"/></svg><span><strong>Terminal</strong><small>Find your way around</small></span></a><a href="#work" data-open="work"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>My work</strong><small>Professional contributions</small></span></a><a href="#about" data-open="about"><svg aria-hidden="true"><use href="#icon-myspace"/></svg><span><strong>About me</strong><small>My Myspace profile</small></span></a><a href="#skills" data-open="skills"><svg aria-hidden="true"><use href="#icon-disc-shape"/></svg><span>My toolkit</span></a><a href="#resume" data-open="resume"><svg aria-hidden="true"><use href="#icon-word"/></svg><span><strong>Resume.doc</strong><small>Experience, in Word</small></span></a><a href="#contact" data-open="contact"><svg aria-hidden="true"><use href="#icon-aim"/></svg><span><strong>Contact me</strong><small>Send an instant hello</small></span></a><a href="#readme" data-open="readme"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Read me</span></a></div>
         <div class="start-footer"><button type="button" id="reset-desktop">↻ Reset desktop</button><span>Chrome edition</span></div>
     </nav>
     <footer class="taskbar js-only" aria-label="Desktop taskbar">
@@ -246,6 +300,7 @@
         <div class="system-tray"><svg class="tray-connection" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v9m5-13v13m5-17v17m5-12v12" fill="none" stroke="currentColor" stroke-width="2.5"/></svg><span class="tray-edition">EN</span><time id="system-clock">12:00 PM</time><button type="button" id="tray-desktop" aria-label="Show desktop" title="Show desktop"></button></div>
     </footer>
     <p class="sr-only" id="os-announcement" role="status" aria-live="polite"></p>
+    <p class="sr-only" id="window-resize-help">Drag an edge or corner to resize. On the bottom-right resize button, use the arrow keys. Hold Shift for larger steps.</p>
     <noscript><p class="noscript-note">The full portfolio is available below. Enable JavaScript to use the interactive desktop and terminal.</p></noscript>
 </body>
 </html>
