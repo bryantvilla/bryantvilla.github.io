@@ -3,6 +3,7 @@
     'use strict';
 
     const desktop = document.getElementById('desktop');
+    const desktopShortcuts = document.querySelector('.desktop-shortcuts');
     const terminalInput = document.getElementById('terminal-input');
     const terminalScreen = document.getElementById('terminal-screen');
     const terminalOutput = document.getElementById('terminal-output');
@@ -11,6 +12,8 @@
     const startButton = document.getElementById('start-button');
     const startMenu = document.getElementById('start-menu');
     const announcement = document.getElementById('os-announcement');
+    const sessionStartedAt = new Date();
+    const mobile = window.matchMedia('(max-width: 760px)');
     const windows = new Map();
     const motions = new Map();
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -170,6 +173,12 @@
         try { history.replaceState(null, '', '#' + id); } catch { /* Local file previews still work. */ }
     }
 
+    function updateMobileWindowLayout() {
+        if (!mobile.matches) return;
+        // Keep absolute positioning for touch dragging and resizing while clearing every icon label.
+        desktop.style.setProperty('--mobile-window-top', (desktopShortcuts.offsetTop + desktopShortcuts.offsetHeight + 12) + 'px');
+    }
+
     function constrainWindow(state) {
         const element = state.element;
         finishMotion(element);
@@ -278,7 +287,6 @@
             activeDrag = {
                 element: state.element, bar, pointerId: event.pointerId,
                 startX: event.clientX, startY: event.clientY, left: bounds.left - area.left, top: bounds.top - area.top,
-                maxX: Math.max(0, area.width - bounds.width), maxY: Math.max(0, area.height - bounds.height),
                 dx: 0, dy: 0, frame: 0
             };
             bar.setPointerCapture(event.pointerId);
@@ -286,8 +294,8 @@
         bar.addEventListener('pointermove', event => {
             const drag = activeDrag;
             if (!drag || event.pointerId !== drag.pointerId) return;
-            drag.dx = Math.max(0, Math.min(drag.maxX, drag.left + event.clientX - drag.startX)) - drag.left;
-            drag.dy = Math.max(0, Math.min(drag.maxY, drag.top + event.clientY - drag.startY)) - drag.top;
+            drag.dx = event.clientX - drag.startX;
+            drag.dy = event.clientY - drag.startY;
             if (!drag.frame) drag.frame = requestAnimationFrame(() => {
                 drag.frame = 0;
                 drag.element.style.transform = 'translate(' + drag.dx + 'px, ' + drag.dy + 'px)';
@@ -506,6 +514,75 @@
         openWindow(link.dataset.open);
     });
 
+    const workItems = [...document.querySelectorAll('#work .work-item')];
+    document.querySelectorAll('[data-work-topic]').forEach(link => {
+        link.addEventListener('click', event => {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            const topic = document.getElementById(link.dataset.workTopic);
+            topic.open = true;
+            topic.querySelector('summary').focus({ preventScroll: true });
+            topic.scrollIntoView({ block: 'nearest' });
+            updateLocation(topic.id);
+        });
+    });
+    document.getElementById('work-expand-all').addEventListener('click', () => {
+        workItems.forEach(item => { item.open = true; });
+        announce('All contributions expanded.');
+    });
+    document.getElementById('work-collapse-all').addEventListener('click', () => {
+        workItems.forEach(item => { item.open = false; });
+        announce('All contributions collapsed.');
+    });
+
+    const toolkitCollections = [...document.querySelectorAll('.toolkit-collection')];
+    const collectionLinks = [...document.querySelectorAll('[data-collection]')];
+    const toolkitVisualization = document.getElementById('toolkit-visualization');
+    const visualizationButton = document.getElementById('player-visuals');
+    let toolkitIndex = 0;
+    let visualizationPlaying = false;
+
+    function selectToolkitCollection(index, notify = true) {
+        toolkitIndex = (index + toolkitCollections.length) % toolkitCollections.length;
+        const selected = toolkitCollections[toolkitIndex];
+        toolkitCollections.forEach(collection => { collection.hidden = collection !== selected; });
+        collectionLinks.forEach(link => {
+            if (link.dataset.collection === selected.id) link.setAttribute('aria-current', 'true');
+            else link.removeAttribute('aria-current');
+        });
+        document.getElementById('player-collection-title').textContent = selected.dataset.title;
+        document.getElementById('player-track-label').textContent = selected.dataset.title;
+        document.getElementById('player-position').textContent = 'Collection ' + String(toolkitIndex + 1).padStart(2, '0') + ' / 04';
+        document.getElementById('toolkit-playlists').scrollTop = 0;
+        document.querySelector('.media-player').scrollTop = 0;
+        if (notify) announce(selected.dataset.title + ', collection ' + (toolkitIndex + 1) + ' of ' + toolkitCollections.length + '.');
+    }
+    collectionLinks.forEach(link => {
+        link.addEventListener('click', event => {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            selectToolkitCollection(toolkitCollections.findIndex(collection => collection.id === link.dataset.collection));
+            updateLocation(link.dataset.collection);
+        });
+    });
+    document.getElementById('player-previous').addEventListener('click', () => selectToolkitCollection(toolkitIndex - 1));
+    document.getElementById('player-next').addEventListener('click', () => selectToolkitCollection(toolkitIndex + 1));
+
+    function syncVisualization() {
+        const playing = visualizationPlaying && !reducedMotion.matches;
+        toolkitVisualization.dataset.motion = playing ? 'playing' : 'paused';
+        visualizationButton.disabled = reducedMotion.matches;
+        visualizationButton.setAttribute('aria-pressed', String(playing));
+        visualizationButton.setAttribute('aria-label', playing ? 'Pause visualization' : 'Play visualization');
+        visualizationButton.title = reducedMotion.matches ? 'Reduced motion enabled' : visualizationButton.getAttribute('aria-label');
+        visualizationButton.querySelector('use').setAttribute('href', playing ? '#icon-pause' : '#icon-play');
+        document.getElementById('player-visuals-status').textContent = reducedMotion.matches ? 'Reduced motion' : playing ? 'Visuals playing' : 'Visuals paused';
+    }
+    visualizationButton.addEventListener('click', () => { visualizationPlaying = !visualizationPlaying; syncVisualization(); });
+    reducedMotion.addEventListener('change', syncVisualization);
+    selectToolkitCollection(0, false);
+    syncVisualization();
+
     function showDesktop() {
         finishDrag();
         finishResize();
@@ -551,6 +628,9 @@
         link.href = href;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
+        const arrow = makeIcon('arrow-up-right');
+        arrow.classList.add('ui-glyph');
+        link.append(' ', arrow);
         parent.append(link);
     }
 
@@ -644,10 +724,10 @@
                 break;
             }
             case 'github':
-                appendLink(result, 'github.com/bryantvilla ↗', 'https://github.com/bryantvilla');
+                appendLink(result, 'github.com/bryantvilla', 'https://github.com/bryantvilla');
                 break;
             case 'linkedin':
-                appendLink(result, 'Bryant Villarreal on LinkedIn ↗', 'https://www.linkedin.com/in/bryant-villarreal/');
+                appendLink(result, 'Bryant Villarreal on LinkedIn', 'https://www.linkedin.com/in/bryant-villarreal/');
                 break;
             case 'ls':
                 result.textContent = 'C:\\Bryant\\\n';
@@ -894,6 +974,10 @@
     function routeHash() {
         const id = location.hash.slice(1);
         if (windows.has(id)) openWindow(id, { focus: false, updateHash: false });
+        else if (toolkitCollections.some(collection => collection.id === id)) {
+            selectToolkitCollection(toolkitCollections.findIndex(collection => collection.id === id), false);
+            openWindow('skills', { focus: false, updateHash: false });
+        }
         else {
             const oldLinks = { home: 'terminal', main: 'terminal', education: 'about', 'undergraduate-work': 'archive', 'authentication-security': 'work', 'enterprise-sso': 'work' };
             if (oldLinks[id]) {
@@ -916,6 +1000,7 @@
             finishDrag();
             finishResize();
             finishAllMotion();
+            updateMobileWindowLayout();
             windows.forEach(constrainWindow);
         });
     });
@@ -1010,10 +1095,16 @@
         clock.title = new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(now);
         clock.setAttribute('aria-label', clock.textContent + ', your local time');
     }
+    const lastLogin = document.getElementById('last-login');
+    lastLogin.dateTime = sessionStartedAt.toISOString();
+    lastLogin.textContent = sessionStartedAt.toDateString() + ' ' + sessionStartedAt.toTimeString().slice(0, 8);
+    lastLogin.closest('.boot-line').hidden = false;
     updateClock();
     setInterval(updateClock, 30000);
     syncWindows();
     document.documentElement.classList.add('os-ready');
+    updateMobileWindowLayout();
+    new ResizeObserver(updateMobileWindowLayout).observe(desktopShortcuts);
     focusWindow('terminal');
     routeHash();
     let entranceDelay = 0;
