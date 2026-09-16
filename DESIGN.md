@@ -14,9 +14,15 @@ LinkedIn, GitHub, and Instagram have matching illustrated metal icons and open t
 
 Original SVG artwork supplies interlocking chrome rings, four-point stars, perspective grid lines, the wordmark, and illustrated desktop icons. These are code-native vector assets, with no bitmap generation required. The existing portrait appears in About. Chrome lettering is a decorative SVG wordmark; readable portfolio headings use solid colors.
 
+The larger terminal donut occupies the right side of the welcome page and is vertically centered against the complete startup content on wider windows. Narrow windows keep the compact layout beside the name. Decorative smileys, mail icons, and external-link arrows use shared SVG symbols so iOS does not substitute emoji artwork.
+
 About is a Myspace-inspired profile inside the chrome browser frame: a blue masthead, portrait and contact links, interests, orange blurb headings, and blue experience and education panels. Contact is an AOL Instant Messenger-inspired window with a gold running figure, buddy links, an away message, and an email composer. These apps use matching SVG icons in the desktop, Start menu, title bars, and taskbar. The contact form explains that messages arrive by email and retains the existing Formspree endpoint.
 
 The resume opens as a Word-inspired document window with a blue W icon, document section links, a ruler, paper on a gray workspace, and Print and Open PDF controls. It embeds `assets/resume.html` as the single source of resume text. Open PDF opens the existing PDF in a separate tab; Print targets only the resume document. External profile links in the document also open separately. All three apps retain the desktop's typography, chrome surfaces, and XP controls. Their interiors adapt to the window width, including when manually resized on a large screen.
+
+My toolkit uses a Windows Media Player-inspired interior: a blue library sidebar, a dark visualization pane, striped tool lists, and a silver transport bar. Four collections retain the original skills and workflow content. Previous and Next browse collections; Play and Pause control a decorative spectrum visualization with no audio. Visualization starts paused, respects reduced motion, and pauses when another window is active. Collection links support direct URLs, and all collections remain readable without JavaScript and when printing.
+
+My work uses an XP Explorer-inspired task pane, address bar, folder header, and contribution files. The sidebar opens the two original engineering stories; Expand all and Collapse all operate their native details disclosures. The original contribution text and deep links remain intact. Narrow windows move the task controls above the files. Both apps retain the shared window controls, resizing, system fonts, and chrome theme.
 
 ## Palette and typography
 
@@ -35,9 +41,11 @@ These are system font stacks and require no font downloads. Catalog references: 
 
 All portfolio content is static HTML, enhanced by dependency-free JavaScript. Desktop icons, terminal shortcuts, and Start entries open About, Work, Toolkit, Resume, Contact, the undergraduate archive, and Read me. The `resume` and `open resume` commands open the document window.
 
-All eight windows support focus, dragging, resizing from every edge and corner, minimize, maximize, restore, and close. Pointer resizing works with a mouse or touch. The bottom-right resize grip is keyboard focusable: arrow keys adjust dimensions by 10 pixels, or 40 pixels with Shift. Minimum dimensions keep controls usable; desktop bounds keep windows within reach. Maximize hides the resize handles, and Restore returns to the custom size. Closing or minimizing retains window dimensions and form drafts for the visit.
+All eight windows support focus, dragging, resizing from every edge and corner, minimize, maximize, restore, and close. Dragging can move windows past any viewport edge; offscreen portions are clipped by the browser. Pointer resizing works with a mouse or touch. The bottom-right resize grip is keyboard focusable: arrow keys adjust dimensions by 10 pixels, or 40 pixels with Shift. Minimum dimensions keep controls usable; resizing stays within desktop bounds. Maximize hides the resize handles, and Restore returns to the custom size. Closing or minimizing retains window dimensions and form drafts for the visit.
 
 Open windows remain accessible in the taskbar. Show desktop temporarily minimizes windows and restores their previous foreground order. Viewport changes, reopening, and Show desktop restoration constrain moved and resized windows to the current desktop. Reset desktop clears custom positions and dimensions and restores the initial arrangement.
+
+On mobile, default window positions follow the measured shortcut rows so every icon label remains visible. Windows retain absolute positioning for touch dragging and resizing. The terminal's last-login timestamp reflects the visitor's local date and time at page load.
 
 Window motion uses the browser's Web Animations API without additional dependencies. Openings reveal the app over 320ms, minimizing shrinks it toward its taskbar button over 260ms, and restoring reverses that path. Closing fades and contracts over 180ms. Maximize and restore apply the destination layout once and animate its transform, preserving custom dimensions. Initial windows arrive 70ms apart. Start opens from the taskbar, with smaller feedback on controls, desktop shortcuts, terminal responses, and contribution disclosures. Transitions use the existing quint easing curve and animate transforms and opacity.
 
