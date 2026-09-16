@@ -24,7 +24,7 @@ if (fs.existsSync('CNAME')) {
 }
 
 // 2. Core files check
-const coreFiles = ['index.html', 'assets/resume.html', 'assets/css/styles.css', 'assets/js/main.js'];
+const coreFiles = ['index.html', 'assets/resume.html', 'assets/css/styles.css', 'assets/js/main.js', 'robots.txt', 'sitemap.xml'];
 for (const file of coreFiles) {
   assert(fs.existsSync(file), `Core file exists: ${file}`);
 }
