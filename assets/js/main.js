@@ -1181,7 +1181,7 @@
     const donutElement = document.getElementById('terminal-donut');
     if (donutElement) {
         const chars = ".,-~:;=!*#$@";
-        const width = 40, height = 16;
+        const width = 40, height = 20;
         const b = new Array(width * height);
         const z = new Float32Array(width * height);
         const R1 = 1, R2 = 2, K2 = 5;
@@ -1289,7 +1289,7 @@
             }
             let res = '';
             for (let i = 0; i < height; i++) {
-                res += b.slice(i * width, (i + 1) * width).join('') + '\n';
+                res += (i ? '\n' : '') + b.slice(i * width, (i + 1) * width).join('');
             }
             donutElement.textContent = res;
         }

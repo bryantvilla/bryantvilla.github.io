@@ -117,7 +117,7 @@ button[hidden], [hidden] { display: none !important; }
 .terminal-welcome { min-height: 0; }
 .terminal-intro { display: grid; grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); column-gap: 16px; align-items: center; margin-top: 14px; }
 .terminal-identity { min-width: 0; }
-.terminal-art { position: relative; min-width: 0; align-self: stretch; pointer-events: none; overflow: hidden; }
+.terminal-art { position: relative; min-width: 0; align-self: stretch; pointer-events: none; }
 .command-echo { font-size: 11px; color: var(--terminal-ink); }
 .command-echo > span { color: var(--terminal-green); margin-right: 7px; }
 .terminal-guidance, .command-shortcuts { max-width: 100%; }
