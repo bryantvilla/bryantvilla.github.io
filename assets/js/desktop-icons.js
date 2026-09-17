@@ -10,6 +10,12 @@ window.BryantDesktopIcons = {
         marquee.hidden = true;
         marquee.setAttribute('aria-hidden', 'true');
         desktop.append(marquee);
+        const hint = document.createElement('div');
+        hint.className = 'desktop-icon-hint';
+        hint.hidden = true;
+        hint.setAttribute('aria-hidden', 'true');
+        hint.innerHTML = 'Double-click to open <kbd>↵</kbd>';
+        desktop.append(hint);
         desktop.tabIndex = -1;
         shortcuts.setAttribute('role', 'listbox');
         shortcuts.setAttribute('aria-multiselectable', 'true');
@@ -18,12 +24,52 @@ window.BryantDesktopIcons = {
         let gesture = null;
         let suppressedUntil = 0;
         let touchOpen = null;
+        let hintTimer = 0;
+
+        function clearHint() {
+            clearTimeout(hintTimer);
+            hint.hidden = true;
+        }
+
+        function updateHint({ immediate = false } = {}) {
+            clearTimeout(hintTimer);
+            if (isMobile() || selected.size !== 1 || gesture?.moved || desktop.classList.contains('is-moving-icons') || desktop.classList.contains('is-selecting-icons')) {
+                hint.hidden = true;
+                return;
+            }
+            const show = () => {
+                if (isMobile() || selected.size !== 1 || gesture?.moved || desktop.classList.contains('is-moving-icons') || desktop.classList.contains('is-selecting-icons')) {
+                    hint.hidden = true;
+                    return;
+                }
+                const [icon] = selected;
+                const area = desktop.getBoundingClientRect();
+                const bounds = icon.getBoundingClientRect();
+                const top = bounds.bottom - area.top + 6;
+                const isAbove = top + 26 > area.height;
+                hint.classList.toggle('is-above', isAbove);
+                hint.style.top = `${isAbove ? bounds.top - area.top - 28 : top}px`;
+                hint.style.left = `${bounds.left - area.left + bounds.width / 2}px`;
+                hint.hidden = false;
+            };
+            if (immediate) show();
+            else {
+                hint.hidden = true;
+                hintTimer = setTimeout(show, 650);
+            }
+        }
+
+        function handleOpen(icon) {
+            clearHint();
+            openIcon(icon);
+        }
 
         function syncSelection() {
             icons.forEach(icon => {
                 icon.classList.toggle('is-selected', selected.has(icon));
                 icon.setAttribute('aria-selected', String(selected.has(icon)));
             });
+            updateHint();
         }
 
         function select(items) {
@@ -112,6 +158,7 @@ window.BryantDesktopIcons = {
             desktop.classList.remove('is-selecting-icons', 'is-moving-icons');
             if (current.capture.hasPointerCapture(current.pointerId)) current.capture.releasePointerCapture(current.pointerId);
             reportSelection();
+            updateHint();
         }
 
         icons.forEach((icon, index) => {
@@ -159,6 +206,7 @@ window.BryantDesktopIcons = {
             gesture.y = event.clientY;
             if (!gesture.moved && Math.hypot(gesture.x - gesture.startX, gesture.y - gesture.startY) < 5) return;
             gesture.moved = true;
+            clearHint();
             desktop.classList.add(gesture.icon ? 'is-moving-icons' : 'is-selecting-icons');
             if (!gesture.frame) gesture.frame = requestAnimationFrame(drawGesture);
         });
@@ -175,20 +223,20 @@ window.BryantDesktopIcons = {
             if (performance.now() < suppressedUntil) return;
             if (event.detail === 0 || touchOpen === icon || isMobile()) {
                 touchOpen = null;
-                openIcon(icon);
+                handleOpen(icon);
             }
         });
         shortcuts.addEventListener('dblclick', event => {
             const icon = event.target.closest('.desktop-icon');
             if (!icon) return;
             event.preventDefault();
-            if (performance.now() >= suppressedUntil && !event.ctrlKey && !event.metaKey && !event.shiftKey) openIcon(icon);
+            if (performance.now() >= suppressedUntil && !event.ctrlKey && !event.metaKey && !event.shiftKey) handleOpen(icon);
         });
         shortcuts.addEventListener('auxclick', event => {
             const icon = event.target.closest('.desktop-icon');
             if (!icon || event.button !== 1) return;
             event.preventDefault();
-            openIcon(icon);
+            handleOpen(icon);
         });
 
         desktop.addEventListener('keydown', event => {
@@ -206,6 +254,7 @@ window.BryantDesktopIcons = {
                 if (!selected.size && icon) select([icon]);
                 const step = event.shiftKey ? 40 : 10;
                 moveGroup(snapshot(), event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0, event.key === 'ArrowUp' ? -step : event.key === 'ArrowDown' ? step : 0);
+                updateHint();
                 announce(`${selected.size} desktop icon${selected.size === 1 ? '' : 's'} moved.`);
                 return;
             } else if (icon && event.key === ' ') {
@@ -216,7 +265,7 @@ window.BryantDesktopIcons = {
                 syncSelection();
             } else if (icon && event.key === 'Enter') {
                 event.preventDefault();
-                openIcon(icon);
+                handleOpen(icon);
                 return;
             } else if (icon && (arrows.includes(event.key) || event.key === 'Home' || event.key === 'End')) {
                 event.preventDefault();
@@ -243,12 +292,17 @@ window.BryantDesktopIcons = {
             reportSelection();
         });
 
+        window.addEventListener('resize', () => {
+            if (!hint.hidden) updateHint({ immediate: true });
+        });
+
         return {
             cancel: () => finish(null, true),
             reset() {
                 finish(null, true);
                 icons.forEach(icon => position(icon, 0, 0));
                 select([]);
+                clearHint();
             },
             refresh() {
                 finish(null, true);
@@ -260,6 +314,7 @@ window.BryantDesktopIcons = {
                     const dy = Math.max(area.top, Math.min(bounds.top, area.bottom - bounds.height)) - bounds.top;
                     position(icon, offset.x + dx, offset.y + dy);
                 });
+                if (!hint.hidden) updateHint({ immediate: true });
             }
         };
     }

@@ -71,6 +71,12 @@ button[hidden], [hidden] { display: none !important; }
 .os-ready .desktop-icon.is-selected { border-color: oklch(54% .15 255 / .8); background: oklch(65% .14 253 / .3); }
 .desktop-icon.is-selected > span { color: oklch(99% .005 250); background: oklch(45% .17 259); text-shadow: 0 1px oklch(30% .06 255); box-shadow: 0 0 0 2px oklch(45% .17 259); }
 .desktop-marquee { position: absolute; z-index: 2; border: 1px solid oklch(51% .19 259); background: oklch(64% .17 253 / .24); pointer-events: none; }
+.desktop-icon-hint { position: absolute; z-index: 10; transform: translateX(-50%); padding: 3px 8px; font: 10px/1.2 var(--ui); color: oklch(99% .005 250); background: oklch(24% .04 258 / .94); border: 1px solid oklch(48% .1 258 / .7); border-radius: 4px; box-shadow: 0 3px 8px oklch(15% .04 255 / .35); pointer-events: none; white-space: nowrap; user-select: none; -webkit-user-select: none; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); animation: hint-fade-in 140ms var(--ease-out); }
+.desktop-icon-hint[hidden] { display: none; }
+.desktop-icon-hint::before { content: ''; position: absolute; top: -4px; left: 50%; transform: translateX(-50%); border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 4px solid oklch(24% .04 258 / .94); }
+.desktop-icon-hint.is-above::before { top: auto; bottom: -4px; border-bottom: none; border-top: 4px solid oklch(24% .04 258 / .94); }
+.desktop-icon-hint kbd { display: inline-block; margin-left: 4px; padding: 0 4px; font: 9px/1.2 monospace; background: oklch(36% .05 258); border: 1px solid oklch(52% .09 258 / .6); border-radius: 3px; }
+@keyframes hint-fade-in { from { opacity: 0; transform: translateX(-50%) translateY(-2px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 .is-selecting-icons, .is-moving-icons { user-select: none; -webkit-user-select: none; }
 .is-moving-icons .desktop-icon.is-selected { cursor: grabbing; }
 .is-moving-icons .desktop-icon > svg { transition: none; }
@@ -834,6 +840,7 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
   .terminal-form label { font-size: 10px; }
   .terminal-status #terminal-hint { font-size: 0; }
   .terminal-status #terminal-hint::after { content: 'help to explore'; font: 8px var(--ui); }
+  .desktop-icon-hint { display: none !important; }
 }
 @media (min-width: 600px) and (max-width: 760px) and (max-height: 570px) {
   .desktop-shortcuts { grid-template-columns: repeat(8, minmax(0, 1fr)); }
