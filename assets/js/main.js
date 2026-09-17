@@ -27,6 +27,8 @@
     let activeDrag = null;
     let activeResize = null;
     let startOpen = false;
+    let desktopIcons;
+    let spinDonut = null;
 
     function makeIcon(name) {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -137,9 +139,10 @@
             state.element.hidden = !visible && !state.exiting;
             state.element.inert = !visible;
             if (!state.exiting) state.element.classList.toggle('is-active', visible && activeWindow === id);
-            state.task.hidden = !state.open;
+            state.task.hidden = !state.open && id !== 'terminal';
             state.task.setAttribute('aria-pressed', String(visible && activeWindow === id));
-            state.task.setAttribute('aria-label', (visible && activeWindow === id ? 'Minimize ' : 'Restore ') + state.title);
+            state.task.setAttribute('aria-label', (visible && activeWindow === id ? 'Minimize ' : state.open ? 'Restore ' : 'Open ') + state.title);
+            if (id === 'terminal') state.task.title = 'Terminal (pinned)';
         });
         const anyVisible = [...windows.values()].some(state => state.open && !state.minimized);
         for (const id of ['show-desktop', 'tray-desktop']) {
@@ -507,6 +510,10 @@
     });
 
     document.addEventListener('click', event => {
+        if (event.target.closest('[data-assistant-toggle]')) {
+            closeStart();
+            return;
+        }
         const link = event.target.closest('[data-open]');
         if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
@@ -586,6 +593,7 @@
     function showDesktop() {
         finishDrag();
         finishResize();
+        desktopIcons?.cancel();
         closeStart();
         const visible = [...windows.entries()].filter(([, state]) => state.open && !state.minimized).map(([id]) => id);
         if (visible.length) {
@@ -642,15 +650,59 @@
         ['resume', 'My resume, open in Word'],
         ['contact', "Let's start a conversation"],
         ['whoami', 'A quick introduction'],
+        ['spin', 'High-speed momentum spin on the ASCII donut'],
+        ['donut', 'Toggle rainbow mode on the 3D ASCII donut'],
         ['theme', 'Switch chrome / midnight wallpaper'],
         ['clear', 'A fresh terminal'],
         ['home', 'Bring back the welcome screen']
     ];
-    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'github', 'linkedin', 'date', 'history', 'echo'];
-    const aliases = { projects: 'work', cls: 'clear', dir: 'ls' };
-    const openNames = ['terminal', 'about', 'work', 'skills', 'archive', 'resume', 'contact', 'readme'];
+    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'spin', 'donut', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'cat', 'type', 'more', 'cd', 'readme', 'resume.doc', 'readme.txt', 'github', 'linkedin', 'date', 'history', 'echo'];
+    const aliases = {
+        projects: 'work',
+        cls: 'clear',
+        dir: 'ls',
+        type: 'cat',
+        more: 'cat',
+        torus: 'spin',
+        rainbow: 'donut',
+        'resume.doc': 'resume',
+        'resume.docx': 'resume',
+        'resume.pdf': 'resume',
+        'readme.txt': 'readme',
+        'readme.md': 'readme',
+        './resume.doc': 'resume',
+        './readme.txt': 'readme'
+    };
+    const openNames = ['terminal', 'about', 'work', 'skills', 'archive', 'resume', 'contact', 'readme', 'resume.doc', 'readme.txt'];
 
-    function scrollTerminal() { terminalScreen.scrollTop = terminalScreen.scrollHeight; }
+    function resolveFileOrWindow(raw) {
+        if (!raw) return null;
+        const clean = raw.trim().replace(/^(\.\/|\\)/, '').replace(/\/+$/, '').toLowerCase();
+        if (windows.has(clean)) return clean;
+        const map = {
+            'resume.doc': 'resume',
+            'resume.docx': 'resume',
+            'resume.pdf': 'resume',
+            'readme.txt': 'readme',
+            'readme.md': 'readme',
+            projects: 'work',
+            toolkit: 'skills'
+        };
+        return map[clean] || null;
+    }
+
+    function scrollTerminal() {
+        terminalScreen.scrollTop = terminalScreen.scrollHeight;
+        const scrollToLatest = () => {
+            terminalScreen.scrollTop = terminalScreen.scrollHeight;
+            const last = terminalOutput.lastElementChild;
+            if (last) {
+                last.scrollIntoView({ block: 'end', behavior: 'auto' });
+            }
+        };
+        requestAnimationFrame(scrollToLatest);
+        setTimeout(scrollToLatest, 40);
+    }
 
     function applyWallpaper(theme, persist = true) {
         document.documentElement.dataset.wallpaper = theme;
@@ -670,15 +722,16 @@
         historyDraft = '';
         terminalInput.value = '';
         const [name, ...args] = text.split(/\s+/);
-        const command = aliases[name.toLowerCase()] || name.toLowerCase();
+        const cleanName = name.toLowerCase().replace(/^(\.\/|\\)/, '').replace(/\/+$/, '');
+        const command = aliases[name.toLowerCase()] || aliases[cleanName] || (windows.has(cleanName) ? cleanName : name.toLowerCase());
         const argument = args.join(' ');
 
         if (command === 'clear' || command === 'home') {
             terminalOutput.replaceChildren();
-            terminalWelcome.hidden = command === 'clear';
+            terminalWelcome.hidden = false;
             openWindow('terminal', { updateHash: false });
             terminalScreen.scrollTop = 0;
-            announce(command === 'clear' ? 'Terminal cleared.' : 'Welcome screen restored.');
+            announce(command === 'clear' ? 'Terminal cleared and reset to home.' : 'Welcome screen restored.');
             return;
         }
 
@@ -699,7 +752,7 @@
                     list.append(button, detail);
                 }
                 const extra = document.createElement('p');
-                extra.textContent = '\nAlso: ls, pwd, open <window>, github, linkedin, date, history, echo.\nTab completes a command. ↑ / ↓ revisit your history.';
+                extra.textContent = '\nAlso: ls, cat <file>, cd <dir>, open <window>, whoami, date, theme, history.\nTab completes a command. ↑ / ↓ revisit your history.';
                 result.append(intro, document.createElement('br'), list, extra);
                 break;
             }
@@ -712,15 +765,73 @@
             case 'archive':
             case 'resume':
             case 'contact':
-                result.textContent = 'Opening ' + windows.get(command).title + '...';
-                openWindow(command);
+            case 'readme': {
+                const winId = command === 'readme' ? 'readme' : command;
+                result.textContent = 'Opening ' + windows.get(winId).title + '...';
+                openWindow(winId);
                 break;
+            }
             case 'open': {
-                const target = argument.toLowerCase();
-                if (openNames.includes(target)) {
+                const target = resolveFileOrWindow(argument);
+                if (target && windows.has(target)) {
                     result.textContent = 'Opening ' + windows.get(target).title + '...';
                     openWindow(target);
-                } else result.textContent = 'Usage: open <window>\nAvailable: ' + openNames.join(', ');
+                } else {
+                    result.textContent = 'Usage: open <file or window>\nAvailable: resume.doc, readme.txt, work/, about/, skills/, archive/, contact/';
+                }
+                break;
+            }
+            case 'cat': {
+                const file = (argument || '').trim().replace(/^(\.\/|\\)/, '').toLowerCase();
+                if (!file) {
+                    result.textContent = 'Usage: cat <file>\nAvailable files: resume.doc, readme.txt\nDirectories: about/, work/, skills/, archive/, contact/';
+                    break;
+                }
+                if (file === 'readme.txt' || file === 'readme.md' || file === 'readme') {
+                    result.textContent = 'C:\\Bryant\\readme.txt\n' +
+                        '--------------------\n' +
+                        'Bryant Villarreal\n' +
+                        'Software Engineer II @ UKG\n\n' +
+                        'I build the systems behind secure access.\n' +
+                        'Backend engineering, identity & a healthy curiosity for how things work.\n\n' +
+                        'Curious about systems. Serious about the details.\n' +
+                        'Type "open resume" or "open work" to explore.';
+                    break;
+                }
+                if (file === 'resume.doc' || file === 'resume.docx' || file === 'resume.pdf' || file === 'resume') {
+                    result.textContent = 'C:\\Bryant\\resume.doc\n' +
+                        '--------------------\n' +
+                        'Bryant Villarreal\n' +
+                        'Software Engineer II @ UKG | Identity & Access Management\n' +
+                        'M.S. Computer Science, Florida International University\n\n' +
+                        '• Core: Backend Architecture, Auth Services, Distributed Systems\n' +
+                        '• Stack: Go, Java, TypeScript, Node.js, Kafka, Docker, Kubernetes\n' +
+                        '• Experience: UKG (2022–Present), FIU Research & Teaching\n\n' +
+                        'Opening full Word document...';
+                    openWindow('resume');
+                    break;
+                }
+                const dir = resolveFileOrWindow(file);
+                if (dir && dir !== 'resume' && dir !== 'readme') {
+                    result.textContent = 'cat: ' + argument + ': Is a directory.\nUse: open ' + argument + '  or  cd ' + argument;
+                    break;
+                }
+                result.textContent = 'cat: ' + argument + ': No such file or directory';
+                break;
+            }
+            case 'cd': {
+                const dir = (argument || '').trim().replace(/^(\.\/|\\)/, '').replace(/\/+$/, '').toLowerCase();
+                if (!dir || dir === '~' || dir === '/' || dir === '..' || dir === '.') {
+                    result.textContent = 'C:\\Bryant\\\nYou are in the root portfolio directory.';
+                } else if (['about', 'work', 'projects', 'skills', 'archive', 'contact'].includes(dir)) {
+                    const target = dir === 'projects' ? 'work' : dir;
+                    result.textContent = 'Opening ' + windows.get(target).title + '...';
+                    openWindow(target);
+                } else if (['resume.doc', 'resume.pdf', 'resume', 'readme.txt', 'readme'].includes(dir)) {
+                    result.textContent = 'cd: ' + argument + ': Not a directory. Try: cat ' + argument + ' or open ' + argument;
+                } else {
+                    result.textContent = 'cd: ' + argument + ': No such file or directory';
+                }
                 break;
             }
             case 'github':
@@ -729,16 +840,26 @@
             case 'linkedin':
                 appendLink(result, 'Bryant Villarreal on LinkedIn', 'https://www.linkedin.com/in/bryant-villarreal/');
                 break;
-            case 'ls':
+            case 'ls': {
                 result.textContent = 'C:\\Bryant\\\n';
-                for (const [name] of helpCommands.filter(([name]) => ['about', 'work', 'skills', 'archive', 'resume', 'contact'].includes(name))) {
+                const fileItems = [
+                    { name: 'about/', command: 'about' },
+                    { name: 'work/', command: 'work' },
+                    { name: 'skills/', command: 'skills' },
+                    { name: 'archive/', command: 'archive' },
+                    { name: 'contact/', command: 'contact' },
+                    { name: 'resume.doc', command: 'resume' },
+                    { name: 'readme.txt', command: 'readme' }
+                ];
+                for (const item of fileItems) {
                     const button = document.createElement('button');
                     button.type = 'button';
-                    button.dataset.command = name;
-                    button.textContent = name === 'resume' ? 'resume.doc' : name + '/';
+                    button.dataset.command = item.command;
+                    button.textContent = item.name;
                     result.append(button, document.createTextNode('  '));
                 }
                 break;
+            }
             case 'pwd':
                 result.textContent = 'C:\\Bryant\\Portfolio\nYou are right where you should be.';
                 break;
@@ -759,6 +880,49 @@
                 }
                 applyWallpaper(theme);
                 result.textContent = 'Wallpaper set to ' + theme + '. Make yourself at home.';
+                break;
+            }
+            case 'donut': {
+                terminalWelcome.hidden = false;
+                const donut = document.getElementById('terminal-donut');
+                if (donut) {
+                    const isRainbow = donut.classList.toggle('is-rainbow');
+                    try {
+                        localStorage.setItem('bryantos-donut-rainbow', isRainbow ? 'true' : 'false');
+                    } catch {}
+                    if (isRainbow) {
+                        result.textContent = '🌈 Prismatic rainbow mode enabled!\nYour 3D ASCII donut is now glowing in full spectrum.\nType donut again to toggle off.';
+                    } else {
+                        result.textContent = '🍩 Rainbow mode disabled. Restored classic terminal phosphor.\nType donut to turn rainbow mode back on.';
+                    }
+                } else {
+                    result.textContent = 'Donut element not found.';
+                }
+                break;
+            }
+            case 'spin': {
+                terminalWelcome.hidden = false;
+                const arg = (argument || '').trim().toLowerCase();
+                let dirX, dirY, speed = 6.5;
+                if (arg.includes('left') || arg.includes('west')) { dirX = -1; dirY = 0; }
+                else if (arg.includes('right') || arg.includes('east')) { dirX = 1; dirY = 0; }
+                else if (arg.includes('up') || arg.includes('north')) { dirX = 0; dirY = -1; }
+                else if (arg.includes('down') || arg.includes('south')) { dirX = 0; dirY = 1; }
+                if (arg.includes('hyper') || arg.includes('fast') || arg.includes('turbo') || arg.includes('max')) {
+                    speed = 9.5;
+                }
+
+                if (typeof spinDonut === 'function') {
+                    spinDonut({ dirX, dirY, speed });
+                }
+
+                const phrases = [
+                    '🍩 Whoosh! Spinning the 3D ASCII donut with high-speed momentum.',
+                    '🍩 Turbo spin activated! The torus is orbiting at high speed.',
+                    '🍩 Flinging the donut into a high-speed momentum spin! Click & drag to steer.'
+                ];
+                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+                result.textContent = phrase + '\nTip: Click and drag the donut in the terminal to steer its spin!';
                 break;
             }
             case 'sudo':
@@ -798,6 +962,12 @@
         } else if (event.key === 'Tab' && !event.shiftKey && terminalInput.value.trim()) {
             const current = terminalInput.value.toLowerCase();
             const choices = current.startsWith('open ') ? openNames.map(name => 'open ' + name)
+                : current.startsWith('cat ') ? ['cat resume.doc', 'cat readme.txt']
+                : current.startsWith('type ') ? ['type resume.doc', 'type readme.txt']
+                : current.startsWith('more ') ? ['more resume.doc', 'more readme.txt']
+                : current.startsWith('cd ') ? ['cd about/', 'cd work/', 'cd skills/', 'cd archive/', 'cd contact/']
+                : current.startsWith('donut ') ? ['donut fast', 'donut left', 'donut right', 'donut up', 'donut down']
+                : current.startsWith('spin ') ? ['spin fast', 'spin left', 'spin right', 'spin up', 'spin down']
                 : current.startsWith('theme ') ? ['theme chrome', 'theme midnight'] : commandNames;
             const matches = choices.filter(name => name.startsWith(current));
             if (matches.length === 1 && matches[0] !== current) {
@@ -948,6 +1118,7 @@
         finishDrag();
         finishResize();
         finishAllMotion();
+        desktopIcons.reset();
         windows.forEach((state, id) => {
             state.open = id === 'terminal' || (id === 'readme' && window.innerWidth > 1050);
             state.minimized = false;
@@ -1000,82 +1171,321 @@
             finishDrag();
             finishResize();
             finishAllMotion();
+            desktopIcons.refresh();
             updateMobileWindowLayout();
             windows.forEach(constrainWindow);
         });
     });
-    window.addEventListener('blur', () => { finishDrag(); finishResize(); });
+    window.addEventListener('blur', () => { finishDrag(); finishResize(); desktopIcons?.cancel(); });
 
     const donutElement = document.getElementById('terminal-donut');
     if (donutElement) {
-        const donutFrames = [
-            "           $$$$##########$$$$           \n         ##*****!******!*****##         \n       **!!!!!!!!!!!!!!!!!!*!!!**       \n      !!!!=====;;;;;;;;;;======!!!      \n     ====;;;:::~~~~~~~~~~:::;;;====     \n     ;;;::~~--,,...  ...,,--~~::;;;     \n     ::~~-,,..            ..,--~~::     \n     ~~-,,.  ...-      ~...  .,,-~~     \n     --,,..  ...:!####!:...  ..,,--     \n      ,,.......,;*#$$#!;,.......,.      \n        ....,,-:=!!**!!=:-,,....        \n           .,,-:;=!!!!=;:-,..           \n               .,,----,,.               \n                                        \n                                        \n                                        ",
-            "           $$$$############$$           \n         ###**********!!!!****#         \n       ***!**!!!!!!!!!!!!!!!!!!!*       \n      !!!!!!===;;;;;;;;;;;;===!!=!      \n     ==!==;;:::~~~------~~~:::;;==      \n     ==;;::~---,...    ...,,-~~::;:     \n     ;::~~--,.             ..,-~~::     \n     :~~-,,.  ..       ,..   .,,-~      \n     ~---,... ..:!*!##!;......,,--      \n      ,,,,.....,;!#$$#*=~,,..,,,,       \n       .,,,,,,-:;!**#*!=;~--,,.         \n         ..,,-~:;=!!*!=;:~-,.           \n             ..,-~:::~~-,               \n                                        \n                                        \n                                        ",
-            "           $$$#############$$           \n         ####******!!!!!!!!***#         \n       ***!*!!!!!!!!!!!!!!!!!!!!        \n      !!!!!!!===;;;::::::;;;==!!=       \n     =!!!==;;:::~~--,,,---~~::;;=;      \n    ;===;;::~~-,,.       ..,--~:;;      \n    ;;;;:~~-,,.            ..,-~~:      \n    :::~~--,. ..       ..  ...,--~      \n     ~~~--,,....~=  !*!;.....,,--       \n     -----,,...,;!#$@$*!:~--,,,,        \n      ,,,,,,,--:=!*##**!=:~~--.         \n        .,,,-~~:;!!!!*!=;:~-.           \n           .,,-~~:;;;;:~-.              \n                                        \n                                        \n                                        ",
-            "           $$$$############$            \n         ####****!!**!*!!*****          \n       #***!*!*!!!!!!!!!=!!==!!!        \n      *!!**!!!==;;;::::::;;;==!==       \n     !!!!===;;::~~--,,,,--~~::;=;       \n    =====;;::~-,..       ..,--~:;       \n    ;=;;:::~-,.            .,,-~:       \n    ;;:::~~-,.         ......,--~       \n    ~:::~--,....~    *!=...,,----       \n     ~~~~--,,...;!#$@$#*;~~~---,        \n      --------~:=!*#$#*!=;:~~-.         \n       ,,----~:;=!!!!!!!=::~.           \n          .,,-~::;====;:~,              \n                ....                    \n                                        \n                                        ",
-            "           $$$$$###########$            \n         ####*******!!!!!!!***          \n       ##****!!**!!!====!!=!=!!         \n      ***!!!!!===;::::::::;;==!=        \n     !!!!!===;::~---,,,,---~:;;=;       \n    =!!!==;;:~--,.       ..,-~:;;       \n    ===;;;:~~-,            .,-~::       \n    ;;;;::~~-,         ....,,-~~~       \n    :::::~~-,...-    !!=,,----~~        \n     ~:~~~~--,,,;!#$@$#*;:::~~~,        \n     -~~~~~~~~~:=!*#$$#*!=;::~.         \n       ----~~~:;==!!***!!=;~,           \n         ,---~::;==!!!=;:-.             \n             .,,-----,                  \n                                        \n                                        ",
-            "           $$$$$$########$$             \n         #####*****!*!!!!!!**           \n       ##****!*!!!!!=!!!!!=!!!!         \n      ***!**!!!=;;;::::::;;=====        \n     !!*!!!!=;;:~~-,,,,,,-~~:;==        \n    =!!!===;::~-,.       ..-~~:;:       \n    =====;;:~-,.          .,-~~::       \n    ;==;;;:~-,.        ....--~~:~       \n    ;;;;:::~-,..-    =!=--~~~~~~        \n    ~:::::~~--,-:=*$@$$#*;;:::~,        \n     ~~:::~~~~~:=!*$$$$*!!=;:~.         \n      ,-~~~~:::;==!****!*!=:-           \n        ,--~~::;==!=!!!=;:,             \n           .,,-~~::::~-.                \n                                        \n                                        ",
-            "           $$$$$$$#######$              \n         $$####****!*!!!!!**#           \n       ###****!!*!!====!!!=!!!          \n      ******!!!==;;::::::;;==!=         \n     !*!!!!!=;;:~~--,,,,,-~:;;==        \n    =!!!!!==;:~-,.       .,-~:;;        \n    =!!===;;:~-.         ..--~:;        \n    =====;;:~-,        ...,~~:::        \n    ;;;;;;::~-..,     !!~~~::::~        \n    ::;;;:::~~--;=*#$$$#*==;;;:         \n     ~:::::::::;=!*$$$$##!==;:.         \n      -~~:::::;;=!!*****!!=;~           \n       .-~~~::;;=!=!!!!!=;~             \n          .,-~~::;;;;::-.               \n                                        \n                                        ",
-            "            $$$$$$$###$$$$              \n         $$$####***!!!!!!**#            \n       ####***!!**!!!!!!!!!!!*          \n      *****!!*!==;;:::::;;====!         \n     ***!!*!!=;::~-,,.,,-~~:;===        \n    =!!!!!!=;:~~,.      ..-~:;=;        \n    =!!!===;:~-,        ..-~~:;;        \n    ======;:~~,.       ..,-~::;:        \n    ;====;;:~-,.,     !!~::;;;;:        \n    :;;;;;;::~~:;=!*$$$$#*===;:         \n     ::;;;;;;::==!*#$@@$#*!!=:,         \n      ~::::;;;;==!**###*!*!=:           \n       ,~~~::;;==!!!!!!!!=:,            \n         .--~~::;;====;:-               \n              ..,,,,.                   \n                                        ",
-            "            $$$$$$$$$$$$$               \n         $$$$###*****!!***##            \n       #####****!!!!!!=!!==!*           \n      *#****!!!!=;;::::;;==!=!!         \n     ****!*!!=;;:~-,,,,,-~:;=!=         \n    =!!!*!!==;:~,.      .,-~;;=;        \n    =!!!!!=;;~-,        .,-~:;;;        \n    =!!!===;:~-.       ..-~:;;;;        \n    ;=====;;:~-.,     =!:;;;;;;:        \n    :;===;;;;:~;;=!*$$$$##!!==;         \n     :;;;;;;;;;=!!*#$@@$##*!!;-         \n      ~:;;;;;;==!!*#####*!*=;,          \n       -~::;;;====!!!!!!!!;~            \n         ,-~:::;;;=====;~,              \n            .,,------,                  \n                                        ",
-            "             @@$$$$$$$$$                \n         $$$$####****!***##             \n       #####***!!!!*!!!!!!!**           \n      ###*****!!==;;::;;;=!!!!          \n     *******!==;:~--,,,--~;;===         \n    =****!!==;:~-.     ..,~:;==;        \n    =!!!!!!=;:~,        .,~:;;=;        \n    =!!!!!=;;:-.       .,~:;;==;        \n    ==!====;::-,-     =!!;=====:        \n    ;=======;;;;;=!*#$$$##*!!=;         \n     :;======;==!**#$@@@$#*!!=~         \n     -:;;;;====!!**######*!!;~          \n       ~::;;;===!!!!!!!!!!=:            \n        .-~:::;;====!!!=;~.             \n            ,--~~~:~~--                 \n                                        ",
-            "             @@@@$$$$$$                 \n          $$$$###*******###             \n        #####**!!!!!!!!!!!!**           \n      ####****!!==;;;;;;==!!!!          \n     ******!!!=;:~--,,,-~:;=!!!         \n    =*****!!=;:~-.     ..-~;===         \n    !!*!!!!=;:~-        .-::;==;        \n    !!!!!!==;:~,       .-~:;===;        \n    =!!!!!==;::~-     =!*!*!!!=:        \n    ;========;=;;== *$$$$##**!=         \n     ;;=======!!!**#$@@@$$#**=:         \n     -:;;=====!!!**##$$##*!!=:          \n       ~:;;;====!!!!**!!!!!;-           \n        ,~:::;;===!!!!!==:-             \n           ,-~~~:::::~~,                \n                                        ",
-            "              @@@@@@$$                  \n          $$$$$####****###              \n        $$$###**!!!!!=!!!!**            \n      #####**!!!!==;;;;==!!!!!          \n     *##****!!=;:~--,,-~:;==!!!         \n    =*****!!=;:~-.     .,~:;=!!         \n    !!***!!!=;~-       .,~:;==!;        \n    !!*!!!!=;;~,       .-:;==!!;        \n    =!!!!!!==;:~-     ;!****!!=;        \n    ;=!!!!!=======; *#$$$$##*!=~        \n     ;===!!!!!!!!**#$$@@$$#*!!;         \n     ~;;====!!!!**###$$$##*!!;          \n      ,:;;;===!!!!!****!!!!=:           \n        -~::;;==!!!!!!!!=;~             \n           -~~~::;;;;::~,               \n                                        ",
-            "               @@@@@@                   \n          $$$$$######*####              \n        $$$$##**!!!!!!!!***#            \n      ######*!!!!==;;;==!!!!*           \n     *####**!!=;;:~----~:;=!!!          \n     ******!!=;~-.    ..-~:=!!!         \n    !*****!!=;:-       .-:;==!!;        \n    =!!***!!=;:,       .~:=!!!!;        \n    =!!!!!!!==;:-     :!**#***!;        \n    ;=!!!!!!!!!===  =#$$$$##*!!~        \n     ;=!!!!!!!!!**##$$@@$$$#*!;         \n     ~;===!!!!!***##$$$$##*!!=          \n      -:;;===!!!!!*******!!!:           \n        -::;;==!!!!!!*!!!=;-            \n          .-~::;;;;;;;;:~               \n                ....                    ",
-            "                 @@                     \n          $$$$$$$#######$               \n        $$$$##***!!!!=!!!*#*            \n      ######**!!!===;===!!!**           \n     *####**!===;:~---~:;=!!!*          \n     *##***!!=;:-.    .,-:;=!!!         \n    !******!=;:-.      .-:==!!!;        \n    =!****!!=;:-       ,~;=!**!;        \n    =!!!**!!!==:~     :!*####*!;        \n    ;!!!!!!!!!!!==   *$$$$$##*!:        \n    ~==!!!!!!!****##$$@@@$$#*==         \n     ~;=!!!!!!****##$$$$$#**!=~         \n      ~:;===!!!!!****#***!!!;-          \n        ~:;;===!!!!!!!!!!!;~            \n          ,~:::;;;====;:~-              \n              .,,-,,,.                  ",
-            "                                        \n           @@$$$$$####$$                \n        $$$$$##**!!!=!!!*##             \n       #$###**!=======!!!!!**           \n     *#####*!!==;:~--~~:;=!!**          \n     *####**!=;:-,    .,~:=!!*!         \n    !******!!=:-.      ,~;=!!*!         \n    !******!!=:-       ,:;!****=        \n    =!******!!=;~     -!*####*!;        \n    ;!!!*****!!!!=;  *#$$$$$#*!;        \n    ~=!!!*!*******##$$@@@@$#*!!         \n     :;=!!!!!****###$$$$$##*!=:         \n      ~:===!!!!*****###***!!=~          \n       .~:;===!!!!!!!!!!=!=:,           \n          -~:;;;=======;:~.             \n             .,,-----,.                 ",
-            "                                        \n           $@@$$$$$$$$$$                \n        #$$$$##***!!!!!*###             \n       $$$$##*!!!!!=!!!!!!***           \n     !#####**!==;:~~~~:;=!!!**          \n     *####**!=;:-,   .,~:;=!**!         \n    !*####**!=;~.      ,:;!****         \n    !*******!=;~       -:!*###*=        \n    =!*******!!;:      !*#$###*=        \n    ;!!********!!==  !#$$$$$$#!=        \n    :=!!!********###$$$@@@$$#!=~        \n     :==!!!*!***####$$$$$$#*!!;         \n      ~;==!!!!!****#####**!!=;          \n       ,:;===!!!!!!!!!!!!!!;~           \n         .~:;;;===!=!!==;:-             \n             ,--~~~~~--.                ",
-            "                                        \n            @@@@$$$$$$$                 \n         $$$$$##****!***##              \n       $$$$##**!!=!!!!!!!**#            \n      #$$###*!===::~:::;=!!*#*          \n     *#####*!!;:~,. ..,:;=!!**!         \n    !*#####*!=;~.     .-:=**##*         \n    !**####**!;:       -=*####*=        \n    =!***##***!=:      !*#$$$#*=        \n    =!!*********!!=  !#$$@$$$#*=        \n    :=!*******######$$$@@@$$#*!;        \n     ;=!!******####$$$$$$$##*==         \n      :;=!!!!!!***#######*!!==,         \n       -:;==!!!!!!!!!*!!!!==:           \n         ,~:;;;==!=!!!!==;~.            \n            .--~~::::~~-.               ",
-            "                                        \n             @@@@@@$$$                  \n         $@$$$$##*****##$#              \n       $$$$$##*!=!!!!!*!**##            \n      #$$$##*!==;;::::;=!!*##           \n     ##$$###*!;:~-...,-;;=**##!         \n    !######**!;~.     ,~;!*###*         \n    !*######*!=:       ~=*#####!        \n    =**#####**!!;      =*$$$$$#!        \n    =!****#####**!=  =#$$@@$$$*=        \n    :=!!****########$$$@@@@$$#!=        \n     ;=!!*!**######$$$$$$$$#*!=:        \n      :==!!**!***#########*!!=:         \n       -:;=!!!!*!!!***!!!!!!=~          \n         -::;===!!!!!!!!==:~            \n            ,-~::::::::~-               ",
-            "                                        \n               @@@@                     \n          @@@$$########$$               \n       #$$$$$#*!!!!!!!!**###            \n      #$$$$##*!;=;;;;==!*!*##           \n     ##$$$##*!=:~-,,,-~;!!*###!         \n    !##$$$##*!;~,     ,:=!*####         \n    !*######**=:       ~=*#$$$#*        \n    =**#######*!;      =*$$$$$#*        \n    =!**########**!  ;*$$@@@$$#!        \n    :!!***#########$$$$@@@@$$#*=        \n     ;=!!!***####$$$$$$$$$$##*==        \n      :=!!!!!***##########**=!;         \n       ~:==!!*!*!!!****!!!=!=;          \n         -:;;===!!!!!!!!!=;:,           \n            -~:::;;;;;::~,              ",
-            "                                        \n                                        \n           @@@$$$####$$$                \n        $@$$$##*!!!!!!**#$$             \n      #$$$$$#*!=======!!!*#$#           \n     #$$$$$#*!=::--,-~;=**##$#!         \n    !#$$$$$#*!=~,    .-:=*#$$$#=        \n    !##$$$$##*!;      .~=*#$$$$*        \n    !*###$$$##**=      ;*$$@$$$#;       \n    =!*####$$$###**=  *$$@@@@$$*;       \n    :=!**####$$$$$$$$$$@@@@$$$#!:       \n     ;!*****####$$$$$$$$$$$$#*!=        \n      ;=!*!!***############**!=:        \n       ~;==!!**!!*******!!!!==~         \n         ~:;===!!!!!!!!!!!=;~           \n            -~::;;;;;;;;:~,             ",
-            "                                        \n                                        \n            @@@@$$$$$$$                 \n        #@@@$$##*!!!!**#$$$             \n       $$$$$##!=;===!!!**##$$           \n     *$$$$$$#*=;;~-~~:=!!*#$$$*         \n     #$$$$$##*=~,    ,~;=*#$$$$*        \n    !##$$$$$#*!;      .~=*$$$$$#        \n    !*##$$$$$##*=      :*#$@@@$#!       \n    =!*##$$$$$$$##** !*#$@@@@$$#!       \n    :=!**###$$$$$$$$$$$@@@@@$$#*;       \n     ;!!***###$$$$$$$$$$$$$$##*=;       \n      ;=!!!****#######$####**!!=        \n       ~;=!!***!!********!!!==;         \n         ~:;==!!!!!*!!!!!!==:-          \n           .-~:;;;;;=;;;:~~             ",
-            "                                        \n                                        \n              @@@@@@@$                  \n         $@@@$$##****##$$$              \n       $@@@$$#*!==!!!*!*##$$$           \n      $$$$$$#*!:;;:::;!!!#$$$$#         \n     #$$$$$$#*=~-.  .-:==*#$$$$#        \n    =#$$$$$$##!;      .~=*#$@@$$*       \n    =*#$$$$$$$##!      :*#$@@@$$*       \n    =!*##$$$$$$$$##***#$$$@@@@$$*       \n    ;!!*##$$$$$$$$$$$$@@@@@@$$##!       \n     =!!**####$$$$$$$$$$$$$$$#*!=       \n      ;=!!****#####$$$$#####*!=!:       \n       ~;=!!*!!************!=!=~        \n         ~;;=!!!!!!!*!!!!!==;:          \n           ,-~:;;;==;;;;;:~-            ",
-            "                                        \n                                        \n                                        \n          $@@@$$$#####$$$$              \n        $@@@$#**!=!!!**##$$@$           \n      #$@@$$#*!;;;;;;=*!*#$$@@$         \n     *$$@@$$#*=:~,..,-:==*#$@@@$        \n     #$$$@$$$#*;      .~;*#$@@@$#       \n    =*#$$$$@$$$#!      ~*#$@@@@$#!      \n    ;!##$$$$@@$$$$#####$$@@@@@$$#!      \n    ~=!###$$$$$@@@@@@@@@@@@@$$$#*=      \n     ==**####$$$$$$$@@@$$$$$$#**=;      \n      ;=!!****#####$$$######*!!=;       \n       :;=!!!!!!***********!!!=:        \n         ~;;=!!!!!**!!!!!!!=;;-         \n           ,~~:;;=====;;;::-.           ",
-            "                                        \n                                        \n                                        \n            @@@@$$$$$$$@@@              \n         $@@$$##*!!!!!*#$$@@@#          \n       $@@@$$#*=;!===!!!!#$$@@@#        \n      $$@@@$#*=::~-,-~:=;!#$$@@$#       \n     *$$@@@$$#*;.     .~;!#$@@@@$*      \n     *#$$@@@@$$#!      ;*#$@@@@$$#      \n     !##$$$@@@@$$$$$#$$$$@@@@@$$#*;     \n     =!##$$$$@@@@@@@@@@@@@@@$$$#*!:     \n     ;!!**###$$$$$$$$$$$$$$$$##*!;      \n      ;=!!!**#####$$#######**!!==:      \n       :;=!!*!*!************!==;~       \n         ~:==!!!!!!!*!*!*!!==;~         \n           ,~~:;;;=====;;::~,           ",
-            "                                        \n                                        \n                                        \n              @@@@$$$$@@@@              \n          @@@@$##******##$@@@$          \n        $@@@$#*!=!!!!!!=!*#$@@@$        \n      *$@@@$$#!;;:~--~:;;!#$$@@@$*      \n     !#$@@@$$#*:-      -:*#$@@@@$#=     \n     *#$@@@@@$$#*      *#$$@@@@@$#*     \n     !##$$@@@@@@$$$$$$$$@@@@@@$$##!     \n     =**#$$$@@@@@@@@@@@@@@@@$$$#**=     \n     ;!!**##$$$$$$$$$$$$$$$$##**!=;     \n      ;!!****##############***!!=;      \n       :;=!!!**!********!!*!!!=;:       \n         ~;===!!!!!!!!!!!!!==;~         \n           ,-::;;;;;;;;;;::~,           ",
-            "                                        \n                                        \n                                        \n                @@@@@@@@@@@             \n           $@@@$$#******#$$@@@$         \n         $@@@$#*!!!*!!=;=*#$$@@@$       \n       #@@@@$#*=;;:~~~:::=*$$@@@@$      \n      #$@@@@$#*;~,     .;*#$@@@@@$#     \n      #$$@@@$$$#!     *#$$$@@@@$$$*=    \n     =*#$$@@@@@@$$$$$$@@@@@@@@$$$#*;    \n     ;!##$$$$@@@@@@@@@@@@@$$$$$##*=:    \n     :=!*###$$$$$$$$$$$$$$$###**!!;     \n      ;==!!**##############***!!!;      \n       ~;=!!*!*!***********!!!=;:       \n         ~;;=!!!!!!!!!!!!!==;;~         \n           ,~~::;;;;;;;;:::-,           ",
-            "                                        \n                                        \n                                        \n                 $@@$$$$@@@@            \n             @@$$#***!!**#$$@@@$        \n          $@@@$#*!*!!!;:;!*#$@@@@$      \n        $@@@$$#!=!;:~-~~~!##$@@@@$#     \n       #$@@$$#*=-~.     *#$$@@@@$$#!    \n      *$$@@@@$#*;    *#$$$@@@@@$$##!    \n      *#$$@@@@@$$$$$$$@@@@@@$$$$##*=    \n      !*#$$$$$@@@@@@@@@$$$$$$$##*!=;    \n      ;!*###$$$$$$$$$$$$$#####*!!!;     \n      :=!!***###########*****!!!=;-     \n       :;!=!!!!!!********!!!!!=;~       \n         ~;==!!!!!!!!!!!!==;;:-         \n           ,~~::;;;;;;;:::~-            ",
-            "                                        \n                                        \n                                        \n                  $$$$$$$$$@@@          \n              $$$#**!==!!*#$$@@@$       \n           $@@$$#*!!===~:!*#$@@@@$#     \n         #@@@$#*!!=:--,~:*#$$@@@@$$*    \n        $@@@$$*!::-.   !#$$$@@@@$$#*    \n       #$$@@$$#*~.  *##$$$@@@$$$$#*!    \n      =#$$$$$$$$$$$$$$$$$$$$$$$###*=    \n      =*##$$$$$$$$$$$$$$$$$$####*!=;    \n      :!!*###$$$$$$$$$$#####***!*!;     \n       ;=!!***#########*****!!!==;      \n       -;=!!!!!*!!!!***!**!!!=;:~       \n         ~:;==!!!!!!!!!!==;;:~-         \n           ,~~::;;;;;;:::~-,            ",
-            "                                        \n                                        \n                                        \n                  $$######$$@@@$        \n               $$#*!=;;;=!##$@@@@$      \n            $@$$#*!==;:-:!#$$$@@@$$!    \n          #@@@$#*!;~,..,!#$$$@@@$$#*    \n         $@@@$#*=;~,  !*#$$$$$$$$$#*;   \n        #$$$$$#*:~ *##$$$$$$$$$$##*!;   \n       !#$$$$$$#$$$$$$$$$$$$$$###*!=    \n       !*#$$$$$$$$$$$$$$$$####***!=;    \n       ;!*################****!!!=;     \n       ;==!****#**********!*!!!=;:      \n        :=====!!!*!***!!!!!!=;;~,       \n         ~:;==!=!!!!!====;;::~,         \n           ,~~:::;:;::::~--.            ",
-            "                                        \n                                        \n                       $$$$@@           \n                  ##**!!**#$$@@@$       \n               ###!!=:~:=*#$$@@@@$#     \n             $$#*!!=:~~-=*#$$@@@$$$*    \n           #@@$$*=;-.. !*#$$$$$$$$#*    \n          $@@@$#!!:, =*#$$$$$$$$$##*;   \n         #$$$$#*=-,*###$$$$$$$$##**!;   \n        *#$$$#######$$$$$$$#####*!!=    \n        *####################**!!!=:    \n        =!*##############****!!!!=:     \n        ;=!!************!!*!!!=;:-      \n        ~===!=!!!!!!!*!!!!!==;:~        \n         .:;=;==========;;;:~-          \n           .-~:::::::::~~-,             ",
-            "                                        \n                                        \n                     #####$$@@@$        \n                  #*!=;=!*#$$@@@@$      \n               *#*=;;:-:!*#$$@@$$$#     \n             !$#*!=:-,,;*#$$$$$$$$#*    \n            #$$$#=:,. =*##$$$$$$$##*    \n           $@@@$*=;- !*##$$$$$$###*!    \n          #$@$$#*;~**###$$$$#####*!=    \n         *#$$#****###########****!!=    \n         *################****!!!!;-    \n         !******************!!!!=;-     \n         ==!!!*********!!!!!!==;~.      \n         :;==!!!!!!!!!!!!===;:~-        \n          ~;;==========;;;::~,          \n            -~:::::::::~~-,             ",
-            "                                        \n                         $@@@           \n                    **!**#$$@@@@$       \n                 *!=:::=!##$$@@@$$      \n               !*==;:--=*#$$$$$$$$#     \n              #*!=:-..:!*##$$$$$$##!    \n             #$##;~..:!*##$$$$$###*!    \n           =$@@$#!;-=!*##########*!=    \n           $@@@$#!;!**########****!=    \n          *$$##!!!***######*****!!=:    \n          *##*********#*******!!!=:     \n          !!*************!*!!!!=;:      \n          ;=!!!!!!!!!!!!!!!!==;:~       \n          ;:;=====!=!=!====;;:~,        \n           :;;;=======;;;;::-.          \n            ,-~:::::::~~~-,             ",
-            "                                        \n                      ##$$$@@@$         \n                   !===!##$$@@@$$       \n                 !;:-~;!*#$$$$$$$#      \n               !=;:~-,;!*##$$$$$$#*     \n              *!=:-. ~=*###$$$$###*=    \n             *#*=:,. =!*#########**=    \n            *$$$#*:-=!**########**!;    \n           !$@@@$#=!!***####****!!=:    \n           *$$#*!=!!**********!*!=;     \n           ***!!!!!********!**!!=;~     \n          ~!!!!!!!!!!!!!!!!!!!==;~      \n           ;==!!!!!!!!!!!!!===;:-       \n           :;=;====!!======;;:~.        \n            :;;;;;;;;;;;;;:~-,          \n             ,~~::::::~~--,             ",
-            "                                        \n                    ***#$$$@@@$         \n                  =;;=!*#$$$$$$$#       \n                =::~-:=*##$$$$$$$#      \n               =;:-,,:!*###$$$$$##*     \n              !=:-.  ;!**########**     \n             !*=;-..:=!**#######**!     \n             #$$#=:,=!****####***!=     \n            *$@@@$*=!!**********!!=     \n            #$$$#;==!!*******!*!!=;     \n           :***====!!!!!!!!!!!!==;-     \n           ~=!=====!!!!!!!!!!===:~      \n           ~;;======!!!!!====;;:-       \n            ~;;;=========;;;;:~,        \n             ::;;;;;;;;;:::~~,          \n              ,~~~:~:~~~~--.            ",
-            "                     $$$@@@@$           \n                   !!*##$$$@@$$         \n                 ;::;!**#$$$$$$$#       \n                ::~-:=!*###$$$$$#*      \n               ;:,.,~=!**########*=     \n              =:-.. :=!**#######**!     \n             ;!;~,..:=!****####**!=     \n             !##;;~~;=!!*********!=     \n             #$@@$#;==!!******!!!=;     \n            ;#$$$$:;=!!!!*!!*!!!!=:     \n            ;**!;;;===!!!!!!!!!==;      \n            ~===;;=====!!!!====;:~      \n            ~:;;;;;==========;;:-       \n             ~:;;;;;;;;;;;;;;:~,        \n              ~::::;;::::::~~-          \n               ,-~~~~~~~~--,            ",
-            "                   ###$$@@@@$           \n                 !=!!*##$$$$$$$         \n                :::;=!*###$$$$$#*       \n               ::~~~;=**####$$$##!      \n              :~,..-;=!**########*      \n              :-.. ,:=!!**#####***=     \n             ::~,..,:=!!*********!=     \n             =*=;:~-;==!!*******!!;     \n             !#$$$$:;==!!!***!!!!=;     \n             !#$$$~:;==!!!!!!!!!==:     \n             =**!::;;====!!!!!===;      \n             :==;::;;;=========;;~      \n             ~:::::;;;;;====;;;:~       \n              ~::::::;;;;;;;::~-        \n               -~~:::::::::~~-.         \n                .,---~~~---,            ",
-            "                  ###$$$$@@@$           \n                ==!!*##$$$$$$$#         \n               :~~;=!**###$$$$$#        \n              :~-~:;=!**########*       \n              ~..--:;=!**#######*!      \n             ~-.. .~:=!!*****#***!      \n             ~~,...-:==!!********!=     \n             :;::~--:;==!!!!**!!!!;     \n             ;*$$$$-:;===!!!!!!!!=;     \n             :*$@$$~:;;==!!!!!!!==:     \n             ~!**!-~:;;==========;      \n              :=;:~~::;;=======;;:      \n              ~~:~~:::;;;;;;;;;:~       \n               ~~~~~::::::::::~~        \n                ,-~~~~~~~~~~~-,         \n                  .,,------,.           ",
-            "                **###$$$$$@$#           \n               ===!!*###$$$$$$*         \n              ~:::;=!**###$$$$##        \n             ~~-~:;;=!!**#######*       \n             ~..-,~;;=!!***#####*!      \n             -..  ,:;;!!!********!      \n             -,....~:;==!!******!!=     \n             ~~~~-,,~;;=!!!!!***!!=     \n             :=#$$$.~:;===!!!!!!!==     \n             ~=#$@$.-:;;====!!!===;     \n              :!**=,-~:;;;=======;:     \n              ~:=;~-~~::;;;;;;;;;:      \n               ~~~~-~~::::;;;;;::-      \n                -~~-~~~~::::::~~,       \n                 .,----~~~~~~--         \n                    .,,,,,,,.           ",
-            "               ***##$$$$$$$$            \n              ===!!**##$$$$$$$          \n             ::;:;=!!**#####$##*        \n            ~~-~~;;;!!!**#######*       \n            ~..-,~:;==!!*****##**!      \n            -... .-:;==!!!!******!      \n            -......-~;==!!!!!****!=     \n             ---,,,,~:;;==!!!!!!!!=     \n             ~;=##$$-~:;;===!!!!!!=     \n             -=*$$$$,-~:;;========;     \n              :;**!:,-~::;;;=====;:     \n               ;:;:-,--~:::;;;;;;:~     \n                :~~-,--~~::::::::~      \n                 -------~~~~~~~~-       \n                   .,,,,------,         \n                       .....            ",
-            "              **####$$$$$$$$            \n             ===!!**####$$$$$#          \n            ;;;;===!!**########*        \n           ~~~~::;==!!****######*       \n           ~,..,-~:;==!!!*********      \n           -...  ,-~:;=!!!********      \n            .......-~:;;=!!!*!!*!!!     \n            ,,....,.-~:;;==!!!!!!!=     \n             ~::;#$$.-~:;;=====!!!=     \n             -;!#$$$#,-~::;;======;     \n              ~==**!,.,-~::;;;;;;;;     \n               ~;;;:,.,-~~:::::::::     \n                .:~~-,,,--~~~~:~~~      \n                  ,-,,,,,--------       \n                     ....,,,,,,         \n                                        ",
-            "             ***####$$$$$$$             \n            ===!!****####$$$$#          \n           ;;;;=;==!!**########         \n           :~~~:;;=!=!******####*       \n          ~,...,~~:;===!!*********      \n           ..,.. ,-~:;;==!!*!*****!     \n           ...   ..-~~:;===!!!!!!!!     \n           .......,=,-~::;===!!!!!==    \n            ,-~~:;#$$.-~::;;;======;    \n             -:=*$$$#=,-~~::;;;;==;;    \n              -==!*!;..,--~::::;;;;:    \n               .;;;:~...,--~~~:::::     \n                 -:~~,..,,---~~~~~-     \n                   .,,...,,,,---,       \n                          ....          \n                                        ",
-            "            #######$$$$$$$$             \n           !!!=!!!*#*###$$$$$#          \n          :;======!!!****#######        \n          :~:::;;;==!!!!*****####       \n          -,,,,-~~:;;=!!!***!*****      \n          ..,....,-~::;===!!!!!!**!     \n          ..     ..,-~::;===!!!!!!!=    \n           .......-!.,-~::;;=====!==    \n            ,,--~;#$$#.,-~::;;;=====    \n             -:=!#$$#!..,-~~:::;;;;;    \n              -;!=!!=~. .,--~~::::::    \n                ~=;;:-....,---~~~~~     \n                  -~~-,....,,-----      \n                     ............       \n                                        \n                                        ",
-            "            #######$$$$$$$$             \n          !!!!!!!****#####$$$$          \n         ;=====!!!=!!****#######        \n         ;:::::;;;==!!!!!*****###*      \n         ~--,--~~~:;;;==!!********!     \n         ,.,,,...,--~:;;;==!!!!!!!!!    \n         ..     ..-.,-~~::;===!!!!!=    \n          ........=! .,-~~::;;======    \n           ...,,~;#$$$!.,-~~::;;;;;;    \n            .-::=#$$#*-..,,-~~:::::;    \n              -;!!!!=;,.  .,--~~~~:~    \n                ~;=;:~-.. ..,,-----     \n                  .-~~-.......,,,,      \n                                        \n                                        \n                                        ",
-            "           ########$$$$$$$$$            \n         **!!!!!******#####$$$          \n        =;=!=====!!!!!!****#####        \n        :;;;:::;;===!!!!!*!!******      \n        ~~------~~::;;===!!!!!!!***     \n        -,..,,...,,-~~::;;===!!!!!!!    \n        ,..    ...  ,,--~::;;;===!!=    \n         .    ....==  .,,-~~:;;;;===;   \n           .....-!#$@$*..,,-~~~:::;;;   \n            ,--:;*#$#*:.:-.,,--~~:::    \n             .~;!!!!!;~..  .,,---~~~    \n                ~;==;;~,..  ..,,,,,     \n                   ,---,..    ...       \n                                        \n                                        \n                                        ",
-            "           #######$$$$$$$$$$            \n         ***!**!******######$$#         \n        ===!!!=!!!!!!*!!****#####       \n       ;;;;;;;;;;====!!!!!!*!*****      \n       ::~~~~~~~~~:::;;;==!!!!!!!!!     \n       ~-,.......,,,-~~::;;;====!!!!    \n       ,.... ....    .,--~~::;;;====    \n        ..     ..:!     .,--~~::;;;;;   \n           .....-!#$@#*....,--~~:::::   \n           ..,-~;!#$#*;,.,...,,--~~~    \n             ,~:;!!!!=:,..  ...,,--,    \n               ,~;===;:-...  .....      \n                   .,-,,...             \n                                        \n                                        \n                                        ",
-            "           $#######$$$$$$$$$            \n         ******!!*******#######         \n        !!=!!!!!!!!!***!!******##       \n       ====;;;;;;;;====!!!!!!*!***      \n      ;;:::~~~~~~~~::::;;===!!!!!!!     \n      :~--,,,.....,,,--~~::;;;====!=    \n      --,........     .,,--~:::;;;==    \n       ,.     ...;      ...,-~~~:::;    \n        .  .....-!#$@#!-.,-..,,-~~~:    \n           ...,~;!#$$*=~..   ..,----    \n            .,-:;!!!!=;~...   ..,,,     \n               -:;=!!=;~-...            \n                   .,,,,..              \n                                        \n                                        \n                                        ",
-            "           $$$########$$$$$$$           \n         *****************#####         \n       !!!!=!!!!!!!!**!!***!****#       \n      ==!====;;;;;;;;====!!!!!!!!!!     \n      ;;;:::~~~~~~~~~~:::;;;====!!!     \n      :~~--,,,......,,---~~::;;;====    \n      ~-,........       .,,--~~::;;;    \n      -,..    ...;      ....,,--~~::    \n       ...  ....-!#$$#!~.~,. .,,--~~    \n          ....,-;!#$$*=:...   .,,,-     \n           .,,-:=!!!!!;:-.... ....      \n              ,~:;=!!=;:-,...           \n                   .,,,..               \n                                        \n                                        \n                                        ",
-            "           $$$#########$$$$$$           \n         ##*****!***********####        \n       *!!!!!!!!!!!!!!!!!!!!!****       \n      ===!====;;;;;;;;;====!!!!!!!      \n     ;==;;::::~~~~~~~~~::::;;;==!==     \n     ;;::~--,,,.......,,--~~~::;;;=;    \n     :~~-,,.....          .,,-~~::;;    \n     --,,..  ...,       .....,,--~~:    \n      ,,...  ...:!#$$#!~...  ..,,--     \n       ........-;!#$$#!;........,,      \n          ..,,-:=!*!*!=;~,.......       \n            .,,~:;=!!=;:~-,..           \n                 .,,,,,..               \n                                        \n                                        \n                                        "
-        ];
-        let currentDonutFrame = 0;
-        let donutInterval = null;
+        const chars = ".,-~:;=!*#$@";
+        const width = 40, height = 16;
+        const b = new Array(width * height);
+        const z = new Float32Array(width * height);
+        const R1 = 1, R2 = 2, K2 = 5;
+        const scaleX = 26, scaleY = 13;
+        const lx = 0, ly = 0.70710678, lz = -0.70710678;
 
-        function startDonut() {
-            if (reducedMotion.matches || document.hidden || donutInterval) return;
-            donutInterval = setInterval(() => {
-                currentDonutFrame = (currentDonutFrame + 1) % donutFrames.length;
-                donutElement.textContent = donutFrames[currentDonutFrame];
-            }, 75);
+        const M = new Float32Array([
+            0.92, 0, 0.39,
+            0.23, 0.81, -0.54,
+            -0.32, 0.59, 0.74
+        ]);
+
+        function multM(R) {
+            const C0 = R[0]*M[0] + R[1]*M[3] + R[2]*M[6];
+            const C1 = R[0]*M[1] + R[1]*M[4] + R[2]*M[7];
+            const C2 = R[0]*M[2] + R[1]*M[5] + R[2]*M[8];
+            const C3 = R[3]*M[0] + R[4]*M[3] + R[5]*M[6];
+            const C4 = R[3]*M[1] + R[4]*M[4] + R[5]*M[7];
+            const C5 = R[3]*M[2] + R[4]*M[5] + R[5]*M[8];
+            const C6 = R[6]*M[0] + R[7]*M[3] + R[8]*M[6];
+            const C7 = R[6]*M[1] + R[7]*M[4] + R[8]*M[7];
+            const C8 = R[6]*M[2] + R[7]*M[5] + R[8]*M[8];
+            M[0]=C0; M[1]=C1; M[2]=C2;
+            M[3]=C3; M[4]=C4; M[5]=C5;
+            M[6]=C6; M[7]=C7; M[8]=C8;
         }
+
+        function orthonormalize() {
+            let x0 = M[0], x1 = M[3], x2 = M[6];
+            const lenX = Math.hypot(x0, x1, x2) || 1;
+            x0 /= lenX; x1 /= lenX; x2 /= lenX;
+
+            let y0 = M[1], y1 = M[4], y2 = M[7];
+            const dot = x0 * y0 + x1 * y1 + x2 * y2;
+            y0 -= dot * x0; y1 -= dot * x1; y2 -= dot * x2;
+            const lenY = Math.hypot(y0, y1, y2) || 1;
+            y0 /= lenY; y1 /= lenY; y2 /= lenY;
+
+            const z0 = x1 * y2 - x2 * y1;
+            const z1 = x2 * y0 - x0 * y2;
+            const z2 = x0 * y1 - x1 * y0;
+
+            M[0]=x0; M[1]=y0; M[2]=z0;
+            M[3]=x1; M[4]=y1; M[5]=z1;
+            M[6]=x2; M[7]=y2; M[8]=z2;
+        }
+
+        function rotateByDelta(dx, dy, sens = 0.012) {
+            const dist = Math.hypot(dx, dy);
+            if (dist < 1e-4) return;
+            const angle = dist * sens;
+            const c = Math.cos(angle), s = Math.sin(angle), v = 1 - c;
+            const ux = -dy / dist;
+            const uy = dx / dist;
+            const R = [
+                c + ux * ux * v, ux * uy * v, uy * s,
+                uy * ux * v, c + uy * uy * v, -ux * s,
+                -uy * s, ux * s, c
+            ];
+            multM(R);
+            orthonormalize();
+        }
+
+        function renderDonut() {
+            b.fill(' ');
+            z.fill(0);
+
+            const m00 = M[0], m01 = M[1], m02 = M[2];
+            const m10 = M[3], m11 = M[4], m12 = M[5];
+            const m20 = M[6], m21 = M[7], m22 = M[8];
+
+            for (let theta = 0; theta < 6.28; theta += 0.08) {
+                const costheta = Math.cos(theta), sintheta = Math.sin(theta);
+                for (let phi = 0; phi < 6.28; phi += 0.03) {
+                    const cosphi = Math.cos(phi), sinphi = Math.sin(phi);
+
+                    const c = R2 + R1 * costheta;
+                    const px = c * cosphi, py = c * sinphi, pz = R1 * sintheta;
+
+                    const x = m00 * px + m01 * py + m02 * pz;
+                    const y = m10 * px + m11 * py + m12 * pz;
+                    const zVal = K2 + m20 * px + m21 * py + m22 * pz;
+                    const ooz = 1 / zVal;
+
+                    const xp = (width / 2 + scaleX * ooz * x) | 0;
+                    const yp = (height / 2 - scaleY * ooz * y) | 0;
+
+                    const nx = costheta * cosphi, ny = costheta * sinphi, nz = sintheta;
+                    const rnx = m00 * nx + m01 * ny + m02 * nz;
+                    const rny = m10 * nx + m11 * ny + m12 * nz;
+                    const rnz = m20 * nx + m21 * ny + m22 * nz;
+
+                    const L = rnx * lx + rny * ly + rnz * lz;
+                    if (L > 0) {
+                        if (yp >= 0 && yp < height && xp >= 0 && xp < width) {
+                            const idx = xp + yp * width;
+                            if (ooz > z[idx]) {
+                                z[idx] = ooz;
+                                const luminanceIndex = (L * 11.9) | 0;
+                                b[idx] = chars[luminanceIndex < 12 ? luminanceIndex : 11];
+                            }
+                        }
+                    }
+                }
+            }
+            let res = '';
+            for (let i = 0; i < height; i++) {
+                res += b.slice(i * width, (i + 1) * width).join('') + '\n';
+            }
+            donutElement.textContent = res;
+        }
+
+        let donutInterval = null;
+        let momentumRaf = null;
+        let idleDx = 1.6;
+        let idleDy = 0.6;
 
         function stopDonut() {
             if (donutInterval) {
                 clearInterval(donutInterval);
                 donutInterval = null;
             }
+            if (momentumRaf) {
+                cancelAnimationFrame(momentumRaf);
+                momentumRaf = null;
+            }
         }
 
+        function startDonut() {
+            if (reducedMotion.matches || document.hidden || donutInterval || momentumRaf) return;
+            donutInterval = setInterval(() => {
+                rotateByDelta(idleDx, idleDy);
+                renderDonut();
+            }, 75);
+        }
+
+        function triggerTurboSpin({ dirX, dirY, speed = 6.5 } = {}) {
+            stopDonut();
+            if (dirX === undefined || dirY === undefined) {
+                const angle = Math.random() * Math.PI * 2;
+                dirX = Math.cos(angle);
+                dirY = Math.sin(angle);
+            }
+            const len = Math.hypot(dirX, dirY) || 1;
+            dirX /= len;
+            dirY /= len;
+
+            if (reducedMotion.matches) {
+                rotateByDelta(dirX * 6, dirY * 6);
+                renderDonut();
+                return;
+            }
+
+            let currSpeed = Math.max(2.0, speed);
+            const targetSpeed = 0.35;
+            let lastRafTime = performance.now();
+
+            function stepTurbo(time) {
+                const elapsed = Math.min(time - lastRafTime, 64);
+                lastRafTime = time;
+
+                const factor = elapsed / 16.67;
+                rotateByDelta(dirX * currSpeed * factor * 14, dirY * currSpeed * factor * 14);
+                renderDonut();
+
+                currSpeed = currSpeed * 0.965 + targetSpeed * 0.035;
+
+                if (Math.abs(currSpeed - targetSpeed) < 0.02) {
+                    momentumRaf = null;
+                    idleDx = dirX * 1.8;
+                    idleDy = dirY * 1.8;
+                    startDonut();
+                } else {
+                    momentumRaf = requestAnimationFrame(stepTurbo);
+                }
+            }
+
+            momentumRaf = requestAnimationFrame(stepTurbo);
+        }
+
+        spinDonut = triggerTurboSpin;
+
+        let isDragging = false;
+        let activePointerId = null;
+        let lastX = 0;
+        let lastY = 0;
+        let lastTime = 0;
+        let vx = 0;
+        let vy = 0;
+
+        function onPointerDown(event) {
+            if (event.button !== 0 || (event.isPrimary !== undefined && !event.isPrimary)) return;
+            stopDonut();
+            isDragging = true;
+            activePointerId = event.pointerId;
+            lastX = event.clientX;
+            lastY = event.clientY;
+            lastTime = performance.now();
+            vx = 0;
+            vy = 0;
+            donutElement.classList.add('is-dragging');
+            if (donutElement.setPointerCapture) {
+                try { donutElement.setPointerCapture(event.pointerId); } catch {}
+            }
+            event.preventDefault();
+        }
+
+        function onPointerMove(event) {
+            if (!isDragging || (activePointerId !== null && event.pointerId !== activePointerId)) return;
+            const now = performance.now();
+            const dx = event.clientX - lastX;
+            const dy = event.clientY - lastY;
+            const dt = now - lastTime;
+            if (dt > 0) {
+                const instVx = dx / dt;
+                const instVy = dy / dt;
+                vx = vx === 0 ? instVx : (vx * 0.3 + instVx * 0.7);
+                vy = vy === 0 ? instVy : (vy * 0.3 + instVy * 0.7);
+            }
+            lastX = event.clientX;
+            lastY = event.clientY;
+            lastTime = now;
+
+            if (dx !== 0 || dy !== 0) {
+                rotateByDelta(dx, dy);
+                renderDonut();
+            }
+        }
+
+        function onPointerUp(event) {
+            if (!isDragging || (activePointerId !== null && event.pointerId !== undefined && event.pointerId !== activePointerId)) return;
+            if (activePointerId !== null && donutElement.releasePointerCapture) {
+                try { donutElement.releasePointerCapture(activePointerId); } catch {}
+            }
+            isDragging = false;
+            activePointerId = null;
+            donutElement.classList.remove('is-dragging');
+
+            const now = performance.now();
+            if (now - lastTime > 80) {
+                vx = 0;
+                vy = 0;
+            }
+
+            if (reducedMotion.matches) return;
+
+            const speed = Math.hypot(vx, vy);
+            const FLICK_THRESHOLD = 0.15;
+
+            if (speed > FLICK_THRESHOLD) {
+                const dirX = vx / speed;
+                const dirY = vy / speed;
+                let currSpeed = Math.min(speed, 2.5);
+                const targetSpeed = 0.35;
+                let lastRafTime = performance.now();
+
+                function stepMomentum(time) {
+                    const elapsed = Math.min(time - lastRafTime, 64);
+                    lastRafTime = time;
+
+                    const factor = elapsed / 16.67;
+                    rotateByDelta(dirX * currSpeed * factor * 14, dirY * currSpeed * factor * 14);
+                    renderDonut();
+
+                    currSpeed = currSpeed * 0.96 + targetSpeed * 0.04;
+
+                    if (Math.abs(currSpeed - targetSpeed) < 0.02) {
+                        momentumRaf = null;
+                        idleDx = dirX * 1.8;
+                        idleDy = dirY * 1.8;
+                        startDonut();
+                    } else {
+                        momentumRaf = requestAnimationFrame(stepMomentum);
+                    }
+                }
+
+                momentumRaf = requestAnimationFrame(stepMomentum);
+            } else {
+                if (speed > 0.03) {
+                    idleDx = (vx / speed) * 1.8;
+                    idleDy = (vy / speed) * 1.8;
+                }
+                startDonut();
+            }
+        }
+
+        donutElement.addEventListener('pointerdown', onPointerDown);
+        donutElement.addEventListener('pointermove', onPointerMove);
+        donutElement.addEventListener('pointerup', onPointerUp);
+        donutElement.addEventListener('pointercancel', onPointerUp);
+        donutElement.addEventListener('lostpointercapture', onPointerUp);
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerup', onPointerUp);
+        window.addEventListener('blur', () => {
+            if (isDragging) onPointerUp({ pointerId: activePointerId });
+        });
+
+        try {
+            if (localStorage.getItem('bryantos-donut-rainbow') === 'true') {
+                donutElement.classList.add('is-rainbow');
+            }
+        } catch {}
+
+        renderDonut();
         startDonut();
         reducedMotion.addEventListener('change', () => {
             if (reducedMotion.matches) stopDonut();
@@ -1103,6 +1513,13 @@
     setInterval(updateClock, 30000);
     syncWindows();
     document.documentElement.classList.add('os-ready');
+    desktopIcons = window.BryantDesktopIcons.init({
+        desktop, shortcuts: desktopShortcuts, announce,
+        openIcon(icon) {
+            if (icon.dataset.open) openWindow(icon.dataset.open);
+            else window.BryantNavigation.confirm(icon);
+        }
+    });
     updateMobileWindowLayout();
     new ResizeObserver(updateMobileWindowLayout).observe(desktopShortcuts);
     focusWindow('terminal');

@@ -38,6 +38,12 @@ jobs:
       - name: Verify site integrity & asset links
         run: node scripts/verify-site.js
 
+      - name: Run desktop selection & layout unit tests
+        run: node scripts/test-desktop-selection.mjs
+
+      - name: Verify desktop browser & mobile scenarios
+        run: node scripts/verify-desktop.mjs
+
       - name: Install image optimization tools
         run: sudo apt-get update -qq && sudo apt-get install -y -qq optipng jpegoptim
 
