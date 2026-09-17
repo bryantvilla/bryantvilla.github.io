@@ -690,7 +690,18 @@
         return map[clean] || null;
     }
 
-    function scrollTerminal() { terminalScreen.scrollTop = terminalScreen.scrollHeight; }
+    function scrollTerminal() {
+        terminalScreen.scrollTop = terminalScreen.scrollHeight;
+        const scrollToLatest = () => {
+            terminalScreen.scrollTop = terminalScreen.scrollHeight;
+            const last = terminalOutput.lastElementChild;
+            if (last) {
+                last.scrollIntoView({ block: 'end', behavior: 'auto' });
+            }
+        };
+        requestAnimationFrame(scrollToLatest);
+        setTimeout(scrollToLatest, 40);
+    }
 
     function applyWallpaper(theme, persist = true) {
         document.documentElement.dataset.wallpaper = theme;
@@ -906,12 +917,7 @@
                 result.append(error, document.createTextNode('\nType help for a list of commands.'));
             }
         }
-        if (command === 'donut' || command === 'spin') {
-            const donut = document.getElementById('terminal-donut');
-            donut?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'center' });
-        } else {
-            scrollTerminal();
-        }
+        scrollTerminal();
         if (activeWindow === 'terminal') terminalInput.focus({ preventScroll: true });
     }
 

@@ -280,6 +280,38 @@ try {
     assert(clearCheck.windowHeight > 300, 'terminal window should not shrink');
     console.log('✅ clear command restores homepage and preserves window size');
 
+    console.log('12. Testing zero horizontal scroll on terminal...');
+    const noHScroll = await evalCode(`(() => {
+        const screen = document.getElementById('terminal-screen');
+        return {
+            scrollWidth: screen.scrollWidth,
+            clientWidth: screen.clientWidth,
+            diff: screen.scrollWidth - screen.clientWidth
+        };
+    })()`);
+    assert(noHScroll.diff <= 0, 'terminal transcript must have no horizontal scrollbar');
+    console.log('✅ zero horizontal scroll verified');
+
+    console.log('13. Testing automatic scroll to latest message...');
+    await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        input.value = 'cat readme.txt';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+    })()`);
+    await delay(100);
+
+    const latestVisible = await evalCode(`(() => {
+        const screen = document.getElementById('terminal-screen');
+        const last = document.querySelector('#terminal-output .terminal-entry:last-child');
+        if (!last) return false;
+        const lastRect = last.getBoundingClientRect();
+        const screenRect = screen.getBoundingClientRect();
+        return lastRect.bottom <= screenRect.bottom + 2 && lastRect.top < screenRect.bottom;
+    })()`);
+    assert(latestVisible, 'latest command output must be scrolled into view');
+    console.log('✅ automatic scroll to latest message verified');
+
     console.log('\n--- All Terminal Alias & Easter Egg Tests Passed! ---');
 } finally {
     if (socket) socket.close();

@@ -95,7 +95,7 @@ button[hidden], [hidden] { display: none !important; }
 
 /* The terminal is the desktop's main introduction and command surface. */
 .terminal-screen { display: flex; flex-direction: column; background: var(--terminal); color: var(--terminal-ink); padding: 18px 24px 12px; border: 1px solid oklch(10% .02 250); font: 12px/1.7 var(--mono); overflow: hidden; min-height: 0; flex: 1; }
-.terminal-transcript { flex: 1; min-height: 0; overflow: auto; scrollbar-color: oklch(42% .035 254) var(--terminal); scrollbar-width: thin; overscroll-behavior: contain; }
+.terminal-transcript { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-color: oklch(42% .035 254) var(--terminal); scrollbar-width: thin; overscroll-behavior: contain; }
 .terminal-transcript:focus-visible { outline: 1px solid var(--terminal-accent); outline-offset: -1px; }
 .terminal-screen:focus-visible { outline: 2px solid var(--terminal-accent); outline-offset: -3px; }
 .terminal-system-line { display: flex; justify-content: space-between; align-items: center; gap: 15px; color: var(--terminal-muted); font-size: 10px; }
@@ -106,7 +106,7 @@ button[hidden], [hidden] { display: none !important; }
 .terminal-welcome { min-height: 0; }
 .terminal-intro { display: grid; grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); column-gap: 16px; align-items: center; margin-top: 14px; }
 .terminal-identity { min-width: 0; }
-.terminal-art { position: relative; min-width: 0; align-self: stretch; pointer-events: none; }
+.terminal-art { position: relative; min-width: 0; align-self: stretch; pointer-events: none; overflow: hidden; }
 .command-echo { font-size: 11px; color: var(--terminal-ink); }
 .command-echo > span { color: var(--terminal-green); margin-right: 7px; }
 .terminal-guidance, .command-shortcuts { max-width: 100%; }
@@ -136,9 +136,9 @@ button[hidden], [hidden] { display: none !important; }
 .terminal-submit { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border: 1px solid var(--terminal-line); border-radius: 3px; background: transparent; color: var(--terminal-accent); font-size: 19px; }
 .terminal-submit:hover { background: oklch(31% .04 252); }
 .terminal-output:empty { display: none; }
-.terminal-entry { padding-top: 21px; overflow-wrap: anywhere; }
-.terminal-entry-command { color: var(--terminal-green); white-space: pre-wrap; }
-.terminal-result { margin-top: 7px; color: var(--terminal-muted); white-space: pre-wrap; }
+.terminal-entry { padding-top: 21px; overflow-wrap: anywhere; word-break: break-word; }
+.terminal-entry-command { color: var(--terminal-green); white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+.terminal-result { margin-top: 7px; color: var(--terminal-muted); white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
 .terminal-result a, .terminal-result button { color: var(--terminal-accent); background: none; border: 0; padding: 2px 0; text-underline-offset: 3px; font: inherit; }
 .terminal-result button:hover { text-decoration: underline; }
 .terminal-result strong { color: var(--terminal-ink); font-weight: 400; }
