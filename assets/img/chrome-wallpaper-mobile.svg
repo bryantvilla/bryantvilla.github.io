@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1400" viewBox="0 0 800 1400" fill="none">
+  <!-- A portrait composition of chrome-wallpaper.svg, preserving the full rings. -->
+  <defs>
+    <linearGradient id="sky" x1="210" y1="80" x2="1460" y2="1000" gradientUnits="userSpaceOnUse"><stop stop-color="#e4ebf1"/><stop offset=".46" stop-color="#c6d6e7"/><stop offset="1" stop-color="#adbed4"/></linearGradient>
+    <radialGradient id="light" cx=".43" cy=".44" r=".65"><stop stop-color="#f7fafc" stop-opacity=".92"/><stop offset="1" stop-color="#e5eef8" stop-opacity="0"/></radialGradient>
+    <linearGradient id="chrome" x1="-100" y1="-190" x2="120" y2="200" gradientUnits="userSpaceOnUse"><stop stop-color="#f7fcff"/><stop offset=".13" stop-color="#a7bbd2"/><stop offset=".24" stop-color="#f4fbff"/><stop offset=".39" stop-color="#7288a3"/><stop offset=".46" stop-color="#283d58"/><stop offset=".49" stop-color="#f2f9fe"/><stop offset=".54" stop-color="#d5e6f4"/><stop offset=".66" stop-color="#fafcfd"/><stop offset=".8" stop-color="#859db8"/><stop offset=".92" stop-color="#dcecf7"/><stop offset="1" stop-color="#607b9b"/></linearGradient>
+    <linearGradient id="edge" x1="0" y1="-200" x2="0" y2="200" gradientUnits="userSpaceOnUse"><stop stop-color="#f9fcff"/><stop offset=".4" stop-color="#a5b7c9"/><stop offset=".55" stop-color="#fbfdff"/><stop offset="1" stop-color="#71869e"/></linearGradient>
+    <linearGradient id="star-metal" x2=".6" y2="1"><stop stop-color="#f9fcff"/><stop offset=".36" stop-color="#b2c6da"/><stop offset=".48" stop-color="#5f7895"/><stop offset=".51" stop-color="#f6fbff"/><stop offset=".75" stop-color="#9db5cc"/><stop offset="1" stop-color="#dbe9f3"/></linearGradient>
+    <linearGradient id="grid-fade" x2="0" y2="1"><stop stop-color="#e7f0f9" stop-opacity="0"/><stop offset="1" stop-color="#e7f0f9" stop-opacity=".65"/></linearGradient>
+    <mask id="grid-mask"><rect width="1600" height="1000" fill="url(#grid-fade)"/></mask>
+    <filter id="orb-shadow" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="18"/></filter>
+    <filter id="star-shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dy="10" stdDeviation="6" flood-color="#607895" flood-opacity=".2"/></filter>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h800v1400H0z"/><path fill="url(#light)" d="M0 0h800v1400H0z"/>
+  <g stroke="#edf5fd" opacity=".5"><path d="M0 850h800M0 930h800M0 1030h800M0 1160h800M0 1330h800M-180 1400l480-650M90 1400l260-650M400 1400V750M710 1400L450 750M980 1400L500 750"/></g>
+  <g transform="translate(430 215) rotate(-34) scale(.72)">
+    <path d="M-334 0a334 174 0 1 0 668 0 334 174 0 1 0-668 0Zm55 0a279 119 0 1 1 558 0 279 119 0 1 1-558 0Z" fill="url(#chrome)" fill-rule="evenodd" stroke="url(#edge)" stroke-width="2"/>
+    <ellipse rx="325" ry="165" stroke="#f8fcff" stroke-opacity=".86" stroke-width="2"/>
+    <ellipse rx="281" ry="121" stroke="#657e9a" stroke-opacity=".45" stroke-width="2"/>
+    <path d="M-301-72C-252-166-15-202 172-139" stroke="#f9fdff" stroke-width="4" stroke-linecap="round" opacity=".75"/>
+  </g>
+  <g transform="translate(450 235) rotate(37) scale(.58)">
+    <path d="M-307 0a307 180 0 1 0 614 0 307 180 0 1 0-614 0Zm44 0a263 135 0 1 1 526 0 263 135 0 1 1-526 0Z" fill="url(#chrome)" fill-rule="evenodd" stroke="url(#edge)" stroke-width="2"/>
+    <ellipse rx="300" ry="172" stroke="#f7fcff" stroke-width="2" opacity=".8"/>
+    <path d="M-286-48c39-115 324-172 494-74" stroke="#f9fcff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+  </g>
+  <g transform="translate(260 1015) rotate(32) scale(.52)">
+    <path d="M-334 0a334 174 0 1 0 668 0 334 174 0 1 0-668 0Zm55 0a279 119 0 1 1 558 0 279 119 0 1 1-558 0Z" fill="url(#chrome)" fill-rule="evenodd" stroke="url(#edge)" stroke-width="2"/>
+    <ellipse rx="325" ry="165" stroke="#f8fcff" stroke-opacity=".86" stroke-width="2"/>
+    <ellipse rx="281" ry="121" stroke="#657e9a" stroke-opacity=".45" stroke-width="2"/>
+    <path d="M-301-72C-252-166-15-202 172-139" stroke="#f9fdff" stroke-width="4" stroke-linecap="round" opacity=".75"/>
+  </g>
+  <g fill="url(#star-metal)" stroke="#9cb1c7" filter="url(#star-shadow)"><path d="m620 1110 20 58 58 20-58 20-20 58-20-58-58-20 58-20Z"/><path d="m140 367 10 31 31 10-31 10-10 31-10-31-31-10 31-10Z"/><path d="m650 60 8 24 24 8-24 8-8 24-8-24-24-8 24-8Z"/></g>
+  <g fill="#f5faff"><path d="m343 70 3 16 16 3-16 3-3 16-3-16-16-3 16-3Z"/><path d="m704 488 3 17 17 3-17 3-3 17-3-17-17-3 17-3Z"/><path d="m402 1257 3 17 17 3-17 3-3 17-3-17-17-3 17-3Z"/></g>
+</svg>

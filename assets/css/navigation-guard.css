@@ -1,0 +1,16 @@
+/* The redirect prompt shares the XP frame, including when the resume is opened alone. */
+.redirect-dialog { box-sizing: border-box; width: min(450px, calc(100% - 28px)); max-height: calc(100dvh - 28px); margin: auto; padding: 3px; overflow: auto; border: 1px solid oklch(43% .16 260); border-radius: 7px 7px 3px 3px; background: oklch(94% .009 255); color: oklch(29% .045 255); box-shadow: inset 0 1px oklch(99% .005 250), 5px 15px 35px oklch(20% .05 253 / .35); font: 12px/1.6 Tahoma, Verdana, sans-serif; }
+.redirect-dialog::backdrop { background: oklch(20% .045 255 / .32); }
+.redirect-titlebar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -2px -2px 0; padding: 3px 4px 4px 9px; border-radius: 5px 5px 0 0; color: oklch(99% .005 252); background: linear-gradient(oklch(72% .127 254), oklch(55% .198 260) 12%, oklch(56% .195 259) 38%, oklch(48% .205 260) 48%, oklch(53% .204 259) 88%, oklch(43% .17 262)); font-weight: 700; text-shadow: 1px 1px oklch(32% .13 260); }
+.redirect-dialog button { display: inline-flex; align-items: center; justify-content: center; margin: 0; cursor: pointer; font: inherit; }
+.redirect-dialog .redirect-close { width: 25px; height: 25px; min-width: 25px; padding: 0; border: 1px solid oklch(99% .003 250); border-radius: 3px; background: linear-gradient(135deg, oklch(87% .06 38), oklch(63% .19 31) 52%, oklch(52% .17 28)); color: oklch(98% .006 30); font: 23px/1 Arial, sans-serif; }
+.redirect-content { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 16px; padding: 25px 21px 17px; }
+.redirect-warning { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid oklch(63% .13 83); border-radius: 50%; background: linear-gradient(oklch(96% .08 90), oklch(82% .16 85)); color: oklch(34% .065 70); box-shadow: inset 1px 1px oklch(99% .01 90); font: 700 25px/1 Georgia, serif; }
+.redirect-dialog h2 { margin: 0 0 8px; padding: 0; border: 0; color: inherit; font: 700 15px/1.4 Tahoma, Verdana, sans-serif; letter-spacing: 0; }
+.redirect-dialog p { margin: 0; }
+.redirect-dialog .redirect-destination { margin-top: 12px; padding: 8px 10px; border: 1px solid oklch(78% .023 251); background: oklch(98% .005 250); color: oklch(39% .065 255); overflow-wrap: anywhere; font-size: 11px; user-select: text; }
+.redirect-actions { display: flex; justify-content: flex-end; gap: 9px; padding: 0 21px 19px; }
+.redirect-actions button { min-width: 85px; min-height: 34px; padding: 5px 14px; border: 1px solid oklch(55% .054 252); border-radius: 3px; background: linear-gradient(oklch(99% .003 250), oklch(91% .011 255)); color: inherit; box-shadow: inset 1px 1px oklch(99% .003 255), inset -1px -1px oklch(83% .02 250); }
+.redirect-actions button:hover { box-shadow: inset 0 0 0 1px oklch(72% .13 73); }
+.redirect-dialog button:focus-visible { outline: 2px solid oklch(49% .19 259); outline-offset: 2px; }
+@media print { .redirect-dialog { display: none !important; } }
