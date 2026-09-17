@@ -28,6 +28,7 @@
     let activeResize = null;
     let startOpen = false;
     let desktopIcons;
+    let spinDonut = null;
 
     function makeIcon(name) {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -649,17 +650,20 @@
         ['resume', 'My resume, open in Word'],
         ['contact', "Let's start a conversation"],
         ['whoami', 'A quick introduction'],
+        ['donut', 'High-speed spin on the 3D ASCII donut'],
+        ['spin', 'Playful momentum spin on the ASCII donut'],
         ['theme', 'Switch chrome / midnight wallpaper'],
         ['clear', 'A fresh terminal'],
         ['home', 'Bring back the welcome screen']
     ];
-    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'cat', 'type', 'more', 'cd', 'readme', 'resume.doc', 'readme.txt', 'github', 'linkedin', 'date', 'history', 'echo'];
+    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'donut', 'spin', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'cat', 'type', 'more', 'cd', 'readme', 'resume.doc', 'readme.txt', 'github', 'linkedin', 'date', 'history', 'echo'];
     const aliases = {
         projects: 'work',
         cls: 'clear',
         dir: 'ls',
         type: 'cat',
         more: 'cat',
+        torus: 'donut',
         'resume.doc': 'resume',
         'resume.docx': 'resume',
         'resume.pdf': 'resume',
@@ -712,10 +716,10 @@
 
         if (command === 'clear' || command === 'home') {
             terminalOutput.replaceChildren();
-            terminalWelcome.hidden = command === 'clear';
+            terminalWelcome.hidden = false;
             openWindow('terminal', { updateHash: false });
             terminalScreen.scrollTop = 0;
-            announce(command === 'clear' ? 'Terminal cleared.' : 'Welcome screen restored.');
+            announce(command === 'clear' ? 'Terminal cleared and reset to home.' : 'Welcome screen restored.');
             return;
         }
 
@@ -866,6 +870,32 @@
                 result.textContent = 'Wallpaper set to ' + theme + '. Make yourself at home.';
                 break;
             }
+            case 'donut':
+            case 'spin': {
+                terminalWelcome.hidden = false;
+                const arg = (argument || '').trim().toLowerCase();
+                let dirX, dirY, speed = 6.5;
+                if (arg.includes('left') || arg.includes('west')) { dirX = -1; dirY = 0; }
+                else if (arg.includes('right') || arg.includes('east')) { dirX = 1; dirY = 0; }
+                else if (arg.includes('up') || arg.includes('north')) { dirX = 0; dirY = -1; }
+                else if (arg.includes('down') || arg.includes('south')) { dirX = 0; dirY = 1; }
+                if (arg.includes('hyper') || arg.includes('fast') || arg.includes('turbo') || arg.includes('max')) {
+                    speed = 9.5;
+                }
+
+                if (typeof spinDonut === 'function') {
+                    spinDonut({ dirX, dirY, speed });
+                }
+
+                const phrases = [
+                    '🍩 Whoosh! Spinning the 3D ASCII donut with high-speed momentum.',
+                    '🍩 Turbo spin activated! The torus is orbiting at high speed.',
+                    '🍩 Flinging the donut into a high-speed momentum spin! Click & drag to steer.'
+                ];
+                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+                result.textContent = phrase + '\nTip: Click and drag the donut in the terminal to steer its spin!';
+                break;
+            }
             case 'sudo':
                 result.textContent = "Nice try. You're already very welcome here.\nTry help to see what you can do.";
                 break;
@@ -876,7 +906,12 @@
                 result.append(error, document.createTextNode('\nType help for a list of commands.'));
             }
         }
-        scrollTerminal();
+        if (command === 'donut' || command === 'spin') {
+            const donut = document.getElementById('terminal-donut');
+            donut?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'center' });
+        } else {
+            scrollTerminal();
+        }
         if (activeWindow === 'terminal') terminalInput.focus({ preventScroll: true });
     }
 
@@ -907,6 +942,8 @@
                 : current.startsWith('type ') ? ['type resume.doc', 'type readme.txt']
                 : current.startsWith('more ') ? ['more resume.doc', 'more readme.txt']
                 : current.startsWith('cd ') ? ['cd about/', 'cd work/', 'cd skills/', 'cd archive/', 'cd contact/']
+                : current.startsWith('donut ') ? ['donut fast', 'donut left', 'donut right', 'donut up', 'donut down']
+                : current.startsWith('spin ') ? ['spin fast', 'spin left', 'spin right', 'spin up', 'spin down']
                 : current.startsWith('theme ') ? ['theme chrome', 'theme midnight'] : commandNames;
             const matches = choices.filter(name => name.startsWith(current));
             if (matches.length === 1 && matches[0] !== current) {
@@ -1256,6 +1293,52 @@
                 renderDonut();
             }, 75);
         }
+
+        function triggerTurboSpin({ dirX, dirY, speed = 6.5 } = {}) {
+            stopDonut();
+            if (dirX === undefined || dirY === undefined) {
+                const angle = Math.random() * Math.PI * 2;
+                dirX = Math.cos(angle);
+                dirY = Math.sin(angle);
+            }
+            const len = Math.hypot(dirX, dirY) || 1;
+            dirX /= len;
+            dirY /= len;
+
+            if (reducedMotion.matches) {
+                rotateByDelta(dirX * 6, dirY * 6);
+                renderDonut();
+                return;
+            }
+
+            let currSpeed = Math.max(2.0, speed);
+            const targetSpeed = 0.35;
+            let lastRafTime = performance.now();
+
+            function stepTurbo(time) {
+                const elapsed = Math.min(time - lastRafTime, 64);
+                lastRafTime = time;
+
+                const factor = elapsed / 16.67;
+                rotateByDelta(dirX * currSpeed * factor * 14, dirY * currSpeed * factor * 14);
+                renderDonut();
+
+                currSpeed = currSpeed * 0.965 + targetSpeed * 0.035;
+
+                if (Math.abs(currSpeed - targetSpeed) < 0.02) {
+                    momentumRaf = null;
+                    idleDx = dirX * 1.8;
+                    idleDy = dirY * 1.8;
+                    startDonut();
+                } else {
+                    momentumRaf = requestAnimationFrame(stepTurbo);
+                }
+            }
+
+            momentumRaf = requestAnimationFrame(stepTurbo);
+        }
+
+        spinDonut = triggerTurboSpin;
 
         let isDragging = false;
         let activePointerId = null;

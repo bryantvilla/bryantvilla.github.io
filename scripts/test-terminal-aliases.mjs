@@ -214,7 +214,73 @@ try {
 
     console.log('✅ Tab auto-completion passed');
 
-    console.log('\n--- All Terminal Alias Tests Passed! ---');
+    console.log('8. Testing "help" command includes donut and spin...');
+    const helpCheck = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        input.value = 'help';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+        const helpDiv = document.querySelector('#terminal-screen .terminal-help');
+        const buttons = Array.from(helpDiv ? helpDiv.querySelectorAll('button') : []).map(b => b.dataset.command);
+        return {
+            hasDonut: buttons.includes('donut'),
+            hasSpin: buttons.includes('spin')
+        };
+    })()`);
+    assert(helpCheck.hasDonut, 'help should include donut');
+    assert(helpCheck.hasSpin, 'help should include spin');
+    console.log('✅ help command includes donut and spin');
+
+    console.log('9. Testing "donut" easter egg command...');
+    const donutCheck = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        input.value = 'donut';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+        const lastEntry = document.querySelector('#terminal-screen .terminal-entry:last-child');
+        const welcome = document.getElementById('terminal-welcome');
+        return {
+            text: lastEntry ? lastEntry.textContent : '',
+            welcomeVisible: !welcome.hidden
+        };
+    })()`);
+    assert(donutCheck.text.includes('donut'), 'donut response should mention donut');
+    assert(donutCheck.welcomeVisible, 'welcome screen should be visible');
+    console.log('✅ donut command passed');
+
+    console.log('10. Testing "spin" command...');
+    const spinCheck = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        input.value = 'spin left';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+        const lastEntry = document.querySelector('#terminal-screen .terminal-entry:last-child');
+        return lastEntry ? lastEntry.textContent : '';
+    })()`);
+    assert(spinCheck.includes('donut') || spinCheck.includes('torus'), 'spin response should confirm spin');
+    console.log('✅ spin command passed');
+
+    console.log('11. Testing "clear" command restores terminal homepage...');
+    const clearCheck = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        input.value = 'clear';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+        const welcome = document.getElementById('terminal-welcome');
+        const output = document.getElementById('terminal-output');
+        const termWindow = document.getElementById('terminal');
+        return {
+            welcomeVisible: !welcome.hidden,
+            outputEmpty: output.children.length === 0,
+            windowHeight: termWindow.offsetHeight
+        };
+    })()`);
+    assert(clearCheck.welcomeVisible, 'terminal welcome should be visible after clear');
+    assert(clearCheck.outputEmpty, 'terminal output should be empty after clear');
+    assert(clearCheck.windowHeight > 300, 'terminal window should not shrink');
+    console.log('✅ clear command restores homepage and preserves window size');
+
+    console.log('\n--- All Terminal Alias & Easter Egg Tests Passed! ---');
 } finally {
     if (socket) socket.close();
     if (browser) browser.kill('SIGKILL');
