@@ -231,22 +231,35 @@ try {
     assert(helpCheck.hasSpin, 'help should include spin');
     console.log('✅ help command includes donut and spin');
 
-    console.log('9. Testing "donut" easter egg command...');
-    const donutCheck = await evalCode(`(() => {
+    console.log('9. Testing "donut" rainbow mode toggle...');
+    const donutToggleOn = await evalCode(`(() => {
         const input = document.getElementById('terminal-input');
         const form = document.getElementById('terminal-form');
+        const donut = document.getElementById('terminal-donut');
         input.value = 'donut';
         form.dispatchEvent(new Event('submit', { cancelable: true }));
-        const lastEntry = document.querySelector('#terminal-screen .terminal-entry:last-child');
-        const welcome = document.getElementById('terminal-welcome');
         return {
-            text: lastEntry ? lastEntry.textContent : '',
-            welcomeVisible: !welcome.hidden
+            hasRainbow: donut.classList.contains('is-rainbow'),
+            stored: localStorage.getItem('bryantos-donut-rainbow')
         };
     })()`);
-    assert(donutCheck.text.includes('donut'), 'donut response should mention donut');
-    assert(donutCheck.welcomeVisible, 'welcome screen should be visible');
-    console.log('✅ donut command passed');
+    assert(donutToggleOn.hasRainbow, 'donut should toggle rainbow on');
+    assert.equal(donutToggleOn.stored, 'true', 'localStorage should record rainbow true');
+
+    const donutToggleOff = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        const donut = document.getElementById('terminal-donut');
+        input.value = 'donut';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+        return {
+            hasRainbow: donut.classList.contains('is-rainbow'),
+            stored: localStorage.getItem('bryantos-donut-rainbow')
+        };
+    })()`);
+    assert(!donutToggleOff.hasRainbow, 'donut should toggle rainbow off');
+    assert.equal(donutToggleOff.stored, 'false', 'localStorage should record rainbow false');
+    console.log('✅ donut rainbow mode toggle passed');
 
     console.log('10. Testing "spin" command...');
     const spinCheck = await evalCode(`(() => {

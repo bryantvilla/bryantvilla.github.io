@@ -650,20 +650,21 @@
         ['resume', 'My resume, open in Word'],
         ['contact', "Let's start a conversation"],
         ['whoami', 'A quick introduction'],
-        ['donut', 'High-speed spin on the 3D ASCII donut'],
-        ['spin', 'Playful momentum spin on the ASCII donut'],
+        ['spin', 'High-speed momentum spin on the ASCII donut'],
+        ['donut', 'Toggle rainbow mode on the 3D ASCII donut'],
         ['theme', 'Switch chrome / midnight wallpaper'],
         ['clear', 'A fresh terminal'],
         ['home', 'Bring back the welcome screen']
     ];
-    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'donut', 'spin', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'cat', 'type', 'more', 'cd', 'readme', 'resume.doc', 'readme.txt', 'github', 'linkedin', 'date', 'history', 'echo'];
+    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'spin', 'donut', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'cat', 'type', 'more', 'cd', 'readme', 'resume.doc', 'readme.txt', 'github', 'linkedin', 'date', 'history', 'echo'];
     const aliases = {
         projects: 'work',
         cls: 'clear',
         dir: 'ls',
         type: 'cat',
         more: 'cat',
-        torus: 'donut',
+        torus: 'spin',
+        rainbow: 'donut',
         'resume.doc': 'resume',
         'resume.docx': 'resume',
         'resume.pdf': 'resume',
@@ -881,7 +882,24 @@
                 result.textContent = 'Wallpaper set to ' + theme + '. Make yourself at home.';
                 break;
             }
-            case 'donut':
+            case 'donut': {
+                terminalWelcome.hidden = false;
+                const donut = document.getElementById('terminal-donut');
+                if (donut) {
+                    const isRainbow = donut.classList.toggle('is-rainbow');
+                    try {
+                        localStorage.setItem('bryantos-donut-rainbow', isRainbow ? 'true' : 'false');
+                    } catch {}
+                    if (isRainbow) {
+                        result.textContent = '🌈 Prismatic rainbow mode enabled!\nYour 3D ASCII donut is now glowing in full spectrum.\nType donut again to toggle off.';
+                    } else {
+                        result.textContent = '🍩 Rainbow mode disabled. Restored classic terminal phosphor.\nType donut to turn rainbow mode back on.';
+                    }
+                } else {
+                    result.textContent = 'Donut element not found.';
+                }
+                break;
+            }
             case 'spin': {
                 terminalWelcome.hidden = false;
                 const arg = (argument || '').trim().toLowerCase();
@@ -1460,6 +1478,12 @@
         window.addEventListener('blur', () => {
             if (isDragging) onPointerUp({ pointerId: activePointerId });
         });
+
+        try {
+            if (localStorage.getItem('bryantos-donut-rainbow') === 'true') {
+                donutElement.classList.add('is-rainbow');
+            }
+        } catch {}
 
         renderDonut();
         startDonut();
