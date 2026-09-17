@@ -22,12 +22,12 @@
     <meta name="twitter:image" content="https://bryantvilla.com/assets/img/entrance.png">
     <meta name="twitter:image:alt" content="Bryant's chrome desktop with an interactive portfolio terminal">
     <link rel="icon" href="assets/img/favicon.svg?v=ccf17a8dc69d" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/css/styles.css?v=6adbc3662573">
+    <link rel="stylesheet" href="assets/css/styles.css?v=2fa9dee4eb76">
     <link rel="stylesheet" href="assets/css/navigation-guard.css?v=196834fdefd8">
-    <link rel="stylesheet" href="assets/css/desktop-assistant.css?v=1432b2a5a5e7">
+    <link rel="stylesheet" href="assets/css/desktop-assistant.css?v=5842b1e9902e">
     <script src="assets/js/navigation-guard.js?v=6feb087270f9" defer></script>
-    <script src="assets/js/desktop-icons.js?v=55017fbfd3bc" defer></script>
-    <script src="assets/js/desktop-assistant.js?v=3a9259ad4c8b" defer></script>
+    <script src="assets/js/desktop-icons.js?v=dc4a14721c41" defer></script>
+    <script src="assets/js/desktop-assistant.js?v=7f252a19da27" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -81,7 +81,7 @@
       ]
     }
     </script>
-    <script src="assets/js/main.js?v=51e608199f28" defer></script>
+    <script src="assets/js/main.js?v=72a373bbf8c4" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#terminal" data-open="terminal">Skip to terminal</a>
@@ -254,7 +254,7 @@
                                         </pre></div>
                     </div>
                     <div class="terminal-guidance"><p>Welcome to my corner of the internet.</p><p>Type <button type="button" data-command="help" class="inline-command js-only">help</button><span class="no-js-only">a command</span> to look around, or take a shortcut:</p></div>
-                    <div class="command-shortcuts"><a href="#work" data-open="work"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-arrow-up-right"/></svg> explore work</a><a href="#about" data-open="about"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-smile"/></svg> about me</a><a href="#contact" data-open="contact"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-mail"/></svg> say hello</a></div>
+                    <div class="command-shortcuts"><a href="#work" data-open="work"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-arrow-up-right"/></svg> explore work</a><a href="#about" data-open="about"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-smile"/></svg> about me</a><a href="#resume" data-open="resume"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-word"/></svg> view resume</a><a href="#contact" data-open="contact"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-mail"/></svg> say hello</a></div>
                 </div>
                 <div id="terminal-output" class="terminal-output" role="log" aria-label="Command results" aria-live="polite" aria-relevant="additions"></div>
                 </div>
@@ -385,10 +385,17 @@
         <button class="assistant-launcher" type="button" data-assistant-toggle aria-controls="assistant-panel" aria-expanded="false" aria-label="Ask Clip for desktop tips" title="Need a hand? Ask Clip."><svg aria-hidden="true"><use href="#icon-clip"/></svg><span class="assistant-help-badge" aria-hidden="true">?</span></button>
         <section class="assistant-panel" id="assistant-panel" aria-labelledby="assistant-title" hidden>
             <div class="assistant-panel-scroll">
-                <div class="assistant-caption"><span><svg aria-hidden="true"><use href="#icon-star"/></svg> Clip · desktop help</span><button id="assistant-close" type="button" aria-label="Close desktop tips">×</button></div>
+                <div class="assistant-caption"><span>Clip · desktop help</span><button id="assistant-close" type="button" aria-label="Close desktop tips">×</button></div>
                 <div class="assistant-copy">
-                    <h2 id="assistant-title" tabindex="-1">Make yourself at home.</h2>
-                    <p class="assistant-intro">I’m Clip. A few shortcuts for your stay:</p>
+                    <div class="assistant-hero">
+                        <div class="assistant-character" aria-hidden="true">
+                            <svg class="assistant-character-svg"><use href="#icon-clip"/></svg>
+                        </div>
+                        <div class="assistant-hero-copy">
+                            <h2 id="assistant-title" tabindex="-1">Make yourself at home.</h2>
+                            <p class="assistant-intro">I’m Clip. A few shortcuts for your stay:</p>
+                        </div>
+                    </div>
                     <ol class="assistant-tips">
                         <li><span class="assistant-step" aria-hidden="true">01</span><div><strong>Pick something to open.</strong><p class="assistant-mouse-copy">Click an icon to select it. Double-click to open it, or press <kbd>Enter</kbd>.</p><p class="assistant-touch-copy">Tap an icon to select it. Tap it again to open.</p></div></li>
                         <li><span class="assistant-step" aria-hidden="true">02</span><div><strong>Make the desktop yours.</strong><p class="assistant-mouse-copy">Drag across empty wallpaper to select a group, then drag an icon to move it. Hold <kbd>Ctrl</kbd> or <kbd>⌘</kbd> to add icons.</p><p class="assistant-touch-copy">Drag an icon to a new spot. Use Show desktop below to make room.</p></div></li>
@@ -402,7 +409,7 @@
 
     <nav class="start-menu" id="start-menu" aria-label="Start menu" hidden>
         <div class="start-profile"><svg aria-hidden="true"><use href="#icon-computer"/></svg><div><strong>Bryant Villarreal</strong><span>Welcome to bryantOS</span></div></div>
-        <div class="start-links"><a href="#terminal" data-open="terminal"><svg aria-hidden="true"><use href="#icon-terminal"/></svg><span><strong>Terminal</strong><small>Find your way around</small></span></a><a href="#work" data-open="work"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>My work</strong><small>Professional contributions</small></span></a><a href="#about" data-open="about"><svg aria-hidden="true"><use href="#icon-myspace"/></svg><span><strong>About me</strong><small>My Myspace profile</small></span></a><a href="#skills" data-open="skills"><svg aria-hidden="true"><use href="#icon-media-player"/></svg><span>My toolkit</span></a><a href="#resume" data-open="resume"><svg aria-hidden="true"><use href="#icon-word"/></svg><span><strong>Resume.doc</strong><small>Experience, in Word</small></span></a><a href="#contact" data-open="contact"><svg aria-hidden="true"><use href="#icon-aim"/></svg><span><strong>Contact me</strong><small>Send an instant hello</small></span></a><a href="#readme" data-open="readme"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Read me</span></a></div>
+        <div class="start-links"><a href="#terminal" data-open="terminal"><svg aria-hidden="true"><use href="#icon-terminal"/></svg><span><strong>Terminal</strong><small>Find your way around</small></span></a><a href="#work" data-open="work"><svg aria-hidden="true"><use href="#icon-folder-shape"/></svg><span><strong>My work</strong><small>Professional contributions</small></span></a><a href="#about" data-open="about"><svg aria-hidden="true"><use href="#icon-myspace"/></svg><span><strong>About me</strong><small>My Myspace profile</small></span></a><a href="#skills" data-open="skills"><svg aria-hidden="true"><use href="#icon-media-player"/></svg><span>My toolkit</span></a><a href="#resume" data-open="resume"><svg aria-hidden="true"><use href="#icon-word"/></svg><span><strong>Resume.doc</strong><small>Experience, in Word</small></span></a><a href="#contact" data-open="contact"><svg aria-hidden="true"><use href="#icon-aim"/></svg><span><strong>Contact me</strong><small>Send an instant hello</small></span></a><a href="#help" class="start-link-help" data-assistant-toggle aria-controls="assistant-panel" aria-expanded="false"><svg aria-hidden="true"><use href="#icon-clip"/></svg><span><strong>Help and Support</strong><small>Ask Clip for desktop tips</small></span></a><a href="#readme" data-open="readme"><svg aria-hidden="true"><use href="#icon-document"/></svg><span>Read me</span></a></div>
         <div class="start-footer"><button type="button" id="reset-desktop">↻ Reset desktop</button><span>Chrome edition</span></div>
     </nav>
     <footer class="taskbar js-only" aria-label="Desktop taskbar">

@@ -20,7 +20,8 @@
         if (restoreFocus) visibleLauncher().focus({ preventScroll: true });
     }
 
-    launchers.forEach(button => button.addEventListener('click', () => {
+    launchers.forEach(button => button.addEventListener('click', event => {
+        event.preventDefault();
         if (!panel.hidden) { close(true); return; }
         opener = button;
         panel.hidden = false;

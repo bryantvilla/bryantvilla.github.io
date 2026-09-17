@@ -509,6 +509,10 @@
     });
 
     document.addEventListener('click', event => {
+        if (event.target.closest('[data-assistant-toggle]')) {
+            closeStart();
+            return;
+        }
         const link = event.target.closest('[data-open]');
         if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();

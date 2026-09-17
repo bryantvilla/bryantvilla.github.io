@@ -123,8 +123,6 @@ window.BryantDesktopIcons = {
             if (event.button !== 0 || !event.isPrimary || gesture) return;
             const icon = event.target.closest('.desktop-icon');
             if (!icon && event.target !== desktop && event.target !== shortcuts) return;
-            // Touch dragging belongs to icons; window content retains native scrolling.
-            if (!icon && event.pointerType === 'touch') return;
             event.preventDefault();
             const before = new Set(selected);
             const additive = event.ctrlKey || event.metaKey || event.shiftKey;

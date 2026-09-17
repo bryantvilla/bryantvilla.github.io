@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
 import { readFile, writeFile, mkdtemp } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { resolve, extname, join } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import assert from 'node:assert/strict';
@@ -27,10 +28,27 @@ if (process.argv.includes('--serve')) {
     console.log(`Portfolio preview: ${base}`);
     await new Promise(() => {});
 }
+
+function findChrome() {
+    if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+    const candidates = [
+        '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
+        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        '/Applications/Chromium.app/Contents/MacOS/Chromium',
+        '/usr/bin/google-chrome',
+        '/usr/bin/chromium-browser',
+        '/usr/bin/chromium'
+    ];
+    for (const bin of candidates) {
+        if (existsSync(bin)) return bin;
+    }
+    return 'google-chrome';
+}
+
 let browser;
 let socket;
 try {
-    browser = spawn(process.env.CHROME_PATH || '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser', [
+    browser = spawn(findChrome(), [
         '--headless', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
         '--disable-background-networking', '--disable-component-update', '--disable-sync',
         '--disable-extensions', '--remote-debugging-port=0', `--user-data-dir=${output}/profile`, 'about:blank'
@@ -301,6 +319,19 @@ try {
     await delay(50);
     assert.equal(Math.round((await rect(first)).x-touchOrigin.x),30,'Touch drags icon');
     assert(await evaluate('document.querySelector("#about").hidden'),'Touch drag does not open app');
+    await evaluate('document.querySelector("#reset-desktop").click();document.querySelector("#tray-desktop").click()');
+    await cdp('Input.dispatchTouchEvent', {
+        type: 'touchStart',
+        touchPoints: [{ x: 10, y: 220 }]
+    });
+    await cdp('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [{ x: 200, y: 70 }]
+    });
+    assert(await evaluate('!document.querySelector(".desktop-marquee").hidden'), 'Touch marquee rectangle appears on mobile');
+    assert(await evaluate('document.querySelectorAll(".desktop-icon.is-selected").length >= 2'), 'Mobile marquee selects intersecting icons');
+    await cdp('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    assert(await evaluate('document.querySelector(".desktop-marquee").hidden'), 'Mobile marquee hides on touch release');
     await evaluate('document.querySelector("#reset-desktop").click();document.querySelector("#tray-desktop").click()');
     await screenshot('mobile-wallpaper.png');
     assert(await evaluate('getComputedStyle(document.querySelector(".desktop-wallpaper")).backgroundImage.includes("mobile.svg")'),'Portrait wallpaper loaded');

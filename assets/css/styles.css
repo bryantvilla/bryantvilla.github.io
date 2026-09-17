@@ -323,10 +323,10 @@ summary::-webkit-details-marker { display: none; }
 
 /* Progressive enhancement turns the page into a desktop. */
 .os-ready body { overflow: hidden; }
-.os-ready .desktop { height: calc(100dvh - var(--taskbar-height)); min-height: 0; padding: 0; }
+.os-ready .desktop { height: calc(100dvh - var(--taskbar-height)); min-height: 0; padding: 0; touch-action: none; }
 .os-ready .desktop-header { position: absolute; left: clamp(124px, 10.5vw, 180px); right: 35px; top: 28px; margin: 0; max-width: none; }
 .os-ready .desktop-shortcuts { position: absolute; top: 159px; left: 23px; flex-direction: column; flex-wrap: nowrap; gap: 8px; margin: 0; }
-.os-ready .os-window { position: absolute; margin: 0; max-height: calc(100% - 16px); }
+.os-ready .os-window { position: absolute; margin: 0; max-height: calc(100% - 16px); touch-action: auto; }
 .os-ready .terminal-window { left: clamp(124px, 10.5vw, 180px); top: clamp(118px, 14.5vh, 148px); width: min(980px, calc(100% - 450px)); height: auto; max-height: min(640px, calc(100dvh - 180px)); }
 .os-ready .readme-window { right: 34px; top: clamp(280px, 34vh, 350px); }
 .os-ready .content-window { width: min(750px, calc(100% - 200px)); height: min(655px, calc(100dvh - 125px)); left: 24%; top: 65px; }
@@ -511,6 +511,7 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
 .start-links > a { display: flex; gap: 14px; align-items: center; padding: 9px 10px; min-height: 46px; text-decoration: none; font-size: 12px; border-radius: 2px; }
 .start-links > a:hover { background: oklch(90% .046 250); }
 .start-links svg { width: 30px; height: 30px; }
+.start-links .start-link-help svg { filter: drop-shadow(1px 2px 2px oklch(32% .035 250 / .28)); }
 .start-links span { display: grid; gap: 3px; }
 .start-links small { color: var(--muted); font-size: 10px; }
 .start-footer { display: flex; align-items: center; justify-content: space-between; background: oklch(90% .036 252); padding: 11px 15px; font-size: 10px; border-top: 1px solid oklch(70% .06 255); }
@@ -611,8 +612,20 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
   .terminal-bio { font-size: 10.5px; line-height: 1.65; max-width: none; }
   .desktop-break { display: none; }
   .terminal-guidance { font-size: 10px; margin-top: 12px; }
-  .command-shortcuts { gap: 6px; margin-top: 8px; }
-  .command-shortcuts > a { font-size: 9.5px; gap: 5px; padding: 5px 8px; min-height: 30px; }
+  .command-shortcuts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    max-width: 340px;
+    margin: 10px auto 0;
+  }
+  .command-shortcuts > a {
+    justify-content: center;
+    font-size: 9.5px;
+    gap: 6px;
+    padding: 7px 10px;
+    min-height: 32px;
+  }
   .terminal-form { gap: 6px; margin-top: 12px; padding-top: 10px; }
   .terminal-form label { font-size: 11px; }
   .prompt-location { display: none; }
@@ -667,7 +680,8 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
   .terminal-form { gap: 5px; }
   .terminal-form label { font-size: 10px; }
   .terminal-status { font-size: 7px; }
-  .command-shortcuts > a { gap: 4px; padding-inline: 6px; font-size: 8.5px; }
+  .command-shortcuts { gap: 6px; max-width: 290px; }
+  .command-shortcuts > a { gap: 4px; padding: 6px 4px; font-size: 8.5px; min-height: 28px; white-space: nowrap; }
   .window-menu .menu-right { display: none; }
 }
 @media (max-height: 740px) and (min-width: 761px) {
