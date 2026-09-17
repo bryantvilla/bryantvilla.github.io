@@ -144,7 +144,7 @@ try {
     const first = '.desktop-icon:nth-child(1)';
     const second = '.desktop-icon:nth-child(2)';
 
-    for (const [width, height] of [[1920,1080], [1440,900], [1366,768], [1050,900], [768,1024], [390,844], [320,568], [844,390]]) {
+    for (const [width, height] of [[1920,1080], [1512,982], [1512,882], [1440,900], [1366,768], [1050,900], [768,1024], [390,844], [320,568], [844,390]]) {
         await cdp('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width <= 760 });
         await navigate('/');
         const metrics = await evaluate(`(() => {
