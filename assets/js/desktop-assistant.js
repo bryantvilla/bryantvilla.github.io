@@ -5,9 +5,24 @@
     const panel = document.getElementById('assistant-panel');
     const launchers = [...document.querySelectorAll('[data-assistant-toggle]')];
     const clearButton = document.getElementById('assistant-show-desktop');
+    const character = document.querySelector('.assistant-character');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const tricks = ['is-jumping', 'is-flipping', 'is-wiggling'];
+    let trickIndex = 0;
     let opener = launchers[0];
     let motion;
+
+    function playTrick(element) {
+        if (reducedMotion.matches || !element) return;
+        const trick = tricks[trickIndex % tricks.length];
+        trickIndex++;
+        element.classList.remove(...tricks);
+        void element.offsetWidth;
+        element.classList.add(trick);
+        element.addEventListener('animationend', () => {
+            element.classList.remove(trick);
+        }, { once: true });
+    }
 
     function visibleLauncher() {
         return launchers.find(button => button.getClientRects().length) || opener;
@@ -28,12 +43,22 @@
         clearButton.disabled = !document.querySelector('[data-window]:not([hidden]):not([inert])');
         clearButton.textContent = clearButton.disabled ? 'Desktop is clear' : 'Show desktop';
         launchers.forEach(item => item.setAttribute('aria-expanded', 'true'));
+        playTrick(button);
         if (!reducedMotion.matches && typeof panel.animate === 'function') {
             motion?.cancel();
-            motion = panel.animate([{ opacity: 0, transform: 'translateY(7px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 180, easing: 'cubic-bezier(.22, 1, .36, 1)' });
+            motion = panel.animate([
+                { opacity: 0, transform: 'translate3d(-4px, 8px, 0) scale(.94)' },
+                { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' }
+            ], { duration: 200, easing: 'cubic-bezier(.16, 1, .3, 1)' });
         }
         document.getElementById('assistant-title').focus({ preventScroll: true });
     }));
+
+    if (character) {
+        character.style.cursor = 'pointer';
+        character.setAttribute('title', 'Click Clip for a trick!');
+        character.addEventListener('click', () => playTrick(character));
+    }
 
     document.getElementById('assistant-close').addEventListener('click', () => close(true));
     clearButton.addEventListener('click', () => {

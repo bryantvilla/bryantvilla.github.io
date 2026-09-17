@@ -1,4 +1,9 @@
-/* bryantOS: a chrome desktop with the familiarity of early personal computing. */
+@font-face {
+  font-family: 'TerminalArrows';
+  src: local('Menlo Bold'), local('Courier New Bold'), local('Menlo'), local('Courier New'), local('Lucida Console');
+  unicode-range: U+2190-2199;
+  size-adjust: 185%;
+}
 :root {
   color-scheme: light;
   --desktop: oklch(88% .026 250);
@@ -17,7 +22,7 @@
   --terminal-line: oklch(33% .035 251);
   --ui: Tahoma, Verdana, sans-serif;
   --display: 'Trebuchet MS', Tahoma, sans-serif;
-  --mono: 'Lucida Console', Monaco, 'Courier New', monospace;
+  --mono: 'TerminalArrows', 'Lucida Console', Monaco, 'Courier New', monospace;
   --taskbar-height: 45px;
   --ease-out: cubic-bezier(.22, 1, .36, 1);
 }
@@ -506,7 +511,7 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
 #system-clock { min-width: 57px; font-size: 11px; white-space: nowrap; }
 #tray-desktop { height: 100%; width: 10px; padding: 0; border: 0; border-left: 1px solid oklch(67% .04 251); background: oklch(91% .02 251 / .3); }
 #tray-desktop:hover { background: oklch(98% .009 253 / .7); }
-.start-menu { position: fixed; bottom: calc(var(--taskbar-height) + env(safe-area-inset-bottom)); left: 0; z-index: 10001; width: 325px; max-width: calc(100% - 12px); max-height: calc(100dvh - 60px); overflow: auto; border: 2px solid oklch(45% .17 259); border-radius: 7px 7px 0 0; background: var(--paper); box-shadow: 5px -5px 20px oklch(25% .04 250 / .22); transform-origin: bottom left; }
+.start-menu { position: fixed; bottom: calc(var(--taskbar-height) + env(safe-area-inset-bottom)); left: 0; z-index: 10005; width: 325px; max-width: calc(100% - 12px); max-height: calc(100dvh - 60px); overflow: auto; border: 2px solid oklch(45% .17 259); border-radius: 7px 7px 0 0; background: var(--paper); box-shadow: 5px -5px 20px oklch(25% .04 250 / .22); transform-origin: bottom left; }
 .start-profile { display: flex; gap: 14px; align-items: center; padding: 18px; color: oklch(98% .006 249); background: linear-gradient(oklch(55% .19 259), oklch(46% .18 260)); border-top: 2px solid oklch(72% .13 252); text-shadow: 1px 1px oklch(31% .12 258); }
 .start-profile > svg { width: 46px; height: 46px; padding: 4px; background: oklch(94% .02 252); border: 1px solid oklch(99% .005 251); border-radius: 4px; }
 .start-profile > div { display: grid; gap: 4px; }

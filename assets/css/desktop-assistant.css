@@ -1,5 +1,5 @@
 /* Clip is polished metal and ice blue, with the same bevels as the desktop. */
-.desktop-assistant { position: fixed; z-index: 10002; left: 26px; bottom: calc(var(--taskbar-height) + env(safe-area-inset-bottom) + 6px); }
+.desktop-assistant { position: fixed; z-index: 9999; left: 26px; bottom: calc(var(--taskbar-height) + env(safe-area-inset-bottom) + 6px); }
 .assistant-launcher { position: relative; width: 54px; height: 64px; padding: 0; border: 0; border-radius: 8px; background: none; }
 .assistant-launcher > svg { width: 54px; height: 64px; filter: drop-shadow(1px 3px 2px oklch(32% .035 250 / .3)); }
 .assistant-launcher:hover > svg { filter: drop-shadow(1px 3px 2px oklch(32% .035 250 / .3)) brightness(1.08); }
@@ -62,13 +62,177 @@
   .assistant-taskbar-button:hover, .assistant-taskbar-button[aria-expanded='true'] { background: linear-gradient(oklch(88% .03 250), oklch(78% .045 255)); border-color: oklch(48% .08 255); box-shadow: inset 1px 1px 2px oklch(35% .04 250 / .35); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .assistant-launcher > svg { transition: transform 180ms var(--ease-out), filter 180ms var(--ease-out); }
-  .assistant-launcher:hover > svg { transform: translateY(-3px) rotate(-4deg); }
-  .assistant-character-svg { animation: clip-appear 360ms cubic-bezier(.22, 1, .36, 1); }
+  .assistant-launcher {
+    transition: transform 240ms cubic-bezier(.22, 1, .36, 1);
+  }
+  .assistant-launcher:hover,
+  .assistant-launcher:focus-visible {
+    transform: translate3d(0, -4px, 0);
+  }
+  .assistant-launcher > svg {
+    transform-origin: 50% 90%;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    animation: clip-idle 8s cubic-bezier(.45, .05, .55, .95) infinite;
+    transition: filter 240ms ease;
+  }
+  .assistant-launcher:hover > svg,
+  .assistant-launcher:focus-visible > svg {
+    filter: drop-shadow(2px 6px 4px oklch(32% .035 250 / .35)) brightness(1.1);
+  }
+  .assistant-help-badge {
+    transform-origin: center center;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    animation: clip-badge-idle 8s cubic-bezier(.45, .05, .55, .95) infinite;
+    transition: transform 240ms cubic-bezier(.34, 1.56, .64, 1), box-shadow 240ms ease;
+  }
+  .assistant-launcher:hover .assistant-help-badge,
+  .assistant-launcher:focus-visible .assistant-help-badge {
+    transform: translate3d(0, -1px, 0) scale(1.22) rotate(10deg);
+    box-shadow: inset 0 1px oklch(99% .003 255), 0 2px 5px oklch(32% .035 250 / .3);
+  }
+  .assistant-launcher[aria-expanded="true"] > svg {
+    animation: clip-listening 3.2s cubic-bezier(.45, .05, .55, .95) infinite;
+    filter: drop-shadow(2px 4px 3px oklch(32% .035 250 / .32)) brightness(1.06);
+  }
+  .assistant-launcher[aria-expanded="true"] .assistant-help-badge {
+    animation: none;
+    transform: scale(1.08) rotate(4deg);
+  }
+  .assistant-character-svg {
+    transform-origin: 50% 85%;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    animation: clip-appear 420ms cubic-bezier(.22, 1.25, .36, 1), clip-character-idle 4s cubic-bezier(.45, .05, .55, .95) 420ms infinite;
+  }
+  .assistant-character:hover .assistant-character-svg {
+    transform: translate3d(0, -2px, 0) rotate(2deg) scale(1.06);
+    transition: transform 240ms cubic-bezier(.22, 1, .36, 1);
+  }
+  .assistant-taskbar-button > svg {
+    transform-origin: 50% 90%;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    transition: transform 200ms cubic-bezier(.22, 1, .36, 1);
+  }
+  .assistant-taskbar-button:hover > svg,
+  .assistant-taskbar-button[aria-expanded='true'] > svg {
+    transform: translate3d(0, -2px, 0) rotate(-6deg) scale(1.08);
+  }
+  .start-link-help > svg {
+    transform-origin: 50% 85%;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    transition: transform 200ms cubic-bezier(.22, 1, .36, 1);
+  }
+  .start-link-help:hover > svg {
+    transform: translate3d(0, -2px, 0) rotate(-7deg) scale(1.1);
+  }
+
+  /* Interactive trick animations */
+  .assistant-launcher.is-jumping > svg,
+  .assistant-character.is-jumping .assistant-character-svg {
+    animation: clip-jump 550ms cubic-bezier(.25, 1, .5, 1);
+  }
+  .assistant-launcher.is-flipping > svg,
+  .assistant-character.is-flipping .assistant-character-svg {
+    animation: clip-flip 680ms cubic-bezier(.25, 1, .5, 1);
+  }
+  .assistant-launcher.is-wiggling > svg,
+  .assistant-character.is-wiggling .assistant-character-svg {
+    animation: clip-wiggle 520ms cubic-bezier(.37, 0, .63, 1);
+  }
+}
+@keyframes clip-idle {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate3d(0, -3px, 0) rotate(-1.5deg);
+  }
+  40% {
+    transform: translate3d(0, 1px, 0) rotate(1deg);
+  }
+  55% {
+    transform: translate3d(0, -2px, 0) rotate(-0.5deg);
+  }
+  68% {
+    transform: translate3d(0, -5px, 0) rotate(-3deg);
+  }
+  74% {
+    transform: translate3d(0, 0, 0) rotate(2deg);
+  }
+  80% {
+    transform: translate3d(0, -4px, 0) rotate(-2deg);
+  }
+  86% {
+    transform: translate3d(0, 0, 0) rotate(1deg);
+  }
+  92% {
+    transform: translate3d(0, -2px, 0) rotate(-1deg);
+  }
+}
+@keyframes clip-badge-idle {
+  0%, 64%, 90%, 100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  71% {
+    transform: translate3d(0, -2px, 0) scale(1.18) rotate(-10deg);
+  }
+  77% {
+    transform: translate3d(0, -1px, 0) scale(1.15) rotate(8deg);
+  }
+  84% {
+    transform: translate3d(0, 0, 0) scale(1.05) rotate(-3deg);
+  }
+}
+@keyframes clip-listening {
+  0%, 100% {
+    transform: translate3d(0, -2px, 0) rotate(3deg);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0) rotate(1deg);
+  }
 }
 @keyframes clip-appear {
-  0% { transform: scale(.7) rotate(-14deg); opacity: 0; }
-  60% { transform: scale(1.08) rotate(3deg); opacity: 1; }
-  100% { transform: scale(1) rotate(-3deg); }
+  0% { transform: translate3d(0, 16px, 0) scale(.7) rotate(-14deg); opacity: 0; }
+  60% { transform: translate3d(0, -3px, 0) scale(1.08) rotate(3deg); opacity: 1; }
+  80% { transform: translate3d(0, 1px, 0) scale(.98) rotate(-4deg); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(-3deg); }
+}
+@keyframes clip-character-idle {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-3deg); }
+  50% { transform: translate3d(0, -3px, 0) rotate(1deg); }
+}
+@keyframes clip-jump {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  20% { transform: translate3d(0, 4px, 0) scale(1.08, 0.92) rotate(-2deg); }
+  45% { transform: translate3d(0, -14px, 0) scale(0.94, 1.08) rotate(4deg); }
+  70% { transform: translate3d(0, 1px, 0) scale(1.03, 0.97) rotate(-1deg); }
+  85% { transform: translate3d(0, -2px, 0) scale(0.99, 1.01); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes clip-flip {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  15% { transform: translate3d(0, 4px, 0) rotate(-15deg); }
+  50% { transform: translate3d(0, -16px, 0) rotate(180deg); }
+  78% { transform: translate3d(0, -3px, 0) rotate(335deg); }
+  90% { transform: translate3d(0, 1px, 0) rotate(362deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(360deg); }
+}
+@keyframes clip-wiggle {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  18% { transform: translate3d(-2px, -2px, 0) rotate(-9deg); }
+  36% { transform: translate3d(2px, -2px, 0) rotate(8deg); }
+  54% { transform: translate3d(-1px, -1px, 0) rotate(-5deg); }
+  72% { transform: translate3d(1px, 0, 0) rotate(3deg); }
+  88% { transform: translate3d(0, 0, 0) rotate(-1deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
 }
 @media print { .desktop-assistant { display: none !important; } }
