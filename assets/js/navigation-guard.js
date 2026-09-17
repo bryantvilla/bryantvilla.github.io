@@ -64,7 +64,7 @@
         if (dialog.open) return;
         const opensApp = url.protocol === 'mailto:' || url.protocol === 'tel:';
         pending = { url, source: link, newTab: newTab || link.target === '_blank', download: link.getAttribute('download') };
-        dialog.querySelector('#redirect-title').textContent = opensApp ? 'Open another app?' : 'You’re about to leave the desktop';
+        dialog.querySelector('#redirect-title').textContent = opensApp ? 'Open another app?' : pending.download !== null ? 'Download file?' : 'You’re about to leave the desktop';
         dialog.querySelector('#redirect-message').textContent = opensApp
             ? `This link will open your ${url.protocol === 'mailto:' ? 'email' : 'phone'} app. Continue?`
             : pending.download !== null ? 'This link will download a file. Continue?'

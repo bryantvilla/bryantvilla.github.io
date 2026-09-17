@@ -92,6 +92,10 @@ window.BryantDesktopIcons = {
             select(next);
         }
 
+        function isMobile() {
+            return window.innerWidth <= 760;
+        }
+
         function finish(event, cancel = false) {
             if (!gesture || (event && event.pointerId !== gesture.pointerId)) return;
             const current = gesture;
@@ -101,7 +105,7 @@ window.BryantDesktopIcons = {
                 select(current.before);
             } else if (current.moved) drawGesture();
             else if (current.icon && !current.additive) select([current.icon]);
-            touchOpen = !cancel && !current.moved && current.touch && current.wasSelected && !current.additive ? current.icon : null;
+            touchOpen = !cancel && !current.moved && !current.additive && ((current.touch && isMobile()) || (current.touch && current.wasSelected)) ? current.icon : null;
             if (current.moved || cancel) suppressedUntil = performance.now() + 400;
             gesture = null;
             marquee.hidden = true;
@@ -116,7 +120,7 @@ window.BryantDesktopIcons = {
             icon.setAttribute('role', 'option');
             icon.setAttribute('aria-selected', 'false');
             icon.setAttribute('aria-describedby', 'desktop-selection-help');
-            icon.title = 'Double-click to open. Drag to move.';
+            icon.title = isMobile() ? 'Tap to open. Drag to move.' : 'Double-click to open. Drag to move.';
         });
 
         desktop.addEventListener('pointerdown', event => {
@@ -169,7 +173,7 @@ window.BryantDesktopIcons = {
             event.preventDefault();
             event.stopPropagation();
             if (performance.now() < suppressedUntil) return;
-            if (event.detail === 0 || touchOpen === icon) {
+            if (event.detail === 0 || touchOpen === icon || isMobile()) {
                 touchOpen = null;
                 openIcon(icon);
             }

@@ -302,9 +302,7 @@ try {
     };
     await tap(first);
     assert.equal(await selectionCount(),1,'Touch tap selects');
-    assert(await evaluate('document.querySelector("#about").hidden'),'First touch selects without opening');
-    await tap(first);
-    assert(await evaluate('!document.querySelector("#about").hidden'),'Second touch opens');
+    assert(await evaluate('!document.querySelector("#about").hidden'),'Single touch opens on mobile');
     await evaluate('document.querySelector(".profile-contact a[href^=https]").click()');
     assert(await dialogOpen(),'Touch layout shows redirect prompt');
     assert(await evaluate('(()=>{const r=document.querySelector(".redirect-dialog").getBoundingClientRect();return r.x>=0&&r.right<=innerWidth&&r.y>=0&&r.bottom<=innerHeight})()'),'Redirect prompt fits phone');

@@ -2,7 +2,7 @@
   font-family: 'TerminalArrows';
   src: local('Menlo Bold'), local('Courier New Bold'), local('Menlo'), local('Courier New'), local('Lucida Console');
   unicode-range: U+2190-2199;
-  size-adjust: 185%;
+  size-adjust: 140%;
 }
 :root {
   color-scheme: light;
