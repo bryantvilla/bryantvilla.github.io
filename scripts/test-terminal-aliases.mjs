@@ -212,6 +212,15 @@ try {
     })()`);
     assert.equal(tabType, 'type readme.txt', 'type read should tab complete to type readme.txt');
 
+    const tabRainbow = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        input.value = 'rain';
+        const ev = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+        input.dispatchEvent(ev);
+        return input.value;
+    })()`);
+    assert.equal(tabRainbow, 'rainbow', 'rain should tab complete to rainbow');
+
     console.log('✅ Tab auto-completion passed');
 
     console.log('8. Testing "help" command includes donut and spin...');
@@ -231,7 +240,7 @@ try {
     assert(helpCheck.hasSpin, 'help should include spin');
     console.log('✅ help command includes donut and spin');
 
-    console.log('9. Testing "donut" rainbow mode toggle...');
+    console.log('9. Testing "donut" and "rainbow" mode toggle and geometry...');
     const donutToggleOn = await evalCode(`(() => {
         const input = document.getElementById('terminal-input');
         const form = document.getElementById('terminal-form');
@@ -259,7 +268,85 @@ try {
     })()`);
     assert(!donutToggleOff.hasRainbow, 'donut should toggle rainbow off');
     assert.equal(donutToggleOff.stored, 'false', 'localStorage should record rainbow false');
-    console.log('✅ donut rainbow mode toggle passed');
+
+    const rainbowToggleOn = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        const donut = document.getElementById('terminal-donut');
+        input.value = 'rainbow';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+        const style = window.getComputedStyle(donut);
+        const transform = style.transform;
+        const rect = donut.getBoundingClientRect();
+        const art = document.querySelector('.terminal-art').getBoundingClientRect();
+        return {
+            hasRainbow: donut.classList.contains('is-rainbow'),
+            stored: localStorage.getItem('bryantos-donut-rainbow'),
+            transform,
+            lineCount: donut.textContent.split('\\n').length,
+            isCentered: Math.abs((rect.top + rect.height / 2) - (art.top + art.height / 2)) < 1
+        };
+    })()`);
+    assert(rainbowToggleOn.hasRainbow, 'rainbow command should toggle rainbow on');
+    assert.equal(rainbowToggleOn.stored, 'true', 'localStorage should record rainbow true');
+    assert.equal(rainbowToggleOn.transform, 'none', 'donut should not have transform translate which crops top half in Safari/WebKit');
+    assert(rainbowToggleOn.isCentered, 'donut should be vertically centered inside terminal-art');
+    assert.equal(rainbowToggleOn.lineCount, 20, 'donut should render full 20 lines of ASCII buffer');
+
+    const rainbowToggleOff = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        const donut = document.getElementById('terminal-donut');
+        input.value = 'rainbow';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+        return {
+            hasRainbow: donut.classList.contains('is-rainbow'),
+            stored: localStorage.getItem('bryantos-donut-rainbow')
+        };
+    })()`);
+    assert(!rainbowToggleOff.hasRainbow, 'rainbow command should toggle rainbow off');
+    assert.equal(rainbowToggleOff.stored, 'false', 'localStorage should record rainbow false');
+    console.log('✅ donut and rainbow mode toggle and geometry passed');
+
+    console.log('9b. Testing MacBook Pro 14" viewport rainbow donut geometry...');
+    await send('Emulation.setDeviceMetricsOverride', { width: 1512, height: 982, deviceScaleFactor: 2, mobile: false });
+    await delay(100);
+    const macbookCheck = await evalCode(`(() => {
+        const donut = document.getElementById('terminal-donut');
+        const art = document.querySelector('.terminal-art');
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        input.value = 'rainbow';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+
+        const dRect = donut.getBoundingClientRect();
+        const aRect = art.getBoundingClientRect();
+        const style = window.getComputedStyle(donut);
+        const centerOffset = Math.abs((dRect.top + dRect.height / 2) - (aRect.top + aRect.height / 2));
+
+        return {
+            hasRainbow: donut.classList.contains('is-rainbow'),
+            transform: style.transform,
+            centerOffset,
+            donutHeight: dRect.height,
+            artHeight: aRect.height,
+            lines: donut.textContent.split('\\n').length
+        };
+    })()`);
+    assert(macbookCheck.hasRainbow, 'rainbow mode enabled on MacBook Pro 14" viewport');
+    assert.equal(macbookCheck.transform, 'none', 'no transform applied to rainbow donut');
+    assert(macbookCheck.centerOffset < 1, 'donut is centered on MacBook Pro 14" viewport');
+    assert.equal(macbookCheck.lines, 20, 'full 20 lines rendered on MacBook Pro 14"');
+
+    // Toggle off to restore clean state
+    await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        const form = document.getElementById('terminal-form');
+        input.value = 'rainbow';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+    })()`);
+    await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+    console.log('✅ MacBook Pro 14" viewport rainbow donut geometry passed');
 
     console.log('10. Testing "spin" command...');
     const spinCheck = await evalCode(`(() => {
