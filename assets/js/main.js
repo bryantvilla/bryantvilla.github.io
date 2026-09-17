@@ -653,9 +653,38 @@
         ['clear', 'A fresh terminal'],
         ['home', 'Bring back the welcome screen']
     ];
-    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'github', 'linkedin', 'date', 'history', 'echo'];
-    const aliases = { projects: 'work', cls: 'clear', dir: 'ls' };
-    const openNames = ['terminal', 'about', 'work', 'skills', 'archive', 'resume', 'contact', 'readme'];
+    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'cat', 'type', 'more', 'cd', 'readme', 'resume.doc', 'readme.txt', 'github', 'linkedin', 'date', 'history', 'echo'];
+    const aliases = {
+        projects: 'work',
+        cls: 'clear',
+        dir: 'ls',
+        type: 'cat',
+        more: 'cat',
+        'resume.doc': 'resume',
+        'resume.docx': 'resume',
+        'resume.pdf': 'resume',
+        'readme.txt': 'readme',
+        'readme.md': 'readme',
+        './resume.doc': 'resume',
+        './readme.txt': 'readme'
+    };
+    const openNames = ['terminal', 'about', 'work', 'skills', 'archive', 'resume', 'contact', 'readme', 'resume.doc', 'readme.txt'];
+
+    function resolveFileOrWindow(raw) {
+        if (!raw) return null;
+        const clean = raw.trim().replace(/^(\.\/|\\)/, '').replace(/\/+$/, '').toLowerCase();
+        if (windows.has(clean)) return clean;
+        const map = {
+            'resume.doc': 'resume',
+            'resume.docx': 'resume',
+            'resume.pdf': 'resume',
+            'readme.txt': 'readme',
+            'readme.md': 'readme',
+            projects: 'work',
+            toolkit: 'skills'
+        };
+        return map[clean] || null;
+    }
 
     function scrollTerminal() { terminalScreen.scrollTop = terminalScreen.scrollHeight; }
 
@@ -677,7 +706,8 @@
         historyDraft = '';
         terminalInput.value = '';
         const [name, ...args] = text.split(/\s+/);
-        const command = aliases[name.toLowerCase()] || name.toLowerCase();
+        const cleanName = name.toLowerCase().replace(/^(\.\/|\\)/, '').replace(/\/+$/, '');
+        const command = aliases[name.toLowerCase()] || aliases[cleanName] || (windows.has(cleanName) ? cleanName : name.toLowerCase());
         const argument = args.join(' ');
 
         if (command === 'clear' || command === 'home') {
@@ -706,7 +736,7 @@
                     list.append(button, detail);
                 }
                 const extra = document.createElement('p');
-                extra.textContent = '\nAlso: ls, pwd, open <window>, github, linkedin, date, history, echo.\nTab completes a command. ↑ / ↓ revisit your history.';
+                extra.textContent = '\nAlso: ls, cat <file>, cd <dir>, open <window>, whoami, date, theme, history.\nTab completes a command. ↑ / ↓ revisit your history.';
                 result.append(intro, document.createElement('br'), list, extra);
                 break;
             }
@@ -719,15 +749,73 @@
             case 'archive':
             case 'resume':
             case 'contact':
-                result.textContent = 'Opening ' + windows.get(command).title + '...';
-                openWindow(command);
+            case 'readme': {
+                const winId = command === 'readme' ? 'readme' : command;
+                result.textContent = 'Opening ' + windows.get(winId).title + '...';
+                openWindow(winId);
                 break;
+            }
             case 'open': {
-                const target = argument.toLowerCase();
-                if (openNames.includes(target)) {
+                const target = resolveFileOrWindow(argument);
+                if (target && windows.has(target)) {
                     result.textContent = 'Opening ' + windows.get(target).title + '...';
                     openWindow(target);
-                } else result.textContent = 'Usage: open <window>\nAvailable: ' + openNames.join(', ');
+                } else {
+                    result.textContent = 'Usage: open <file or window>\nAvailable: resume.doc, readme.txt, work/, about/, skills/, archive/, contact/';
+                }
+                break;
+            }
+            case 'cat': {
+                const file = (argument || '').trim().replace(/^(\.\/|\\)/, '').toLowerCase();
+                if (!file) {
+                    result.textContent = 'Usage: cat <file>\nAvailable files: resume.doc, readme.txt\nDirectories: about/, work/, skills/, archive/, contact/';
+                    break;
+                }
+                if (file === 'readme.txt' || file === 'readme.md' || file === 'readme') {
+                    result.textContent = 'C:\\Bryant\\readme.txt\n' +
+                        '--------------------\n' +
+                        'Bryant Villarreal\n' +
+                        'Software Engineer II @ UKG\n\n' +
+                        'I build the systems behind secure access.\n' +
+                        'Backend engineering, identity & a healthy curiosity for how things work.\n\n' +
+                        'Curious about systems. Serious about the details.\n' +
+                        'Type "open resume" or "open work" to explore.';
+                    break;
+                }
+                if (file === 'resume.doc' || file === 'resume.docx' || file === 'resume.pdf' || file === 'resume') {
+                    result.textContent = 'C:\\Bryant\\resume.doc\n' +
+                        '--------------------\n' +
+                        'Bryant Villarreal\n' +
+                        'Software Engineer II @ UKG | Identity & Access Management\n' +
+                        'M.S. Computer Science, Florida International University\n\n' +
+                        '• Core: Backend Architecture, Auth Services, Distributed Systems\n' +
+                        '• Stack: Go, Java, TypeScript, Node.js, Kafka, Docker, Kubernetes\n' +
+                        '• Experience: UKG (2022–Present), FIU Research & Teaching\n\n' +
+                        'Opening full Word document...';
+                    openWindow('resume');
+                    break;
+                }
+                const dir = resolveFileOrWindow(file);
+                if (dir && dir !== 'resume' && dir !== 'readme') {
+                    result.textContent = 'cat: ' + argument + ': Is a directory.\nUse: open ' + argument + '  or  cd ' + argument;
+                    break;
+                }
+                result.textContent = 'cat: ' + argument + ': No such file or directory';
+                break;
+            }
+            case 'cd': {
+                const dir = (argument || '').trim().replace(/^(\.\/|\\)/, '').replace(/\/+$/, '').toLowerCase();
+                if (!dir || dir === '~' || dir === '/' || dir === '..' || dir === '.') {
+                    result.textContent = 'C:\\Bryant\\\nYou are in the root portfolio directory.';
+                } else if (['about', 'work', 'projects', 'skills', 'archive', 'contact'].includes(dir)) {
+                    const target = dir === 'projects' ? 'work' : dir;
+                    result.textContent = 'Opening ' + windows.get(target).title + '...';
+                    openWindow(target);
+                } else if (['resume.doc', 'resume.pdf', 'resume', 'readme.txt', 'readme'].includes(dir)) {
+                    result.textContent = 'cd: ' + argument + ': Not a directory. Try: cat ' + argument + ' or open ' + argument;
+                } else {
+                    result.textContent = 'cd: ' + argument + ': No such file or directory';
+                }
                 break;
             }
             case 'github':
@@ -736,16 +824,26 @@
             case 'linkedin':
                 appendLink(result, 'Bryant Villarreal on LinkedIn', 'https://www.linkedin.com/in/bryant-villarreal/');
                 break;
-            case 'ls':
+            case 'ls': {
                 result.textContent = 'C:\\Bryant\\\n';
-                for (const [name] of helpCommands.filter(([name]) => ['about', 'work', 'skills', 'archive', 'resume', 'contact'].includes(name))) {
+                const fileItems = [
+                    { name: 'about/', command: 'about' },
+                    { name: 'work/', command: 'work' },
+                    { name: 'skills/', command: 'skills' },
+                    { name: 'archive/', command: 'archive' },
+                    { name: 'contact/', command: 'contact' },
+                    { name: 'resume.doc', command: 'resume' },
+                    { name: 'readme.txt', command: 'readme' }
+                ];
+                for (const item of fileItems) {
                     const button = document.createElement('button');
                     button.type = 'button';
-                    button.dataset.command = name;
-                    button.textContent = name === 'resume' ? 'resume.doc' : name + '/';
+                    button.dataset.command = item.command;
+                    button.textContent = item.name;
                     result.append(button, document.createTextNode('  '));
                 }
                 break;
+            }
             case 'pwd':
                 result.textContent = 'C:\\Bryant\\Portfolio\nYou are right where you should be.';
                 break;
@@ -805,6 +903,10 @@
         } else if (event.key === 'Tab' && !event.shiftKey && terminalInput.value.trim()) {
             const current = terminalInput.value.toLowerCase();
             const choices = current.startsWith('open ') ? openNames.map(name => 'open ' + name)
+                : current.startsWith('cat ') ? ['cat resume.doc', 'cat readme.txt']
+                : current.startsWith('type ') ? ['type resume.doc', 'type readme.txt']
+                : current.startsWith('more ') ? ['more resume.doc', 'more readme.txt']
+                : current.startsWith('cd ') ? ['cd about/', 'cd work/', 'cd skills/', 'cd archive/', 'cd contact/']
                 : current.startsWith('theme ') ? ['theme chrome', 'theme midnight'] : commandNames;
             const matches = choices.filter(name => name.startsWith(current));
             if (matches.length === 1 && matches[0] !== current) {
