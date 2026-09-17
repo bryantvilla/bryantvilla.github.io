@@ -544,13 +544,13 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
   .command-shortcuts { gap: 6px; }
   .command-shortcuts > a { padding-inline: 9px; }
 }
-@media (min-width: 761px) and (max-height: 820px) {
-  .os-ready .desktop-header { top: 15px; }
-  .brand { width: 270px; }
-  .os-ready .terminal-window { top: 110px; }
-  .os-ready .desktop-shortcuts { top: 130px; gap: 4px; }
-  .desktop-shortcuts .desktop-icon { padding-block: 4px; gap: 3px; }
-  .desktop-shortcuts .desktop-icon > svg { width: 33px; height: 33px; }
+@media (min-width: 761px) and (max-height: 880px) {
+  .os-ready .desktop-header { top: 12px; }
+  .brand { width: 260px; }
+  .os-ready .terminal-window { top: 105px; }
+  .os-ready .desktop-shortcuts { top: 120px; gap: 3px; }
+  .desktop-shortcuts .desktop-icon { padding-block: 3px; gap: 2px; }
+  .desktop-shortcuts .desktop-icon > svg { width: 31px; height: 31px; }
   .os-ready .readme-window { top: 248px; max-height: calc(100% - 302px); }
   .terminal-screen { padding: 14px 20px 10px; }
   .terminal-intro { margin-top: 10px; }

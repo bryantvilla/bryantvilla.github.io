@@ -271,6 +271,7 @@ try {
     const viewports = [
         { width: 1920, height: 1080, mobile: false, name: '1920x1080 (FHD Desktop)' },
         { width: 1440, height: 900, mobile: false, name: '1440x900 (Desktop)' },
+        { width: 1440, height: 824, mobile: false, name: '1440x824 (13-inch MacBook Pro Safari)' },
         { width: 1366, height: 768, mobile: false, name: '1366x768 (Laptop)' },
         { width: 1050, height: 900, mobile: false, name: '1050x900 (Compact Desktop)' },
         { width: 768, height: 1024, mobile: false, name: '768x1024 (Tablet Portrait)' },
@@ -292,6 +293,15 @@ try {
             const marquee = document.querySelector('.desktop-marquee');
             const dRect = d.getBoundingClientRect();
             const tbRect = tb.getBoundingClientRect();
+            const launcher = document.querySelector('.assistant-launcher');
+            let launcherOverlap = false;
+            if (launcher && getComputedStyle(launcher).display !== 'none') {
+                const aRect = launcher.getBoundingClientRect();
+                launcherOverlap = icons.some(icon => {
+                    const r = icon.getBoundingClientRect();
+                    return !(r.right <= aRect.left || r.left >= aRect.right || r.bottom <= aRect.top || r.top >= aRect.bottom);
+                });
+            }
 
             return {
                 desktopExists: !!d,
@@ -305,6 +315,7 @@ try {
                     return r.left >= 0 && r.right <= window.innerWidth && r.top >= 0 && r.bottom <= dRect.bottom;
                 }),
                 taskbarPinnedBottom: tbRect.bottom === window.innerHeight,
+                launcherOverlap,
                 iconCount: icons.length
             };
         })()`);
@@ -316,6 +327,7 @@ try {
         assert.ok(check.marqueeAriaHidden, `Marquee aria-hidden=true in ${vp.name}`);
         assert.ok(check.noHorizontalOverflow, `No horizontal overflow in ${vp.name}`);
         assert.ok(check.iconsInBounds, `All desktop icons stay within viewport bounds in ${vp.name}`);
+        assert.ok(!check.launcherOverlap, `No desktop icons overlap with Clip launcher in ${vp.name}`);
         assert.ok(check.taskbarPinnedBottom, `Taskbar stays pinned at bottom in ${vp.name}`);
         assert.equal(check.iconCount, 8, `Expected 8 desktop icons in ${vp.name}`);
 
