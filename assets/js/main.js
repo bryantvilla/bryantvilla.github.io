@@ -656,7 +656,7 @@
         ['clear', 'A fresh terminal'],
         ['home', 'Bring back the welcome screen']
     ];
-    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'spin', 'donut', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'cat', 'type', 'more', 'cd', 'readme', 'resume.doc', 'readme.txt', 'github', 'linkedin', 'date', 'history', 'echo'];
+    const commandNames = ['help', 'about', 'work', 'projects', 'skills', 'archive', 'resume', 'contact', 'whoami', 'spin', 'donut', 'rainbow', 'theme', 'clear', 'cls', 'home', 'ls', 'dir', 'pwd', 'open', 'cat', 'type', 'more', 'cd', 'readme', 'resume.doc', 'readme.txt', 'github', 'linkedin', 'date', 'history', 'echo'];
     const aliases = {
         projects: 'work',
         cls: 'clear',
@@ -890,10 +890,11 @@
                     try {
                         localStorage.setItem('bryantos-donut-rainbow', isRainbow ? 'true' : 'false');
                     } catch {}
+                    const cmdWord = command === 'rainbow' ? 'rainbow' : 'donut';
                     if (isRainbow) {
-                        result.textContent = '🌈 Prismatic rainbow mode enabled!\nYour 3D ASCII donut is now glowing in full spectrum.\nType donut again to toggle off.';
+                        result.textContent = '🌈 Prismatic rainbow mode enabled!\nYour 3D ASCII donut is now glowing in full spectrum.\nType ' + cmdWord + ' again to toggle off.';
                     } else {
-                        result.textContent = '🍩 Rainbow mode disabled. Restored classic terminal phosphor.\nType donut to turn rainbow mode back on.';
+                        result.textContent = '🍩 Rainbow mode disabled. Restored classic terminal phosphor.\nType ' + cmdWord + ' to turn rainbow mode back on.';
                     }
                 } else {
                     result.textContent = 'Donut element not found.';
@@ -967,6 +968,7 @@
                 : current.startsWith('more ') ? ['more resume.doc', 'more readme.txt']
                 : current.startsWith('cd ') ? ['cd about/', 'cd work/', 'cd skills/', 'cd archive/', 'cd contact/']
                 : current.startsWith('donut ') ? ['donut fast', 'donut left', 'donut right', 'donut up', 'donut down']
+                : current.startsWith('rainbow ') ? ['rainbow fast', 'rainbow left', 'rainbow right', 'rainbow up', 'rainbow down']
                 : current.startsWith('spin ') ? ['spin fast', 'spin left', 'spin right', 'spin up', 'spin down']
                 : current.startsWith('theme ') ? ['theme chrome', 'theme midnight'] : commandNames;
             const matches = choices.filter(name => name.startsWith(current));

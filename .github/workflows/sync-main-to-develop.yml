@@ -1,0 +1,41 @@
+name: Sync main to develop
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: sync-main-to-develop
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  sync-develop:
+    name: Back-merge main into develop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch and Merge main into develop
+        run: |
+          git fetch origin main:main
+          if git merge main -m "chore(sync): automatically back-merge main into develop [skip ci]"; then
+            git push origin develop
+            echo "develop successfully synchronized with main"
+          else
+            echo "::error::Merge conflict encountered while auto-merging main into develop. Manual resolution required."
+            exit 1
+          fi
