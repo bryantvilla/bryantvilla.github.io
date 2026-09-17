@@ -27,6 +27,7 @@
     let activeDrag = null;
     let activeResize = null;
     let startOpen = false;
+    let desktopIcons;
 
     function makeIcon(name) {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -137,9 +138,10 @@
             state.element.hidden = !visible && !state.exiting;
             state.element.inert = !visible;
             if (!state.exiting) state.element.classList.toggle('is-active', visible && activeWindow === id);
-            state.task.hidden = !state.open;
+            state.task.hidden = !state.open && id !== 'terminal';
             state.task.setAttribute('aria-pressed', String(visible && activeWindow === id));
-            state.task.setAttribute('aria-label', (visible && activeWindow === id ? 'Minimize ' : 'Restore ') + state.title);
+            state.task.setAttribute('aria-label', (visible && activeWindow === id ? 'Minimize ' : state.open ? 'Restore ' : 'Open ') + state.title);
+            if (id === 'terminal') state.task.title = 'Terminal (pinned)';
         });
         const anyVisible = [...windows.values()].some(state => state.open && !state.minimized);
         for (const id of ['show-desktop', 'tray-desktop']) {
@@ -586,6 +588,7 @@
     function showDesktop() {
         finishDrag();
         finishResize();
+        desktopIcons?.cancel();
         closeStart();
         const visible = [...windows.entries()].filter(([, state]) => state.open && !state.minimized).map(([id]) => id);
         if (visible.length) {
@@ -948,6 +951,7 @@
         finishDrag();
         finishResize();
         finishAllMotion();
+        desktopIcons.reset();
         windows.forEach((state, id) => {
             state.open = id === 'terminal' || (id === 'readme' && window.innerWidth > 1050);
             state.minimized = false;
@@ -1000,11 +1004,12 @@
             finishDrag();
             finishResize();
             finishAllMotion();
+            desktopIcons.refresh();
             updateMobileWindowLayout();
             windows.forEach(constrainWindow);
         });
     });
-    window.addEventListener('blur', () => { finishDrag(); finishResize(); });
+    window.addEventListener('blur', () => { finishDrag(); finishResize(); desktopIcons?.cancel(); });
 
     const donutElement = document.getElementById('terminal-donut');
     if (donutElement) {
@@ -1103,6 +1108,13 @@
     setInterval(updateClock, 30000);
     syncWindows();
     document.documentElement.classList.add('os-ready');
+    desktopIcons = window.BryantDesktopIcons.init({
+        desktop, shortcuts: desktopShortcuts, announce,
+        openIcon(icon) {
+            if (icon.dataset.open) openWindow(icon.dataset.open);
+            else window.BryantNavigation.confirm(icon);
+        }
+    });
     updateMobileWindowLayout();
     new ResizeObserver(updateMobileWindowLayout).observe(desktopShortcuts);
     focusWindow('terminal');

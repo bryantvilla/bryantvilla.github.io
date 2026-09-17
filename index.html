@@ -21,8 +21,11 @@
     <meta name="twitter:description" content="A lot of engineering with a sprinkle of nostalgia. Step inside my interactive desktop portfolio.">
     <meta name="twitter:image" content="https://bryantvilla.com/assets/img/entrance.png">
     <meta name="twitter:image:alt" content="Bryant's chrome desktop with an interactive portfolio terminal">
-    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/css/styles.css?v=2.0.27">
+    <link rel="icon" href="assets/img/favicon.svg?v=2.1.0" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/css/styles.css?v=2.1.0">
+    <link rel="stylesheet" href="assets/css/navigation-guard.css?v=2.1.0">
+    <script src="assets/js/navigation-guard.js?v=2.1.0" defer></script>
+    <script src="assets/js/desktop-icons.js?v=2.1.0" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -76,7 +79,7 @@
       ]
     }
     </script>
-    <script src="assets/js/main.js" defer></script>
+    <script src="assets/js/main.js?v=2.1.0" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#terminal" data-open="terminal">Skip to terminal</a>
@@ -189,15 +192,7 @@
         <div class="desktop-wallpaper" aria-hidden="true"></div>
         <header class="desktop-header">
             <a class="brand" href="#terminal" data-open="terminal" aria-label="bryantOS home terminal">
-                <svg class="chrome-wordmark" viewBox="0 0 410 108" role="img" aria-labelledby="wordmark-title">
-                    <title id="wordmark-title">bryantOS</title>
-                    <defs>
-                        <linearGradient id="wordmark-chrome" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fbfdff"/><stop offset=".27" stop-color="#e0eaf4"/><stop offset=".46" stop-color="#71849f"/><stop offset=".49" stop-color="#d8e6f5"/><stop offset=".53" stop-color="#f7fcff"/><stop offset=".59" stop-color="#7b8fa9"/><stop offset=".83" stop-color="#d7e5f4"/><stop offset="1" stop-color="#9caec3"/></linearGradient>
-                    </defs>
-                    <text x="10" y="81" class="wordmark-extrusion">bryant<tspan class="wordmark-os">OS</tspan></text>
-                    <text x="8" y="77" class="wordmark-face" fill="url(#wordmark-chrome)">bryant<tspan class="wordmark-os">OS</tspan></text>
-                    <path d="m377 4 3 10 10 3-10 3-3 10-3-10-10-3 10-3z" fill="#f5faff" stroke="#8b9fb6"/>
-                </svg>
+                <img class="chrome-wordmark" src="assets/img/bryantos-wordmark.svg" width="410" height="108" alt="BryantOS">
                 <span class="brand-caption">PERSONAL PORTFOLIO <span>CHROME EDITION</span></span>
             </a>
             <div class="desktop-meta"><span class="online-label"><i></i> All systems live.</span><span>Built for the web. Inspired by another era.</span></div>
@@ -220,11 +215,16 @@
             <div class="terminal-screen">
                 <div class="terminal-transcript" id="terminal-screen" tabindex="0" aria-label="Terminal output and introduction">
                 <div class="terminal-welcome" id="terminal-welcome">
-                    <div class="terminal-system-line"><span>bryantOS [Version 2.0.27]</span><span class="terminal-live"><i></i> Session active</span></div>
+                    <div class="terminal-system-line"><span>bryantOS [Version 2.1.0]</span><span class="terminal-live"><i></i> Session active</span></div>
                     <p class="boot-line" hidden><span>✓</span> Last login: <time id="last-login"></time> on ttys004</p>
                     <div class="terminal-intro">
-                        <p class="command-echo"><span>C:&#92;Bryant&gt;</span> whoami</p>
-                        <div class="intro-heading"><h1>Bryant<br>Villarreal<span class="heading-cursor" aria-hidden="true">_</span></h1><pre class="terminal-donut" id="terminal-donut" role="img" aria-label="Rotating 3D ASCII Donut">           $$$$##########$$$$           
+                        <div class="terminal-identity">
+                            <p class="command-echo"><span>C:&#92;Bryant&gt;</span> whoami</p>
+                            <div class="intro-heading"><h1>Bryant<br>Villarreal<span class="heading-cursor" aria-hidden="true">_</span></h1></div>
+                            <p class="terminal-role">Software Engineer II <span>@ UKG</span></p>
+                            <p class="terminal-bio">I build the systems behind secure access.<br>Backend engineering, identity &amp; a healthy curiosity<br class="desktop-break"> for how things work.</p>
+                        </div>
+                        <div class="terminal-art"><pre class="terminal-donut" id="terminal-donut" role="img" aria-label="Rotating 3D ASCII Donut">           $$$$##########$$$$          &#32;
          ##*****!******!*****##         
        **!!!!!!!!!!!!!!!!!!*!!!**       
       !!!!=====;;;;;;;;;;======!!!      
@@ -240,8 +240,6 @@
                                         
                                         
                                         </pre></div>
-                        <p class="terminal-role">Software Engineer II <span>@ UKG</span></p>
-                        <p class="terminal-bio">I build the systems behind secure access.<br>Backend engineering, identity &amp; a healthy curiosity<br class="desktop-break"> for how things work.</p>
                     </div>
                     <div class="terminal-guidance"><p>Welcome to my corner of the internet.</p><p>Type <button type="button" data-command="help" class="inline-command js-only">help</button><span class="no-js-only">a command</span> to look around, or take a shortcut:</p></div>
                     <div class="command-shortcuts"><a href="#work" data-open="work"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-arrow-up-right"/></svg> explore work</a><a href="#about" data-open="about"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-smile"/></svg> about me</a><a href="#contact" data-open="contact"><svg class="ui-glyph" aria-hidden="true"><use href="#icon-mail"/></svg> say hello</a></div>
@@ -368,7 +366,7 @@
             <div class="window-status"><span>Print layout · Read only</span><span>English (U.S.)</span></div>
         </section>
 
-        <div class="desktop-footer"><button id="wallpaper-button" type="button" class="js-only" aria-label="Switch to midnight wallpaper"><svg aria-hidden="true"><use href="#icon-star"/></svg><span>Change the scenery</span></button></div>
+        <div class="desktop-footer"><span class="desktop-pointer-hint js-only">Click to select · Double-click to open</span><span class="desktop-touch-hint js-only">Tap to select · Tap again to open</span><button id="wallpaper-button" type="button" class="js-only" aria-label="Switch to midnight wallpaper"><svg aria-hidden="true"><use href="#icon-star"/></svg><span>Change the scenery</span></button></div>
     </main>
 
     <nav class="start-menu" id="start-menu" aria-label="Start menu" hidden>
@@ -384,6 +382,7 @@
     </footer>
     <p class="sr-only" id="os-announcement" role="status" aria-live="polite"></p>
     <p class="sr-only" id="window-resize-help">Drag an edge or corner to resize. On the bottom-right resize button, use the arrow keys. Hold Shift for larger steps.</p>
+    <p class="sr-only" id="desktop-selection-help">Click to select, double-click or press Enter to open. On touchscreens, tap to select and tap again to open. Drag an icon to move the selection, or drag empty desktop space to select a group. Hold Control, Command, or Shift to select more icons. Use arrow keys to choose an icon, Space to toggle selection, Control or Command plus A to select all, and Escape to clear. Hold Alt and use arrow keys to move selected icons; add Shift for larger steps.</p>
     <noscript><p class="noscript-note">The full portfolio is available below. Enable JavaScript to use the interactive desktop and terminal.</p></noscript>
 </body>
 </html>

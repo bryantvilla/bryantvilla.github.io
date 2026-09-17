@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 
 console.log('--- Running site verification checks ---');
 
@@ -24,17 +24,19 @@ if (fs.existsSync('CNAME')) {
 }
 
 // 2. Core files check
-const coreFiles = ['index.html', 'assets/resume.html', 'assets/css/styles.css', 'assets/js/main.js', 'robots.txt', 'sitemap.xml'];
+const coreFiles = ['index.html', 'assets/resume.html', 'assets/css/styles.css', 'assets/css/navigation-guard.css', 'assets/js/main.js', 'assets/js/desktop-icons.js', 'assets/js/navigation-guard.js', 'assets/img/bryantos-wordmark.svg', 'assets/img/chrome-wallpaper-mobile.svg', 'assets/img/favicon.svg', 'robots.txt', 'sitemap.xml'];
 for (const file of coreFiles) {
   assert(fs.existsSync(file), `Core file exists: ${file}`);
 }
 
 // 3. JavaScript syntax validation
-try {
-  execSync('node --check assets/js/main.js', { stdio: 'pipe' });
-  assert(true, 'JavaScript syntax valid: assets/js/main.js');
-} catch (err) {
-  assert(false, `JavaScript syntax error in assets/js/main.js: ${err.message}`);
+for (const file of fs.readdirSync('assets/js').filter(file => file.endsWith('.js'))) {
+  try {
+    execFileSync(process.execPath, ['--check', `assets/js/${file}`], { stdio: 'pipe' });
+    assert(true, `JavaScript syntax valid: assets/js/${file}`);
+  } catch (err) {
+    assert(false, `JavaScript syntax error in assets/js/${file}: ${err.message}`);
+  }
 }
 
 // 4. Asset reference check in HTML files
