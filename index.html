@@ -21,11 +21,13 @@
     <meta name="twitter:description" content="A lot of engineering with a sprinkle of nostalgia. Step inside my interactive desktop portfolio.">
     <meta name="twitter:image" content="https://bryantvilla.com/assets/img/entrance.png">
     <meta name="twitter:image:alt" content="Bryant's chrome desktop with an interactive portfolio terminal">
-    <link rel="icon" href="assets/img/favicon.svg?v=2.1.0" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/css/styles.css?v=2.1.0">
-    <link rel="stylesheet" href="assets/css/navigation-guard.css?v=2.1.0">
-    <script src="assets/js/navigation-guard.js?v=2.1.0" defer></script>
-    <script src="assets/js/desktop-icons.js?v=2.1.0" defer></script>
+    <link rel="icon" href="assets/img/favicon.svg?v=ccf17a8dc69d" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/css/styles.css?v=6adbc3662573">
+    <link rel="stylesheet" href="assets/css/navigation-guard.css?v=196834fdefd8">
+    <link rel="stylesheet" href="assets/css/desktop-assistant.css?v=1432b2a5a5e7">
+    <script src="assets/js/navigation-guard.js?v=6feb087270f9" defer></script>
+    <script src="assets/js/desktop-icons.js?v=55017fbfd3bc" defer></script>
+    <script src="assets/js/desktop-assistant.js?v=3a9259ad4c8b" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -79,7 +81,7 @@
       ]
     }
     </script>
-    <script src="assets/js/main.js?v=2.1.0" defer></script>
+    <script src="assets/js/main.js?v=51e608199f28" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#terminal" data-open="terminal">Skip to terminal</a>
@@ -103,6 +105,16 @@
                 <path d="M8 15V9h15l3 4h13v24H8z" fill="url(#icon-paper)" stroke="#a1adbb"/>
                 <path d="m4 17 41-2-5 27H3z" fill="url(#icon-folder)" stroke="#a78038"/>
                 <path d="m5 19 37-2" fill="none" stroke="#fff9ce"/>
+            </symbol>
+            <symbol id="icon-clip" viewBox="0 0 80 100">
+                <defs><linearGradient id="clip-metal" x1="0" y1="0" x2="1" y2=".6"><stop stop-color="#f6fbff"/><stop offset=".22" stop-color="#a3b7ce"/><stop offset=".42" stop-color="#eff7ff"/><stop offset=".49" stop-color="#526981"/><stop offset=".57" stop-color="#e1eefa"/><stop offset=".79" stop-color="#7d94af"/><stop offset="1" stop-color="#f0f8ff"/></linearGradient><linearGradient id="clip-eye" x2=".3" y2="1"><stop stop-color="#f6fbff"/><stop offset=".68" stop-color="#dcebf8"/><stop offset="1" stop-color="#9cb4cf"/></linearGradient></defs>
+                <ellipse cx="41" cy="92" rx="25" ry="4" fill="#526c89" opacity=".2"/>
+                <path d="M31 74V29c0-14 20-14 20 0v40c0 24-36 24-36 0V26C15-3 66-3 66 26v44" fill="none" stroke="#526982" stroke-width="12" stroke-linecap="round"/>
+                <path d="M31 74V29c0-14 20-14 20 0v40c0 24-36 24-36 0V26C15-3 66-3 66 26v44" fill="none" stroke="url(#clip-metal)" stroke-width="9" stroke-linecap="round"/>
+                <path d="M18 55V26C18 12 29 7 40 7M34 69V32" fill="none" stroke="#f2f9ff" stroke-width="1.5" stroke-linecap="round" opacity=".9"/>
+                <g transform="rotate(-8 39 35)"><ellipse cx="29" cy="34" rx="10" ry="13" fill="url(#clip-eye)" stroke="#6c839e" stroke-width="1.3"/><ellipse cx="49" cy="34" rx="10" ry="13" fill="url(#clip-eye)" stroke="#6c839e" stroke-width="1.3"/><ellipse cx="32" cy="35" rx="3.6" ry="5.6" fill="#203750"/><ellipse cx="52" cy="35" rx="3.6" ry="5.6" fill="#203750"/><circle cx="33" cy="32.5" r="1.3" fill="#eef7ff"/><circle cx="53" cy="32.5" r="1.3" fill="#eef7ff"/></g>
+                <path d="m22 17 13-3m9-1 12 3M34 53q7 5 13-1" fill="none" stroke="#617b97" stroke-width="2.3" stroke-linecap="round"/>
+                <path d="m67 4 2 7 7 2-7 2-2 7-2-7-7-2 7-2Z" fill="#f3faff" stroke="#9bb1ca" stroke-width=".7"/>
             </symbol>
             <symbol id="icon-terminal" viewBox="0 0 48 48">
                 <rect x="3" y="5" width="42" height="36" rx="2" fill="url(#icon-metal)" stroke="#667997"/>
@@ -192,7 +204,7 @@
         <div class="desktop-wallpaper" aria-hidden="true"></div>
         <header class="desktop-header">
             <a class="brand" href="#terminal" data-open="terminal" aria-label="bryantOS home terminal">
-                <img class="chrome-wordmark" src="assets/img/bryantos-wordmark.svg" width="410" height="108" alt="BryantOS">
+                <img class="chrome-wordmark" src="assets/img/bryantos-wordmark.svg?v=4aca30025c7a" width="410" height="108" alt="BryantOS">
                 <span class="brand-caption">PERSONAL PORTFOLIO <span>CHROME EDITION</span></span>
             </a>
             <div class="desktop-meta"><span class="online-label"><i></i> All systems live.</span><span>Built for the web. Inspired by another era.</span></div>
@@ -359,15 +371,34 @@
 
         <section class="os-window content-window resume-window" id="resume" data-window="resume" data-title="Resume.doc" data-icon="word" aria-labelledby="resume-window-title">
             <div class="title-bar"><h2 id="resume-window-title"><svg aria-hidden="true"><use href="#icon-word"/></svg> Bryant_Villarreal_Resume.doc · Word</h2><div class="window-controls"></div></div>
-            <nav class="window-menu word-menu" aria-label="Resume sections"><a href="assets/resume.html#summary" target="resume-document">Summary</a><a href="assets/resume.html#experience" target="resume-document">Experience</a><a href="assets/resume.html#skills" target="resume-document">Skills</a><a href="assets/resume.html#education" target="resume-document">Education</a></nav>
+            <nav class="window-menu word-menu" aria-label="Resume sections"><a href="assets/resume.html?v=0d84ad607390#summary" target="resume-document">Summary</a><a href="assets/resume.html?v=0d84ad607390#experience" target="resume-document">Experience</a><a href="assets/resume.html?v=0d84ad607390#skills" target="resume-document">Skills</a><a href="assets/resume.html?v=0d84ad607390#education" target="resume-document">Education</a></nav>
             <div class="word-toolbar"><div class="word-format"><svg aria-hidden="true"><use href="#icon-word"/></svg><span>Print layout</span><span class="word-typeface">Arial <span>10.5</span></span></div><div class="word-actions"><button type="button" class="xp-button js-only" id="print-resume">Print</button><a class="xp-button primary-button" href="assets/pdf/bryant-res.pdf" target="_blank" rel="noopener noreferrer" aria-label="Open resume PDF in a new tab">Open PDF <svg class="ui-glyph external-arrow" aria-hidden="true"><use href="#icon-arrow-up-right"/></svg></a></div></div>
             <div class="word-ruler" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
-            <iframe class="resume-document" id="resume-document" name="resume-document" src="assets/resume.html" title="Bryant Villarreal's resume document" loading="lazy"></iframe>
+            <iframe class="resume-document" id="resume-document" name="resume-document" src="assets/resume.html?v=0d84ad607390" title="Bryant Villarreal's resume document" loading="lazy"></iframe>
             <div class="window-status"><span>Print layout · Read only</span><span>English (U.S.)</span></div>
         </section>
 
-        <div class="desktop-footer"><span class="desktop-pointer-hint js-only">Click to select · Double-click to open</span><span class="desktop-touch-hint js-only">Tap to select · Tap again to open</span><button id="wallpaper-button" type="button" class="js-only" aria-label="Switch to midnight wallpaper"><svg aria-hidden="true"><use href="#icon-star"/></svg><span>Change the scenery</span></button></div>
+        <div class="desktop-footer"><button id="wallpaper-button" type="button" class="js-only" aria-label="Switch to midnight wallpaper"><svg aria-hidden="true"><use href="#icon-star"/></svg><span>Change the scenery</span></button></div>
     </main>
+
+    <aside class="desktop-assistant js-only" id="desktop-assistant" aria-label="Clip, your desktop assistant">
+        <button class="assistant-launcher" type="button" data-assistant-toggle aria-controls="assistant-panel" aria-expanded="false" aria-label="Ask Clip for desktop tips" title="Need a hand? Ask Clip."><svg aria-hidden="true"><use href="#icon-clip"/></svg><span class="assistant-help-badge" aria-hidden="true">?</span></button>
+        <section class="assistant-panel" id="assistant-panel" aria-labelledby="assistant-title" hidden>
+            <div class="assistant-panel-scroll">
+                <div class="assistant-caption"><span><svg aria-hidden="true"><use href="#icon-star"/></svg> Clip · desktop help</span><button id="assistant-close" type="button" aria-label="Close desktop tips">×</button></div>
+                <div class="assistant-copy">
+                    <h2 id="assistant-title" tabindex="-1">Make yourself at home.</h2>
+                    <p class="assistant-intro">I’m Clip. A few shortcuts for your stay:</p>
+                    <ol class="assistant-tips">
+                        <li><span class="assistant-step" aria-hidden="true">01</span><div><strong>Pick something to open.</strong><p class="assistant-mouse-copy">Click an icon to select it. Double-click to open it, or press <kbd>Enter</kbd>.</p><p class="assistant-touch-copy">Tap an icon to select it. Tap it again to open.</p></div></li>
+                        <li><span class="assistant-step" aria-hidden="true">02</span><div><strong>Make the desktop yours.</strong><p class="assistant-mouse-copy">Drag across empty wallpaper to select a group, then drag an icon to move it. Hold <kbd>Ctrl</kbd> or <kbd>⌘</kbd> to add icons.</p><p class="assistant-touch-copy">Drag an icon to a new spot. Use Show desktop below to make room.</p></div></li>
+                        <li><span class="assistant-step" aria-hidden="true">03</span><div><strong>Find your way back.</strong><p>Terminal is always pinned in the taskbar. Type <kbd>help</kbd> for more shortcuts.</p></div></li>
+                    </ol>
+                    <div class="assistant-actions"><button id="assistant-show-desktop" type="button" class="xp-button">Show desktop</button><button id="assistant-terminal" type="button" class="xp-button">Open Terminal</button></div>
+                </div>
+            </div>
+        </section>
+    </aside>
 
     <nav class="start-menu" id="start-menu" aria-label="Start menu" hidden>
         <div class="start-profile"><svg aria-hidden="true"><use href="#icon-computer"/></svg><div><strong>Bryant Villarreal</strong><span>Welcome to bryantOS</span></div></div>
@@ -377,6 +408,7 @@
     <footer class="taskbar js-only" aria-label="Desktop taskbar">
         <button class="start-button" id="start-button" type="button" aria-controls="start-menu" aria-expanded="false"><svg aria-hidden="true"><use href="#icon-grid"/></svg><span>start</span></button>
         <button type="button" class="show-desktop" id="show-desktop" aria-label="Show desktop" title="Show desktop"><svg aria-hidden="true"><use href="#icon-computer"/></svg></button>
+        <button class="assistant-taskbar-button" type="button" data-assistant-toggle aria-controls="assistant-panel" aria-expanded="false" aria-label="Ask Clip for desktop tips" title="Ask Clip"><svg aria-hidden="true"><use href="#icon-clip"/></svg></button>
         <div class="taskbar-divider"></div><div class="taskbar-tasks" id="taskbar-tasks" aria-label="Open windows"></div>
         <div class="system-tray"><svg class="tray-connection" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v9m5-13v13m5-17v17m5-12v12" fill="none" stroke="currentColor" stroke-width="2.5"/></svg><span class="tray-edition">EN</span><time id="system-clock">12:00 PM</time><button type="button" id="tray-desktop" aria-label="Show desktop" title="Show desktop"></button></div>
     </footer>

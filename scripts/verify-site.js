@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { versionAssets } = require('./version-assets');
 
 console.log('--- Running site verification checks ---');
 
@@ -75,6 +76,8 @@ for (const htmlFile of htmlFiles) {
 }
 
 console.log('----------------------------------------');
+const staleVersions = versionAssets({ check: true });
+assert(staleVersions.length === 0, staleVersions.length ? 'Run node scripts/version-assets.js to refresh: ' + staleVersions.join(', ') : 'Cached asset versions match their contents');
 if (errors > 0) {
   console.error(`Verification failed with ${errors} error(s).`);
   process.exit(1);

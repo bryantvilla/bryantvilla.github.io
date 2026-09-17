@@ -1,0 +1,45 @@
+/* Clip is polished metal and ice blue, with the same bevels as the desktop. */
+.desktop-assistant { position: fixed; z-index: 10002; left: 26px; bottom: calc(var(--taskbar-height) + env(safe-area-inset-bottom) + 6px); }
+.assistant-launcher { position: relative; width: 54px; height: 64px; padding: 0; border: 0; border-radius: 8px; background: none; }
+.assistant-launcher > svg { width: 54px; height: 64px; filter: drop-shadow(1px 3px 2px oklch(32% .035 250 / .3)); }
+.assistant-launcher:hover > svg { filter: drop-shadow(1px 3px 2px oklch(32% .035 250 / .3)) brightness(1.08); }
+.assistant-help-badge { position: absolute; right: -5px; top: 3px; display: grid; place-items: center; width: 17px; height: 17px; border: 1px solid oklch(62% .045 255); border-radius: 50%; background: linear-gradient(oklch(99% .006 250), oklch(82% .035 255)); box-shadow: inset 0 1px oklch(99% .003 255); color: var(--ink); font: 700 11px var(--ui); }
+.assistant-panel { position: absolute; bottom: 4px; left: 68px; width: 302px; max-height: calc(100dvh - var(--taskbar-height) - 28px); padding: 3px; border: 1px solid oklch(54% .05 255); border-radius: 8px; background: linear-gradient(135deg, oklch(98% .009 250), oklch(85% .027 255)); color: var(--ink); box-shadow: inset 0 1px oklch(99% .005 250), 4px 8px 20px oklch(25% .04 253 / .24); }
+.assistant-panel::before { content: ''; position: absolute; left: -8px; bottom: 25px; width: 14px; height: 14px; border: 1px solid oklch(54% .05 255); border-top: 0; border-right: 0; background: oklch(94% .017 250); transform: rotate(45deg); }
+.assistant-panel-scroll { position: relative; max-height: calc(100dvh - var(--taskbar-height) - 36px); overflow: auto; border-radius: 5px; background: linear-gradient(oklch(97% .009 250), oklch(92% .015 255)); overscroll-behavior: contain; }
+.assistant-caption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 7px 6px 12px; border-bottom: 1px solid oklch(74% .025 255); background: linear-gradient(oklch(99% .006 250), oklch(88% .02 255) 45%, oklch(80% .033 255) 49%, oklch(92% .014 250)); font: 10px var(--mono); }
+.assistant-caption > span { display: flex; align-items: center; gap: 7px; }
+.assistant-caption svg { width: 15px; height: 15px; }
+#assistant-close { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 1px solid oklch(63% .04 255); border-radius: 3px; background: linear-gradient(oklch(98% .006 250), oklch(83% .025 255)); box-shadow: inset 1px 1px oklch(99% .005 250); color: var(--ink); font: 19px/1 var(--ui); }
+.assistant-copy { padding: 15px 16px 16px; }
+.assistant-copy h2 { margin: 0 0 6px; font: 700 21px/1.2 var(--display); letter-spacing: -.6px; }
+.assistant-intro { color: var(--muted); font-size: 11px; line-height: 1.6; }
+.assistant-tips { display: grid; gap: 12px; margin: 16px 0; padding: 0; list-style: none; }
+.assistant-tips li { display: grid; grid-template-columns: 23px minmax(0, 1fr); gap: 9px; font-size: 11px; line-height: 1.6; }
+.assistant-step { color: oklch(43% .085 255); font: 12px/1.7 var(--mono); }
+.assistant-tips strong { display: block; margin-bottom: 2px; color: var(--ink); font-size: 11px; }
+.assistant-tips p { color: var(--muted); }
+.assistant-tips kbd { font: inherit; font-weight: 700; color: var(--ink); }
+.assistant-actions { display: flex; flex-wrap: wrap; gap: 7px; padding-top: 12px; border-top: 1px solid oklch(80% .023 255); }
+.assistant-actions .xp-button { min-height: 34px; padding: 5px 12px; flex: 1; font-size: 10px; }
+.assistant-actions button:disabled { color: var(--muted); cursor: default; box-shadow: none; }
+.assistant-touch-copy, .assistant-taskbar-button { display: none; }
+@media (pointer: coarse) {
+  .assistant-mouse-copy { display: none; }
+  .assistant-touch-copy { display: block; }
+  .assistant-actions .xp-button { min-height: 42px; }
+}
+@media (max-width: 760px), (max-height: 600px) {
+  .desktop-assistant { left: 12px; right: 12px; bottom: calc(var(--taskbar-height) + env(safe-area-inset-bottom) + 12px); }
+  .assistant-launcher { display: none; }
+  .assistant-panel { left: 0; bottom: 0; width: min(302px, 100%); }
+  .assistant-panel::before { left: 104px; bottom: -8px; transform: rotate(-45deg); }
+  .assistant-taskbar-button { display: grid; place-items: center; width: 36px; height: 35px; flex-shrink: 0; padding: 3px 5px; margin-left: 5px; border: 1px solid oklch(63% .04 255); border-radius: 3px; background: linear-gradient(oklch(96% .01 250), oklch(83% .026 255)); box-shadow: inset 1px 1px oklch(99% .005 250); }
+  .assistant-taskbar-button > svg { width: 25px; height: 30px; }
+  .assistant-taskbar-button:hover, .assistant-taskbar-button[aria-expanded='true'] { background: oklch(95% .025 249); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .assistant-launcher > svg { transition: transform 180ms var(--ease-out), filter 180ms var(--ease-out); }
+  .assistant-launcher:hover > svg { transform: translateY(-3px) rotate(-4deg); }
+}
+@media print { .desktop-assistant { display: none !important; } }
