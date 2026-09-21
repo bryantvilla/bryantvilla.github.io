@@ -270,6 +270,8 @@ try {
     console.log('\n[Section 3] Verifying Desktop Layouts and Formats Across Viewports...');
     const viewports = [
         { width: 1920, height: 1080, mobile: false, name: '1920x1080 (FHD Desktop)' },
+        { width: 1512, height: 982, mobile: false, name: '1512x982 (14-inch MacBook Pro Fullscreen)' },
+        { width: 1512, height: 882, mobile: false, name: '1512x882 (14-inch MacBook Pro Desktop Safari)' },
         { width: 1440, height: 900, mobile: false, name: '1440x900 (Desktop)' },
         { width: 1440, height: 824, mobile: false, name: '1440x824 (13-inch MacBook Pro Safari)' },
         { width: 1366, height: 768, mobile: false, name: '1366x768 (Laptop)' },
@@ -295,12 +297,22 @@ try {
             const tbRect = tb.getBoundingClientRect();
             const launcher = document.querySelector('.assistant-launcher');
             let launcherOverlap = false;
+            let launcherClearance = Infinity;
+            let iconHitTestPassed = true;
             if (launcher && getComputedStyle(launcher).display !== 'none') {
                 const aRect = launcher.getBoundingClientRect();
                 launcherOverlap = icons.some(icon => {
                     const r = icon.getBoundingClientRect();
                     return !(r.right <= aRect.left || r.left >= aRect.right || r.bottom <= aRect.top || r.top >= aRect.bottom);
                 });
+                const lastIcon = icons[icons.length - 1];
+                if (lastIcon) {
+                    const lRect = lastIcon.getBoundingClientRect();
+                    launcherClearance = aRect.top - lRect.bottom;
+                }
+                const lastIconRect = icons[icons.length - 1].getBoundingClientRect();
+                const bottomTarget = document.elementFromPoint(lastIconRect.left + lastIconRect.width / 2, lastIconRect.bottom - 4);
+                iconHitTestPassed = !launcher.contains(bottomTarget);
             }
 
             return {
@@ -316,6 +328,8 @@ try {
                 }),
                 taskbarPinnedBottom: tbRect.bottom === window.innerHeight,
                 launcherOverlap,
+                launcherClearance,
+                iconHitTestPassed,
                 iconCount: icons.length
             };
         })()`);
@@ -328,6 +342,10 @@ try {
         assert.ok(check.noHorizontalOverflow, `No horizontal overflow in ${vp.name}`);
         assert.ok(check.iconsInBounds, `All desktop icons stay within viewport bounds in ${vp.name}`);
         assert.ok(!check.launcherOverlap, `No desktop icons overlap with Clip launcher in ${vp.name}`);
+        if (!vp.mobile) {
+            assert.ok(check.launcherClearance >= 10, `Clip launcher maintains at least 10px clearance below shortcuts in ${vp.name} (actual: ${check.launcherClearance.toFixed(1)}px)`);
+            assert.ok(check.iconHitTestPassed, `Desktop icon bottom hit test not obscured by Clip launcher in ${vp.name}`);
+        }
         assert.ok(check.taskbarPinnedBottom, `Taskbar stays pinned at bottom in ${vp.name}`);
         assert.equal(check.iconCount, 8, `Expected 8 desktop icons in ${vp.name}`);
 

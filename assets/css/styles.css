@@ -341,7 +341,7 @@ summary::-webkit-details-marker { display: none; }
 .os-ready body { overflow: hidden; }
 .os-ready .desktop { height: calc(100dvh - var(--taskbar-height)); min-height: 0; padding: 0; touch-action: none; }
 .os-ready .desktop-header { position: absolute; left: clamp(124px, 10.5vw, 180px); right: 35px; top: 28px; margin: 0; max-width: none; }
-.os-ready .desktop-shortcuts { position: absolute; top: 159px; left: 23px; flex-direction: column; flex-wrap: nowrap; gap: 8px; margin: 0; }
+.os-ready .desktop-shortcuts { position: absolute; top: 130px; left: 23px; flex-direction: column; flex-wrap: nowrap; gap: 6px; margin: 0; }
 .os-ready .os-window { position: absolute; margin: 0; max-height: calc(100% - 16px); touch-action: auto; }
 .os-ready .terminal-window { left: clamp(124px, 10.5vw, 180px); top: clamp(118px, 14.5vh, 148px); width: min(980px, calc(100% - 450px)); height: auto; max-height: min(640px, calc(100dvh - 180px)); }
 .os-ready .readme-window { right: 34px; top: clamp(280px, 34vh, 350px); }
@@ -560,7 +560,7 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
   .command-shortcuts { gap: 6px; }
   .command-shortcuts > a { padding-inline: 9px; }
 }
-@media (min-width: 761px) and (max-height: 880px) {
+@media (min-width: 761px) and (max-height: 885px) {
   .os-ready .desktop-header { top: 12px; }
   .brand { width: 260px; }
   .os-ready .terminal-window { top: 105px; }

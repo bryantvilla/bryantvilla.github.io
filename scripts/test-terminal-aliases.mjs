@@ -14,7 +14,10 @@ function findChrome() {
     const candidates = [
         '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
         '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-        '/Applications/Chromium.app/Contents/MacOS/Chromium'
+        '/Applications/Chromium.app/Contents/MacOS/Chromium',
+        '/usr/bin/google-chrome',
+        '/usr/bin/chromium-browser',
+        '/usr/bin/chromium'
     ];
     for (const bin of candidates) {
         if (existsSync(bin)) return bin;

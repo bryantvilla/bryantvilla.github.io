@@ -44,6 +44,9 @@ jobs:
       - name: Verify desktop browser & mobile scenarios
         run: node scripts/verify-desktop.mjs
 
+      - name: Test terminal file aliases & easter eggs
+        run: node scripts/test-terminal-aliases.mjs
+
       - name: Install image optimization tools
         run: sudo apt-get update -qq && sudo apt-get install -y -qq optipng jpegoptim
 
