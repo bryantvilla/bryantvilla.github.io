@@ -290,6 +290,7 @@
             activeDrag = {
                 element: state.element, bar, pointerId: event.pointerId,
                 startX: event.clientX, startY: event.clientY, left: bounds.left - area.left, top: bounds.top - area.top,
+                maxLeft: Math.max(0, area.width - bounds.width), maxTop: Math.max(0, area.height - bounds.height),
                 dx: 0, dy: 0, frame: 0
             };
             bar.setPointerCapture(event.pointerId);
@@ -297,8 +298,10 @@
         bar.addEventListener('pointermove', event => {
             const drag = activeDrag;
             if (!drag || event.pointerId !== drag.pointerId) return;
-            drag.dx = event.clientX - drag.startX;
-            drag.dy = event.clientY - drag.startY;
+            // Keep the window on the desktop (as constrainWindow does) so its title bar stays reachable.
+            const clamp = (value, max) => Math.max(0, Math.min(value, max));
+            drag.dx = clamp(drag.left + event.clientX - drag.startX, drag.maxLeft) - drag.left;
+            drag.dy = clamp(drag.top + event.clientY - drag.startY, drag.maxTop) - drag.top;
             if (!drag.frame) drag.frame = requestAnimationFrame(() => {
                 drag.frame = 0;
                 drag.element.style.transform = 'translate(' + drag.dx + 'px, ' + drag.dy + 'px)';
@@ -329,11 +332,12 @@
         const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
         let { left, top, width, height } = origin;
         if (direction.includes('e')) {
-            const availableWidth = area.width - left - 4;
+            // Never shrink below the current size when there is no room left to grow.
+            const availableWidth = Math.max(origin.width, area.width - left - 4);
             width = clamp(width + dx, Math.min(minimumWidth, availableWidth), availableWidth);
         }
         if (direction.includes('s')) {
-            const availableHeight = area.height - top - 4;
+            const availableHeight = Math.max(origin.height, area.height - top - 4);
             height = clamp(height + dy, Math.min(minimumHeight, availableHeight), availableHeight);
         }
         if (direction.includes('w')) {
@@ -380,7 +384,7 @@
                     event.preventDefault();
                     finishDrag();
                     finishResize();
-                    finishMotion(state.element);
+                    constrainWindow(state);
                     const [dx, dy] = directions[event.key];
                     applyWindowBounds(state.element, resizedBounds(windowBounds(state.element), 'se', dx, dy));
                     announceSize(state);
@@ -765,6 +769,7 @@
             case 'archive':
             case 'resume':
             case 'contact':
+            case 'terminal':
             case 'readme': {
                 const winId = command === 'readme' ? 'readme' : command;
                 result.textContent = 'Opening ' + windows.get(winId).title + '...';
@@ -890,7 +895,7 @@
                     try {
                         localStorage.setItem('bryantos-donut-rainbow', isRainbow ? 'true' : 'false');
                     } catch {}
-                    const cmdWord = command === 'rainbow' ? 'rainbow' : 'donut';
+                    const cmdWord = name.toLowerCase() === 'rainbow' ? 'rainbow' : 'donut';
                     if (isRainbow) {
                         result.textContent = '🌈 Prismatic rainbow mode enabled!\nYour 3D ASCII donut is now glowing in full spectrum.\nType ' + cmdWord + ' again to toggle off.';
                     } else {
@@ -967,8 +972,6 @@
                 : current.startsWith('type ') ? ['type resume.doc', 'type readme.txt']
                 : current.startsWith('more ') ? ['more resume.doc', 'more readme.txt']
                 : current.startsWith('cd ') ? ['cd about/', 'cd work/', 'cd skills/', 'cd archive/', 'cd contact/']
-                : current.startsWith('donut ') ? ['donut fast', 'donut left', 'donut right', 'donut up', 'donut down']
-                : current.startsWith('rainbow ') ? ['rainbow fast', 'rainbow left', 'rainbow right', 'rainbow up', 'rainbow down']
                 : current.startsWith('spin ') ? ['spin fast', 'spin left', 'spin right', 'spin up', 'spin down']
                 : current.startsWith('theme ') ? ['theme chrome', 'theme midnight'] : commandNames;
             const matches = choices.filter(name => name.startsWith(current));
@@ -1396,6 +1399,8 @@
             const now = performance.now();
             const dx = event.clientX - lastX;
             const dy = event.clientY - lastY;
+            // The same event reaches both the donut and window listeners; ignore the zero-delta repeat.
+            if (dx === 0 && dy === 0) return;
             const dt = now - lastTime;
             if (dt > 0) {
                 const instVx = dx / dt;
@@ -1406,11 +1411,8 @@
             lastX = event.clientX;
             lastY = event.clientY;
             lastTime = now;
-
-            if (dx !== 0 || dy !== 0) {
-                rotateByDelta(dx, dy);
-                renderDonut();
-            }
+            rotateByDelta(dx, dy);
+            renderDonut();
         }
 
         function onPointerUp(event) {

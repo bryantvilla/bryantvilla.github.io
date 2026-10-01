@@ -45,7 +45,7 @@ const htmlFiles = ['index.html', 'assets/resume.html'];
 for (const htmlFile of htmlFiles) {
   if (!fs.existsSync(htmlFile)) continue;
   const content = fs.readFileSync(htmlFile, 'utf8');
-  const matches = content.matchAll(/(?:href|src)=["']([^"':#]+)["']/g);
+  const matches = content.matchAll(/(?:href|src)=["']([^"':]+)["']/g);
   let broken = 0;
   for (const match of matches) {
     let target = match[1];
