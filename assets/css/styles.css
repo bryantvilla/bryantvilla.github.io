@@ -871,6 +871,8 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
   .os-ready body { overflow: visible; }
   .os-ready .desktop { display: block; height: auto; padding: 0; }
   .desktop-wallpaper, .desktop-shortcuts, .desktop-marquee, .desktop-meta, .window-controls, .taskbar, .desktop-footer, .terminal-form, .start-menu, .window-menu, .explorer-address, .window-status, .readme-window, .window-resize-handle { display: none !important; }
+  /* Must out-rank the screen-only .os-ready .js-only / .window-controls display rules. */
+  .os-ready .js-only, .os-ready .window-controls { display: none !important; }
   .os-ready .os-window, .os-ready .os-window[hidden], .os-ready .os-window.is-maximized { position: static !important; display: block !important; width: auto !important; height: auto !important; margin: 20px 0; max-height: none; border: 0; box-shadow: none; break-inside: avoid; }
   .os-ready .desktop-header { position: static; }
   .window-body, .terminal-screen { overflow: visible; background: var(--paper); color: var(--ink); padding: 10px !important; }

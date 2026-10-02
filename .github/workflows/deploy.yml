@@ -15,11 +15,6 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment, skip in-progress runs on main
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
@@ -70,6 +65,11 @@ jobs:
   deploy:
     needs: validate-and-build
     if: github.event_name != 'pull_request'
+    # One deployment at a time. Scoped to this job so pull request runs can't
+    # take the queue slot and cancel a pending deploy from main.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

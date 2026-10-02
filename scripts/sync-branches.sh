@@ -4,7 +4,17 @@ set -e
 echo "==> Fetching remote state..."
 git fetch origin
 
-CURRENT_BRANCH=$(git branch --show-current)
+# Remember where we started (a commit when HEAD is detached) and always go back,
+# even if a step below fails.
+START_REF=$(git branch --show-current)
+[ -n "$START_REF" ] || START_REF=$(git rev-parse HEAD)
+return_to_start() {
+    if [ "$START_REF" != "develop" ]; then
+        echo "==> Returning to '$START_REF'..."
+        git checkout --quiet "$START_REF" || echo "⚠️  Could not return to '$START_REF'; finish or abort the work on develop first."
+    fi
+}
+trap return_to_start EXIT
 
 echo "==> Switching to develop..."
 git checkout develop
@@ -19,10 +29,5 @@ node scripts/test-terminal-aliases.mjs
 
 echo "==> Pushing synced develop to origin..."
 git push origin develop
-
-if [ "$CURRENT_BRANCH" != "develop" ]; then
-    echo "==> Returning to branch '$CURRENT_BRANCH'..."
-    git checkout "$CURRENT_BRANCH"
-fi
 
 echo "✅ 'develop' successfully synchronized with 'main' and verified."
