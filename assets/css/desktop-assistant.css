@@ -62,6 +62,9 @@
   .assistant-taskbar-button:hover, .assistant-taskbar-button[aria-expanded='true'] { background: linear-gradient(oklch(88% .03 250), oklch(78% .045 255)); border-color: oklch(48% .08 255); box-shadow: inset 1px 1px 2px oklch(35% .04 250 / .35); }
 }
 @media (prefers-reduced-motion: no-preference) {
+  /* Base motion lives in --clip-motion. Tricks are layered on top of it with the
+     individual translate/rotate/scale properties, so a trick never restarts the
+     idle loop (or replays the entrance) and hover lifts survive the idle loops. */
   .assistant-launcher {
     transition: transform 240ms cubic-bezier(.22, 1, .36, 1);
   }
@@ -69,12 +72,17 @@
   .assistant-launcher:focus-visible {
     transform: translate3d(0, -4px, 0);
   }
-  .assistant-launcher > svg {
-    transform-origin: 50% 90%;
-    will-change: transform;
+  .assistant-launcher > svg,
+  .assistant-character-svg,
+  .assistant-taskbar-button > svg,
+  .start-link-help > svg {
+    will-change: transform, translate, rotate, scale;
     backface-visibility: hidden;
-    transform: translateZ(0);
-    animation: clip-idle 8s cubic-bezier(.45, .05, .55, .95) infinite;
+  }
+  .assistant-launcher > svg {
+    --clip-motion: clip-idle 8s cubic-bezier(.45, .05, .55, .95) infinite;
+    transform-origin: 50% 90%;
+    animation: var(--clip-motion);
     transition: filter 240ms ease;
   }
   .assistant-launcher:hover > svg,
@@ -83,41 +91,40 @@
   }
   .assistant-help-badge {
     transform-origin: center center;
-    will-change: transform;
-    backface-visibility: hidden;
-    transform: translateZ(0);
     animation: clip-badge-idle 8s cubic-bezier(.45, .05, .55, .95) infinite;
-    transition: transform 240ms cubic-bezier(.34, 1.56, .64, 1), box-shadow 240ms ease;
+    transition: translate 240ms cubic-bezier(.34, 1.56, .64, 1), rotate 240ms cubic-bezier(.34, 1.56, .64, 1), scale 240ms cubic-bezier(.34, 1.56, .64, 1), box-shadow 240ms ease;
   }
   .assistant-launcher:hover .assistant-help-badge,
   .assistant-launcher:focus-visible .assistant-help-badge {
-    transform: translate3d(0, -1px, 0) scale(1.22) rotate(10deg);
+    translate: 0 -1px;
+    rotate: 10deg;
+    scale: 1.22;
     box-shadow: inset 0 1px oklch(99% .003 255), 0 2px 5px oklch(32% .035 250 / .3);
   }
   .assistant-launcher[aria-expanded="true"] > svg {
-    animation: clip-listening 3.2s cubic-bezier(.45, .05, .55, .95) infinite;
+    --clip-motion: clip-listening 3.2s cubic-bezier(.45, .05, .55, .95) infinite;
     filter: drop-shadow(2px 4px 3px oklch(32% .035 250 / .32)) brightness(1.06);
   }
   .assistant-launcher[aria-expanded="true"] .assistant-help-badge {
     animation: none;
     transform: scale(1.08) rotate(4deg);
+    translate: none;
+    rotate: none;
+    scale: none;
   }
   .assistant-character-svg {
+    --clip-motion: clip-appear 420ms cubic-bezier(.22, 1.25, .36, 1), clip-character-idle 4s cubic-bezier(.45, .05, .55, .95) 420ms infinite;
     transform-origin: 50% 85%;
-    will-change: transform;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-    animation: clip-appear 420ms cubic-bezier(.22, 1.25, .36, 1), clip-character-idle 4s cubic-bezier(.45, .05, .55, .95) 420ms infinite;
+    animation: var(--clip-motion);
+    transition: translate 240ms cubic-bezier(.22, 1, .36, 1), scale 240ms cubic-bezier(.22, 1, .36, 1);
   }
   .assistant-character:hover .assistant-character-svg {
-    transform: translate3d(0, -2px, 0) rotate(2deg) scale(1.06);
-    transition: transform 240ms cubic-bezier(.22, 1, .36, 1);
+    translate: 0 -2px;
+    scale: 1.06;
   }
   .assistant-taskbar-button > svg {
+    --clip-motion: none;
     transform-origin: 50% 90%;
-    will-change: transform;
-    backface-visibility: hidden;
-    transform: translateZ(0);
     transition: transform 200ms cubic-bezier(.22, 1, .36, 1);
   }
   .assistant-taskbar-button:hover > svg,
@@ -126,79 +133,49 @@
   }
   .start-link-help > svg {
     transform-origin: 50% 85%;
-    will-change: transform;
-    backface-visibility: hidden;
-    transform: translateZ(0);
     transition: transform 200ms cubic-bezier(.22, 1, .36, 1);
   }
   .start-link-help:hover > svg {
     transform: translate3d(0, -2px, 0) rotate(-7deg) scale(1.1);
   }
 
-  /* Interactive trick animations */
+  /* Interactive trick animations, layered over the current base motion. */
   .assistant-launcher.is-jumping > svg,
+  .assistant-taskbar-button.is-jumping > svg,
   .assistant-character.is-jumping .assistant-character-svg {
-    animation: clip-jump 550ms cubic-bezier(.25, 1, .5, 1);
+    animation: var(--clip-motion), clip-jump 550ms cubic-bezier(.25, 1, .5, 1);
   }
   .assistant-launcher.is-flipping > svg,
+  .assistant-taskbar-button.is-flipping > svg,
   .assistant-character.is-flipping .assistant-character-svg {
-    animation: clip-flip 680ms cubic-bezier(.25, 1, .5, 1);
+    animation: var(--clip-motion), clip-flip 680ms cubic-bezier(.25, 1, .5, 1);
   }
   .assistant-launcher.is-wiggling > svg,
+  .assistant-taskbar-button.is-wiggling > svg,
   .assistant-character.is-wiggling .assistant-character-svg {
-    animation: clip-wiggle 520ms cubic-bezier(.37, 0, .63, 1);
+    animation: var(--clip-motion), clip-wiggle 520ms cubic-bezier(.37, 0, .63, 1);
   }
 }
 @keyframes clip-idle {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-  20% {
-    transform: translate3d(0, -3px, 0) rotate(-1.5deg);
-  }
-  40% {
-    transform: translate3d(0, 1px, 0) rotate(1deg);
-  }
-  55% {
-    transform: translate3d(0, -2px, 0) rotate(-0.5deg);
-  }
-  68% {
-    transform: translate3d(0, -5px, 0) rotate(-3deg);
-  }
-  74% {
-    transform: translate3d(0, 0, 0) rotate(2deg);
-  }
-  80% {
-    transform: translate3d(0, -4px, 0) rotate(-2deg);
-  }
-  86% {
-    transform: translate3d(0, 0, 0) rotate(1deg);
-  }
-  92% {
-    transform: translate3d(0, -2px, 0) rotate(-1deg);
-  }
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  20% { transform: translate3d(0, -3px, 0) rotate(-1.5deg); }
+  40% { transform: translate3d(0, 1px, 0) rotate(1deg); }
+  55% { transform: translate3d(0, -2px, 0) rotate(-0.5deg); }
+  68% { transform: translate3d(0, -5px, 0) rotate(-3deg); }
+  74% { transform: translate3d(0, 0, 0) rotate(2deg); }
+  80% { transform: translate3d(0, -4px, 0) rotate(-2deg); }
+  86% { transform: translate3d(0, 0, 0) rotate(1deg); }
+  92% { transform: translate3d(0, -2px, 0) rotate(-1deg); }
 }
 @keyframes clip-badge-idle {
-  0%, 64%, 90%, 100% {
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-  }
-  71% {
-    transform: translate3d(0, -2px, 0) scale(1.18) rotate(-10deg);
-  }
-  77% {
-    transform: translate3d(0, -1px, 0) scale(1.15) rotate(8deg);
-  }
-  84% {
-    transform: translate3d(0, 0, 0) scale(1.05) rotate(-3deg);
-  }
+  0%, 64%, 90%, 100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  71% { transform: translate3d(0, -2px, 0) scale(1.18) rotate(-10deg); }
+  77% { transform: translate3d(0, -1px, 0) scale(1.15) rotate(8deg); }
+  84% { transform: translate3d(0, 0, 0) scale(1.05) rotate(-3deg); }
 }
 @keyframes clip-listening {
-  0%, 100% {
-    transform: translate3d(0, -2px, 0) rotate(3deg);
-  }
-  50% {
-    transform: translate3d(0, -5px, 0) rotate(1deg);
-  }
+  0%, 100% { transform: translate3d(0, -2px, 0) rotate(3deg); }
+  50% { transform: translate3d(0, -5px, 0) rotate(1deg); }
 }
 @keyframes clip-appear {
   0% { transform: translate3d(0, 16px, 0) scale(.7) rotate(-14deg); opacity: 0; }
@@ -211,28 +188,26 @@
   50% { transform: translate3d(0, -3px, 0) rotate(1deg); }
 }
 @keyframes clip-jump {
-  0% { transform: translate3d(0, 0, 0) scale(1); }
-  20% { transform: translate3d(0, 4px, 0) scale(1.08, 0.92) rotate(-2deg); }
-  45% { transform: translate3d(0, -14px, 0) scale(0.94, 1.08) rotate(4deg); }
-  70% { transform: translate3d(0, 1px, 0) scale(1.03, 0.97) rotate(-1deg); }
-  85% { transform: translate3d(0, -2px, 0) scale(0.99, 1.01); }
-  100% { transform: translate3d(0, 0, 0) scale(1); }
+  0%, 100% { translate: 0 0; scale: 1; rotate: 0deg; }
+  20% { translate: 0 4px; scale: 1.08 .92; rotate: -2deg; }
+  45% { translate: 0 -14px; scale: .94 1.08; rotate: 4deg; }
+  70% { translate: 0 1px; scale: 1.03 .97; rotate: -1deg; }
+  85% { translate: 0 -2px; scale: .99 1.01; rotate: 0deg; }
 }
 @keyframes clip-flip {
-  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  15% { transform: translate3d(0, 4px, 0) rotate(-15deg); }
-  50% { transform: translate3d(0, -16px, 0) rotate(180deg); }
-  78% { transform: translate3d(0, -3px, 0) rotate(335deg); }
-  90% { transform: translate3d(0, 1px, 0) rotate(362deg); }
-  100% { transform: translate3d(0, 0, 0) rotate(360deg); }
+  0% { translate: 0 0; rotate: 0deg; }
+  15% { translate: 0 4px; rotate: -15deg; }
+  50% { translate: 0 -16px; rotate: 180deg; }
+  78% { translate: 0 -3px; rotate: 335deg; }
+  90% { translate: 0 1px; rotate: 362deg; }
+  100% { translate: 0 0; rotate: 360deg; }
 }
 @keyframes clip-wiggle {
-  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  18% { transform: translate3d(-2px, -2px, 0) rotate(-9deg); }
-  36% { transform: translate3d(2px, -2px, 0) rotate(8deg); }
-  54% { transform: translate3d(-1px, -1px, 0) rotate(-5deg); }
-  72% { transform: translate3d(1px, 0, 0) rotate(3deg); }
-  88% { transform: translate3d(0, 0, 0) rotate(-1deg); }
-  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  18% { translate: -2px -2px; rotate: -9deg; }
+  36% { translate: 2px -2px; rotate: 8deg; }
+  54% { translate: -1px -1px; rotate: -5deg; }
+  72% { translate: 1px 0; rotate: 3deg; }
+  88% { translate: 0 0; rotate: -1deg; }
 }
 @media print { .desktop-assistant { display: none !important; } }

@@ -7,21 +7,38 @@
     const clearButton = document.getElementById('assistant-show-desktop');
     const character = document.querySelector('.assistant-character');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const tricks = ['is-jumping', 'is-flipping', 'is-wiggling'];
+    const trickAnimations = { 'is-jumping': 'clip-jump', 'is-flipping': 'clip-flip', 'is-wiggling': 'clip-wiggle' };
+    const tricks = Object.keys(trickAnimations);
+    const clipButtons = '.assistant-launcher, .assistant-taskbar-button';
     let trickIndex = 0;
     let opener = launchers[0];
     let motion;
+
+    const trickListeners = new WeakMap();
+
+    function clearTricks(element) {
+        if (!element) return;
+        const done = trickListeners.get(element);
+        if (done) {
+            element.removeEventListener('animationend', done);
+            element.removeEventListener('animationcancel', done);
+            trickListeners.delete(element);
+        }
+        element.classList.remove(...tricks);
+    }
 
     function playTrick(element) {
         if (reducedMotion.matches || !element) return;
         const trick = tricks[trickIndex % tricks.length];
         trickIndex++;
-        element.classList.remove(...tricks);
+        clearTricks(element);
         void element.offsetWidth;
         element.classList.add(trick);
-        element.addEventListener('animationend', () => {
-            element.classList.remove(trick);
-        }, { once: true });
+        // Tricks layer over Clip's idle motion; only this trick's own end (or cancel) clears it.
+        const done = event => { if (event.animationName === trickAnimations[trick]) clearTricks(element); };
+        trickListeners.set(element, done);
+        element.addEventListener('animationend', done);
+        element.addEventListener('animationcancel', done);
     }
 
     function visibleLauncher() {
@@ -30,6 +47,7 @@
 
     function close(restoreFocus = false) {
         motion?.cancel();
+        clearTricks(character);
         panel.hidden = true;
         launchers.forEach(button => button.setAttribute('aria-expanded', 'false'));
         if (restoreFocus) visibleLauncher().focus({ preventScroll: true });
@@ -43,7 +61,8 @@
         clearButton.disabled = !document.querySelector('[data-window]:not([hidden]):not([inert])');
         clearButton.textContent = clearButton.disabled ? 'Desktop is clear' : 'Show desktop';
         launchers.forEach(item => item.setAttribute('aria-expanded', 'true'));
-        playTrick(button);
+        // The Start menu link has no Clip of its own; animate whichever Clip is on screen.
+        playTrick(button.matches(clipButtons) ? button : launchers.find(item => item.matches(clipButtons) && item.getClientRects().length));
         if (!reducedMotion.matches && typeof panel.animate === 'function') {
             motion?.cancel();
             motion = panel.animate([

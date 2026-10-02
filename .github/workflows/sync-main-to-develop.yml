@@ -32,7 +32,7 @@ jobs:
       - name: Fetch and Merge main into develop
         run: |
           git fetch origin main:main
-          if git merge main -m "chore(sync): automatically back-merge main into develop [skip ci]"; then
+          if git merge main -m "chore(sync): automatically back-merge main into develop"; then
             git push origin develop
             echo "develop successfully synchronized with main"
           else
