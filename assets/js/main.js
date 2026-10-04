@@ -275,6 +275,8 @@
         if (drag.bar.hasPointerCapture(drag.pointerId)) drag.bar.releasePointerCapture(drag.pointerId);
     }
 
+    const WINDOW_GRIP = 120;
+
     function attachDragging(state) {
         const bar = state.element.querySelector('.title-bar');
         bar.addEventListener('pointerdown', event => {
@@ -290,7 +292,11 @@
             activeDrag = {
                 element: state.element, bar, pointerId: event.pointerId,
                 startX: event.clientX, startY: event.clientY, left: bounds.left - area.left, top: bounds.top - area.top,
-                maxLeft: Math.max(0, area.width - bounds.width), maxTop: Math.max(0, area.height - bounds.height),
+                // Windows may slide partly off any side, but enough of the title bar stays on the desktop to grab again.
+                minLeft: Math.min(bounds.left - area.left, -(bounds.width - Math.min(WINDOW_GRIP, bounds.width))),
+                maxLeft: Math.max(bounds.left - area.left, area.width - Math.min(WINDOW_GRIP, bounds.width)),
+                minTop: Math.min(bounds.top - area.top, 0),
+                maxTop: Math.max(bounds.top - area.top, area.height - (bar.getBoundingClientRect().bottom - bounds.top)),
                 dx: 0, dy: 0, frame: 0
             };
             bar.setPointerCapture(event.pointerId);
@@ -298,10 +304,9 @@
         bar.addEventListener('pointermove', event => {
             const drag = activeDrag;
             if (!drag || event.pointerId !== drag.pointerId) return;
-            // Keep the window on the desktop (as constrainWindow does) so its title bar stays reachable.
-            const clamp = (value, max) => Math.max(0, Math.min(value, max));
-            drag.dx = clamp(drag.left + event.clientX - drag.startX, drag.maxLeft) - drag.left;
-            drag.dy = clamp(drag.top + event.clientY - drag.startY, drag.maxTop) - drag.top;
+            const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
+            drag.dx = clamp(drag.left + event.clientX - drag.startX, drag.minLeft, drag.maxLeft) - drag.left;
+            drag.dy = clamp(drag.top + event.clientY - drag.startY, drag.minTop, drag.maxTop) - drag.top;
             if (!drag.frame) drag.frame = requestAnimationFrame(() => {
                 drag.frame = 0;
                 drag.element.style.transform = 'translate(' + drag.dx + 'px, ' + drag.dy + 'px)';
