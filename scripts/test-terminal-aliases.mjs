@@ -379,6 +379,30 @@ try {
     assert(spinCheck.captionClearsDonut, 'spin caption should sit above or below the donut, never over it');
     console.log('✅ spin command passed');
 
+    console.log('10b. Testing donut caption placement in narrow terminal windows...');
+    for (const [width, height] of [[320, 568], [390, 844], [600, 900]]) {
+        await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 2, mobile: true });
+        await delay(150);
+        const narrow = await evalCode(`(() => {
+            document.getElementById('terminal-input').value = 'spin';
+            document.getElementById('terminal-form').dispatchEvent(new Event('submit', { cancelable: true }));
+            const c = document.getElementById('donut-caption').getBoundingClientRect();
+            const d = document.getElementById('terminal-donut').getBoundingClientRect();
+            const hits = el => { const r = document.createRange(); r.selectNodeContents(el); return [...r.getClientRects()].some(t => t.right > c.left && t.left < c.right && t.bottom > c.top && t.top < c.bottom); };
+            return {
+                windowWidth: document.getElementById('terminal').getBoundingClientRect().width,
+                aboveDonut: c.bottom <= d.top,
+                coversText: ['.intro-heading h1', '.terminal-role', '.terminal-bio', '.boot-line'].filter(s => document.querySelector(s) && hits(document.querySelector(s)))
+            };
+        })()`);
+        assert(narrow.windowWidth <= 620, `terminal should use the narrow layout at ${width}px: ${narrow.windowWidth}`);
+        assert(narrow.aboveDonut, `caption should sit above the donut at ${width}px`);
+        assert.deepEqual(narrow.coversText, [], `caption should not cover intro text at ${width}px`);
+    }
+    await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+    await delay(150);
+    console.log('✅ narrow donut caption placement passed');
+
     console.log('11. Testing "clear" command restores terminal homepage...');
     const clearCheck = await evalCode(`(() => {
         const input = document.getElementById('terminal-input');
