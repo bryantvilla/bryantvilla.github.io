@@ -722,6 +722,40 @@
         }
     }
 
+    // Donut commands answer with a brief caption on the donut instead of transcript lines,
+    // so the output never pushes the donut out of view.
+    let donutCaptionTimer = 0;
+    function showDonutCaption(caption, message) {
+        const label = document.getElementById('donut-caption');
+        label.textContent = caption;
+        label.classList.add('is-visible');
+        clearTimeout(donutCaptionTimer);
+        donutCaptionTimer = setTimeout(() => label.classList.remove('is-visible'), 2600);
+        announce(message);
+    }
+
+    function runDonutCommand(command, word, argument) {
+        terminalWelcome.hidden = false;
+        terminalScreen.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+        if (command === 'donut') {
+            const isRainbow = document.getElementById('terminal-donut').classList.toggle('is-rainbow');
+            try { localStorage.setItem('bryantos-donut-rainbow', isRainbow ? 'true' : 'false'); } catch {}
+            if (isRainbow) showDonutCaption('Rainbow mode on', 'Rainbow mode enabled. Type ' + word + ' again to toggle it off.');
+            else showDonutCaption('Classic mode', 'Rainbow mode disabled. Type ' + word + ' to turn it back on.');
+            return;
+        }
+        const arg = argument.toLowerCase();
+        let dirX, dirY, speed = 6.5;
+        if (arg.includes('left') || arg.includes('west')) { dirX = -1; dirY = 0; }
+        else if (arg.includes('right') || arg.includes('east')) { dirX = 1; dirY = 0; }
+        else if (arg.includes('up') || arg.includes('north')) { dirX = 0; dirY = -1; }
+        else if (arg.includes('down') || arg.includes('south')) { dirX = 0; dirY = 1; }
+        const turbo = ['hyper', 'fast', 'turbo', 'max'].some(term => arg.includes(term));
+        if (turbo) speed = 9.5;
+        if (typeof spinDonut === 'function') spinDonut({ dirX, dirY, speed });
+        showDonutCaption(turbo ? 'Turbo spin!' : 'Whoosh!', 'Spinning the donut. Click and drag it to steer.');
+    }
+
     function runCommand(rawCommand) {
         const text = rawCommand.trim();
         if (!text) return;
@@ -741,6 +775,12 @@
             openWindow('terminal', { updateHash: false });
             terminalScreen.scrollTop = 0;
             announce(command === 'clear' ? 'Terminal cleared and reset to home.' : 'Welcome screen restored.');
+            return;
+        }
+
+        if (command === 'donut' || command === 'spin') {
+            runDonutCommand(command, name.toLowerCase(), argument);
+            if (activeWindow === 'terminal') terminalInput.focus({ preventScroll: true });
             return;
         }
 
@@ -890,50 +930,6 @@
                 }
                 applyWallpaper(theme);
                 result.textContent = 'Wallpaper set to ' + theme + '. Make yourself at home.';
-                break;
-            }
-            case 'donut': {
-                terminalWelcome.hidden = false;
-                const donut = document.getElementById('terminal-donut');
-                if (donut) {
-                    const isRainbow = donut.classList.toggle('is-rainbow');
-                    try {
-                        localStorage.setItem('bryantos-donut-rainbow', isRainbow ? 'true' : 'false');
-                    } catch {}
-                    const cmdWord = name.toLowerCase() === 'rainbow' ? 'rainbow' : 'donut';
-                    if (isRainbow) {
-                        result.textContent = '🌈 Prismatic rainbow mode enabled!\nYour 3D ASCII donut is now glowing in full spectrum.\nType ' + cmdWord + ' again to toggle off.';
-                    } else {
-                        result.textContent = '🍩 Rainbow mode disabled. Restored classic terminal phosphor.\nType ' + cmdWord + ' to turn rainbow mode back on.';
-                    }
-                } else {
-                    result.textContent = 'Donut element not found.';
-                }
-                break;
-            }
-            case 'spin': {
-                terminalWelcome.hidden = false;
-                const arg = (argument || '').trim().toLowerCase();
-                let dirX, dirY, speed = 6.5;
-                if (arg.includes('left') || arg.includes('west')) { dirX = -1; dirY = 0; }
-                else if (arg.includes('right') || arg.includes('east')) { dirX = 1; dirY = 0; }
-                else if (arg.includes('up') || arg.includes('north')) { dirX = 0; dirY = -1; }
-                else if (arg.includes('down') || arg.includes('south')) { dirX = 0; dirY = 1; }
-                if (arg.includes('hyper') || arg.includes('fast') || arg.includes('turbo') || arg.includes('max')) {
-                    speed = 9.5;
-                }
-
-                if (typeof spinDonut === 'function') {
-                    spinDonut({ dirX, dirY, speed });
-                }
-
-                const phrases = [
-                    '🍩 Whoosh! Spinning the 3D ASCII donut with high-speed momentum.',
-                    '🍩 Turbo spin activated! The torus is orbiting at high speed.',
-                    '🍩 Flinging the donut into a high-speed momentum spin! Click & drag to steer.'
-                ];
-                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-                result.textContent = phrase + '\nTip: Click and drag the donut in the terminal to steer its spin!';
                 break;
             }
             case 'sudo':
