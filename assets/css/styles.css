@@ -758,7 +758,7 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
   .terminal-live { display: none; }
   .intro-heading h1 { font-size: clamp(23px, 7cqw, 42px); letter-spacing: -1px; }
   .terminal-donut { font-size: clamp(3.4px, 1cqw, 6px); }
-  .terminal-art-caption { top: 100%; bottom: auto; padding: 1px 7px; font-size: 10px; }
+  .terminal-art-caption { bottom: 0; padding: 0 6px; font-size: 10px; }
   .terminal-bio { font-size: 11px; }
   .desktop-break { display: none; }
   .prompt-location { display: none; }

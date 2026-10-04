@@ -355,12 +355,23 @@ try {
     const spinCheck = await evalCode(`(() => {
         const input = document.getElementById('terminal-input');
         const form = document.getElementById('terminal-form');
+        const entries = document.querySelectorAll('#terminal-output .terminal-entry').length;
+        const caption = document.getElementById('donut-caption');
+        caption.textContent = '';
+        document.getElementById('os-announcement').textContent = '';
         input.value = 'spin left';
         form.dispatchEvent(new Event('submit', { cancelable: true }));
-        const lastEntry = document.querySelector('#terminal-screen .terminal-entry:last-child');
-        return lastEntry ? lastEntry.textContent : '';
+        return {
+            caption: caption.textContent,
+            captionVisible: caption.classList.contains('is-visible'),
+            announcement: document.getElementById('os-announcement').textContent,
+            addedEntries: document.querySelectorAll('#terminal-output .terminal-entry').length - entries
+        };
     })()`);
-    assert(spinCheck.includes('donut') || spinCheck.includes('torus'), 'spin response should confirm spin');
+    assert.equal(spinCheck.caption, 'Whoosh!', 'spin should show its caption on the donut');
+    assert(spinCheck.captionVisible, 'spin caption should be visible');
+    assert(spinCheck.announcement.includes('Spinning the donut'), 'spin should announce itself to screen readers');
+    assert.equal(spinCheck.addedEntries, 0, 'spin should not add transcript lines that push the donut out of view');
     console.log('✅ spin command passed');
 
     console.log('11. Testing "clear" command restores terminal homepage...');

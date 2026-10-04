@@ -286,14 +286,17 @@
             finishMotion(state.element);
             const bounds = state.element.getBoundingClientRect();
             const area = desktop.getBoundingClientRect();
+            const controls = bar.querySelector('.window-controls');
+            const controlsInset = controls ? bounds.right - controls.getBoundingClientRect().left : 0;
             event.preventDefault();
             state.element.style.willChange = 'transform';
             state.element.classList.add('is-dragging');
             activeDrag = {
                 element: state.element, bar, pointerId: event.pointerId,
                 startX: event.clientX, startY: event.clientY, left: bounds.left - area.left, top: bounds.top - area.top,
-                // Windows may slide partly off any side, but enough of the title bar stays on the desktop to grab again.
-                minLeft: Math.min(bounds.left - area.left, -(bounds.width - Math.min(WINDOW_GRIP, bounds.width))),
+                // Windows may slide partly off any side, but WINDOW_GRIP px of draggable title bar stays on the
+                // desktop (on the left that is in addition to the window buttons at the bar's right end).
+                minLeft: Math.min(bounds.left - area.left, -(bounds.width - Math.min(WINDOW_GRIP + controlsInset, bounds.width))),
                 maxLeft: Math.max(bounds.left - area.left, area.width - Math.min(WINDOW_GRIP, bounds.width)),
                 minTop: Math.min(bounds.top - area.top, 0),
                 maxTop: Math.max(bounds.top - area.top, area.height - (bar.getBoundingClientRect().bottom - bounds.top)),

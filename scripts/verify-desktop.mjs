@@ -134,8 +134,8 @@ try {
     };
     const drag = async (x, y, dx, dy, { release = true } = {}) => {
         await cdp('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
-        await cdp('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
-        for (let step = 1; step <= 6; step++) await cdp('Input.dispatchMouseEvent', { type: 'mouseMoved', x: x + dx * step / 6, y: y + dy * step / 6, buttons: 1 });
+        await cdp('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', buttons: 1, clickCount: 1 });
+        for (let step = 1; step <= 6; step++) await cdp('Input.dispatchMouseEvent', { type: 'mouseMoved', x: x + dx * step / 6, y: y + dy * step / 6, button: 'left', buttons: 1 });
         await delay(30);
         if (release) await cdp('Input.dispatchMouseEvent', { type: 'mouseReleased', x: x + dx, y: y + dy, button: 'left', clickCount: 1 });
     };
@@ -162,6 +162,34 @@ try {
     }
 
     await cdp('Emulation.setDeviceMetricsOverride', { width:1440, height:900, deviceScaleFactor:1, mobile:false });
+    await navigate('/');
+    // Windows can slide partly off the left, right and bottom, but 120px of draggable title bar stays grabbable above the taskbar.
+    const titleBar = () => evaluate(`(() => {
+        const t=document.querySelector('#terminal .title-bar').getBoundingClientRect(), d=document.getElementById('desktop').getBoundingClientRect();
+        const c=document.querySelector('#terminal .window-controls').getBoundingClientRect();
+        const left=Math.max(t.left,d.left), right=Math.min(c.left,d.right), y=t.top+t.height/2;
+        const grabbable=px=>{ const hit=document.elementFromPoint(px,y); return !!hit?.closest('#terminal .title-bar') && !hit.closest('button'); };
+        const points=[]; for (let px=Math.ceil(left)+5; px<right-4; px+=10) if (grabbable(px)) points.push(px);
+        return {x:points[0], farX:points.at(-1), y, draggable:right-left, top:t.top-d.top, bottom:t.bottom-d.top, area:d.height, hit:points.length>0};
+    })()`);
+    for (const [dx, dy, edge] of [[1, 0, 'right'], [-1, 0, 'left'], [0, 1, 'bottom']]) {
+        let bar;
+        for (let attempt = 0; attempt < 4; attempt++) {
+            bar = await titleBar();
+            assert(bar.hit, `Title bar can be grabbed before dragging ${edge}: ${JSON.stringify(bar)}`);
+            const grabX = dx < 0 ? bar.farX : bar.x;
+            await drag(grabX, bar.y, dx * (dx > 0 ? 1439 - grabX : grabX - 1), dy * (899 - bar.y));
+            await delay(50);
+        }
+        bar = await titleBar();
+        assert(bar.hit && bar.top >= -1 && bar.bottom <= bar.area + 1, `Title bar reachable at the ${edge} limit: ${JSON.stringify(bar)}`);
+        if (dx) assert(Math.abs(bar.draggable - 120) <= 2, `120px of draggable title bar stays visible at the ${edge} limit: ${JSON.stringify(bar)}`);
+        else assert(bar.bottom >= bar.area - 2, `Window can slide down to the taskbar: ${JSON.stringify(bar)}`);
+        await drag(bar.x, bar.y, dx ? -dx * 300 : 0, dy ? -300 : 0);
+        const back = await titleBar();
+        assert(back.hit && (dx ? back.draggable > bar.draggable + 200 : back.top < bar.top - 200), `Window can be grabbed and dragged back from the ${edge} limit: ${JSON.stringify({bar, back})}`);
+    }
+    console.log('Window drag limits keep the title bar reachable: passed');
     await navigate('/');
     await click('#show-desktop');
     const origin = await rect(first);
