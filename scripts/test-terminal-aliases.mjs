@@ -365,13 +365,18 @@ try {
             caption: caption.textContent,
             captionVisible: caption.classList.contains('is-visible'),
             announcement: document.getElementById('os-announcement').textContent,
-            addedEntries: document.querySelectorAll('#terminal-output .terminal-entry').length - entries
+            addedEntries: document.querySelectorAll('#terminal-output .terminal-entry').length - entries,
+            captionClearsDonut: (() => {
+                const c = caption.getBoundingClientRect(), d = document.getElementById('terminal-donut').getBoundingClientRect();
+                return c.bottom <= d.top || c.top >= d.bottom;
+            })()
         };
     })()`);
     assert.equal(spinCheck.caption, 'Whoosh!', 'spin should show its caption on the donut');
     assert(spinCheck.captionVisible, 'spin caption should be visible');
     assert(spinCheck.announcement.includes('Spinning the donut'), 'spin should announce itself to screen readers');
     assert.equal(spinCheck.addedEntries, 0, 'spin should not add transcript lines that push the donut out of view');
+    assert(spinCheck.captionClearsDonut, 'spin caption should sit above or below the donut, never over it');
     console.log('✅ spin command passed');
 
     console.log('11. Testing "clear" command restores terminal homepage...');
