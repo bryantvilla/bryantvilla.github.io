@@ -875,10 +875,10 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
 /* Phones (portrait, or landscape on touch): readable text and 44px touch targets. Declared after the
    container queries so these minimums win over the compact window layouts. */
 @media (max-width: 760px), (max-height: 500px) and (pointer: coarse) {
-  .title-bar { min-height: 46px; }
+  .title-bar { min-height: 50px; }
   .title-bar h2 { font-size: 13px; }
   .window-controls { gap: 4px; }
-  .window-controls button { width: 40px; height: 40px; }
+  .window-controls button { width: 44px; height: 44px; }
   .window-menu { min-height: 44px; }
   .window-menu > a, .window-menu > button { min-height: 44px; padding-inline: 10px; font-size: 13px; align-items: center; }
   .window-status, .terminal-status, .readme-window .window-status, .contact-window .window-status > span, .window-menu .menu-right,
@@ -919,14 +919,14 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
   .terminal-submit { width: 44px; height: 44px; }
   #terminal-input { min-height: 44px; }
   /* Inline links grow their hit area without moving the surrounding text. */
-  .terminal-guidance .inline-command, .plain-link, .work-folder-footer a { padding-block: 13px; }
+  .terminal-guidance .inline-command, .plain-link, .work-folder-footer a, .terminal-output a { padding-block: 13px; }
+  .terminal-help { align-items: center; }
+  .terminal-help > button { min-height: 44px; }
   .terminal-guidance .inline-command { padding-inline: 5px; }
   .profile-photo-row > div > a { min-height: 44px; }
 }
 /* Phones held sideways: give the terminal's welcome every pixel of the short screen. */
 @media (max-height: 500px) and (pointer: coarse) {
-  .title-bar { min-height: 40px; }
-  .window-controls button { width: 36px; height: 36px; }
   .terminal-window .window-menu, .terminal-window .window-status { display: none; }
   .intro-heading h1 { font-size: 30px; line-height: 1.05; margin-block: 2px 4px; }
 }

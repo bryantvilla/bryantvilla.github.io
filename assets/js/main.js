@@ -176,10 +176,11 @@
     }
 
     let navigatingHistory = false;
+    let historyDepth = history.state?.bryantosDepth ?? 0;
     function updateLocation(id, push = false) {
         if (navigatingHistory) return;
         try {
-            if (push && location.hash !== '#' + id) history.pushState({ bryantos: id }, '', '#' + id);
+            if (push && location.hash !== '#' + id) history.pushState({ bryantosDepth: ++historyDepth }, '', '#' + id);
             else history.replaceState(history.state, '', '#' + id);
         } catch { /* Local file previews still work. */ }
     }
@@ -215,8 +216,9 @@
         const opening = !state.open || state.minimized;
         if (opening) state.returnFocus = document.activeElement;
         desktopSnapshot = null;
-        // On phones a newly opened window fills the screen like an app; Restore down still floats it.
-        if (opening && phone.matches) setMaximized(state, true);
+        // On phones a newly opened window fills the screen like an app. Restore down still floats it,
+        // and a minimized window comes back the way the visitor left it.
+        if (!state.open && phone.matches) setMaximized(state, true);
         revealWindow(state);
         focusWindow(id, focus);
         if (updateHash) updateLocation(id, phone.matches);
@@ -271,6 +273,7 @@
         finishMotion(state.element);
         const maximized = !state.element.classList.contains('is-maximized');
         setMaximized(state, maximized);
+        state.fitsLandscape = false;
         if (!maximized) constrainWindow(state);
         focusWindow(id);
         animateWindowIn(state, from);
@@ -1149,6 +1152,7 @@
             state.minimized = false;
             state.element.classList.remove('is-resized');
             setMaximized(state, id === 'terminal' && shortPhone.matches);
+            state.fitsLandscape = id === 'terminal' && shortPhone.matches;
             for (const property of ['left', 'top', 'right', 'width', 'height', 'transform', 'animation', 'will-change']) state.element.style.removeProperty(property);
         });
         terminalWelcome.hidden = false;
@@ -1187,9 +1191,13 @@
     }
     window.addEventListener('hashchange', routeHash);
     // On phones each opened window adds a history entry, so the back gesture closes it instead of leaving the site.
-    window.addEventListener('popstate', () => {
+    // Forward just reopens the window in the address (routeHash), leaving the others alone.
+    window.addEventListener('popstate', event => {
+        const depth = event.state?.bryantosDepth ?? 0;
+        const back = depth < historyDepth;
+        historyDepth = depth;
         const target = location.hash.slice(1);
-        if (!phone.matches || !activeWindow || activeWindow === target || activeWindow === 'terminal') return;
+        if (!back || !phone.matches || !activeWindow || activeWindow === target || activeWindow === 'terminal') return;
         navigatingHistory = true;
         try { hideWindow(activeWindow, true); } finally { navigatingHistory = false; }
     });
@@ -1552,8 +1560,21 @@
     });
     updateMobileWindowLayout();
     new ResizeObserver(updateMobileWindowLayout).observe(desktopShortcuts);
-    // Phones held sideways have too little height for the terminal beneath the icons.
-    if (shortPhone.matches) setMaximized(windows.get('terminal'), true);
+    // Phones held sideways have too little height for the terminal beneath the icons, so it fills the
+    // screen there; rotating back to portrait undoes that unless the visitor maximized it themselves.
+    const fitTerminalToOrientation = () => {
+        const terminal = windows.get('terminal');
+        if (shortPhone.matches && !terminal.element.classList.contains('is-maximized')) {
+            setMaximized(terminal, true);
+            terminal.fitsLandscape = true;
+        } else if (!shortPhone.matches && terminal.fitsLandscape) {
+            setMaximized(terminal, false);
+            terminal.fitsLandscape = false;
+            constrainWindow(terminal);
+        }
+    };
+    fitTerminalToOrientation();
+    shortPhone.addEventListener('change', fitTerminalToOrientation);
     focusWindow('terminal');
     routeHash();
     let entranceDelay = 0;
