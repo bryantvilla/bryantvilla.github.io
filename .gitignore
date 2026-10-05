@@ -1,2 +1,4 @@
 .vscode/
 .DS_Store
+# Local screenshots from browser checks (site images live in assets/img)
+/*.png
