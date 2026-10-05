@@ -407,6 +407,8 @@ try {
     const clearCheck = await evalCode(`(() => {
         const input = document.getElementById('terminal-input');
         const form = document.getElementById('terminal-form');
+        input.value = 'spin';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
         input.value = 'clear';
         form.dispatchEvent(new Event('submit', { cancelable: true }));
         const welcome = document.getElementById('terminal-welcome');
@@ -415,11 +417,22 @@ try {
         return {
             welcomeVisible: !welcome.hidden,
             outputEmpty: output.children.length === 0,
+            captionHidden: !document.getElementById('donut-caption').classList.contains('is-visible'),
             windowHeight: termWindow.offsetHeight
         };
     })()`);
     assert(clearCheck.welcomeVisible, 'terminal welcome should be visible after clear');
     assert(clearCheck.outputEmpty, 'terminal output should be empty after clear');
+    assert(clearCheck.captionHidden, 'clear should also hide a donut caption from the previous command');
+    const resetCaptionHidden = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        input.value = 'spin';
+        document.getElementById('terminal-form').dispatchEvent(new Event('submit', { cancelable: true }));
+        const shown = document.getElementById('donut-caption').classList.contains('is-visible');
+        document.getElementById('reset-desktop').click();
+        return shown && !document.getElementById('donut-caption').classList.contains('is-visible');
+    })()`);
+    assert(resetCaptionHidden, 'Reset desktop should also hide a donut caption from the previous command');
     assert(clearCheck.windowHeight > 300, 'terminal window should not shrink');
     console.log('✅ clear command restores homepage and preserves window size');
 

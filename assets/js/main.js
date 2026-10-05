@@ -756,6 +756,11 @@
         announce(message);
     }
 
+    function hideDonutCaption() {
+        clearTimeout(donutCaptionTimer);
+        document.getElementById('donut-caption').classList.remove('is-visible');
+    }
+
     function runDonutCommand(command, word, argument) {
         terminalWelcome.hidden = false;
         terminalScreen.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
@@ -793,6 +798,7 @@
 
         if (command === 'clear' || command === 'home') {
             terminalOutput.replaceChildren();
+            hideDonutCaption();
             terminalWelcome.hidden = false;
             openWindow('terminal', { updateHash: false });
             terminalScreen.scrollTop = 0;
@@ -1157,6 +1163,7 @@
         });
         terminalWelcome.hidden = false;
         terminalOutput.replaceChildren();
+        hideDonutCaption();
         terminalInput.value = '';
         desktopSnapshot = null;
         closeStart();
