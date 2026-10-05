@@ -355,18 +355,60 @@ try {
     const spinCheck = await evalCode(`(() => {
         const input = document.getElementById('terminal-input');
         const form = document.getElementById('terminal-form');
+        const entries = document.querySelectorAll('#terminal-output .terminal-entry').length;
+        const caption = document.getElementById('donut-caption');
+        caption.textContent = '';
+        document.getElementById('os-announcement').textContent = '';
         input.value = 'spin left';
         form.dispatchEvent(new Event('submit', { cancelable: true }));
-        const lastEntry = document.querySelector('#terminal-screen .terminal-entry:last-child');
-        return lastEntry ? lastEntry.textContent : '';
+        return {
+            caption: caption.textContent,
+            captionVisible: caption.classList.contains('is-visible'),
+            announcement: document.getElementById('os-announcement').textContent,
+            addedEntries: document.querySelectorAll('#terminal-output .terminal-entry').length - entries,
+            captionClearsDonut: (() => {
+                const c = caption.getBoundingClientRect(), d = document.getElementById('terminal-donut').getBoundingClientRect();
+                return c.bottom <= d.top || c.top >= d.bottom;
+            })()
+        };
     })()`);
-    assert(spinCheck.includes('donut') || spinCheck.includes('torus'), 'spin response should confirm spin');
+    assert.equal(spinCheck.caption, 'Whoosh!', 'spin should show its caption on the donut');
+    assert(spinCheck.captionVisible, 'spin caption should be visible');
+    assert(spinCheck.announcement.includes('Spinning the donut'), 'spin should announce itself to screen readers');
+    assert.equal(spinCheck.addedEntries, 0, 'spin should not add transcript lines that push the donut out of view');
+    assert(spinCheck.captionClearsDonut, 'spin caption should sit above or below the donut, never over it');
     console.log('✅ spin command passed');
+
+    console.log('10b. Testing donut caption placement in narrow terminal windows...');
+    for (const [width, height] of [[320, 568], [390, 844], [600, 900]]) {
+        await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 2, mobile: true });
+        await delay(150);
+        const narrow = await evalCode(`(() => {
+            document.getElementById('terminal-input').value = 'spin';
+            document.getElementById('terminal-form').dispatchEvent(new Event('submit', { cancelable: true }));
+            const c = document.getElementById('donut-caption').getBoundingClientRect();
+            const d = document.getElementById('terminal-donut').getBoundingClientRect();
+            const hits = el => { const r = document.createRange(); r.selectNodeContents(el); return [...r.getClientRects()].some(t => t.right > c.left && t.left < c.right && t.bottom > c.top && t.top < c.bottom); };
+            return {
+                windowWidth: document.getElementById('terminal').getBoundingClientRect().width,
+                aboveDonut: c.bottom <= d.top,
+                coversText: ['.intro-heading h1', '.terminal-role', '.terminal-bio', '.boot-line'].filter(s => document.querySelector(s) && hits(document.querySelector(s)))
+            };
+        })()`);
+        assert(narrow.windowWidth <= 620, `terminal should use the narrow layout at ${width}px: ${narrow.windowWidth}`);
+        assert(narrow.aboveDonut, `caption should sit above the donut at ${width}px`);
+        assert.deepEqual(narrow.coversText, [], `caption should not cover intro text at ${width}px`);
+    }
+    await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+    await delay(150);
+    console.log('✅ narrow donut caption placement passed');
 
     console.log('11. Testing "clear" command restores terminal homepage...');
     const clearCheck = await evalCode(`(() => {
         const input = document.getElementById('terminal-input');
         const form = document.getElementById('terminal-form');
+        input.value = 'spin';
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
         input.value = 'clear';
         form.dispatchEvent(new Event('submit', { cancelable: true }));
         const welcome = document.getElementById('terminal-welcome');
@@ -375,11 +417,22 @@ try {
         return {
             welcomeVisible: !welcome.hidden,
             outputEmpty: output.children.length === 0,
+            captionHidden: !document.getElementById('donut-caption').classList.contains('is-visible'),
             windowHeight: termWindow.offsetHeight
         };
     })()`);
     assert(clearCheck.welcomeVisible, 'terminal welcome should be visible after clear');
     assert(clearCheck.outputEmpty, 'terminal output should be empty after clear');
+    assert(clearCheck.captionHidden, 'clear should also hide a donut caption from the previous command');
+    const resetCaptionHidden = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        input.value = 'spin';
+        document.getElementById('terminal-form').dispatchEvent(new Event('submit', { cancelable: true }));
+        const shown = document.getElementById('donut-caption').classList.contains('is-visible');
+        document.getElementById('reset-desktop').click();
+        return shown && !document.getElementById('donut-caption').classList.contains('is-visible');
+    })()`);
+    assert(resetCaptionHidden, 'Reset desktop should also hide a donut caption from the previous command');
     assert(clearCheck.windowHeight > 300, 'terminal window should not shrink');
     console.log('✅ clear command restores homepage and preserves window size');
 

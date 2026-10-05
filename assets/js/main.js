@@ -275,6 +275,8 @@
         if (drag.bar.hasPointerCapture(drag.pointerId)) drag.bar.releasePointerCapture(drag.pointerId);
     }
 
+    const WINDOW_GRIP = 120;
+
     function attachDragging(state) {
         const bar = state.element.querySelector('.title-bar');
         bar.addEventListener('pointerdown', event => {
@@ -284,13 +286,20 @@
             finishMotion(state.element);
             const bounds = state.element.getBoundingClientRect();
             const area = desktop.getBoundingClientRect();
+            const controls = bar.querySelector('.window-controls');
+            const controlsInset = controls ? bounds.right - controls.getBoundingClientRect().left : 0;
             event.preventDefault();
             state.element.style.willChange = 'transform';
             state.element.classList.add('is-dragging');
             activeDrag = {
                 element: state.element, bar, pointerId: event.pointerId,
                 startX: event.clientX, startY: event.clientY, left: bounds.left - area.left, top: bounds.top - area.top,
-                maxLeft: Math.max(0, area.width - bounds.width), maxTop: Math.max(0, area.height - bounds.height),
+                // Windows may slide partly off any side, but WINDOW_GRIP px of draggable title bar stays on the
+                // desktop (on the left that is in addition to the window buttons at the bar's right end).
+                minLeft: Math.min(bounds.left - area.left, -(bounds.width - Math.min(WINDOW_GRIP + controlsInset, bounds.width))),
+                maxLeft: Math.max(bounds.left - area.left, area.width - Math.min(WINDOW_GRIP, bounds.width)),
+                minTop: Math.min(bounds.top - area.top, 0),
+                maxTop: Math.max(bounds.top - area.top, area.height - (bar.getBoundingClientRect().bottom - bounds.top)),
                 dx: 0, dy: 0, frame: 0
             };
             bar.setPointerCapture(event.pointerId);
@@ -298,10 +307,9 @@
         bar.addEventListener('pointermove', event => {
             const drag = activeDrag;
             if (!drag || event.pointerId !== drag.pointerId) return;
-            // Keep the window on the desktop (as constrainWindow does) so its title bar stays reachable.
-            const clamp = (value, max) => Math.max(0, Math.min(value, max));
-            drag.dx = clamp(drag.left + event.clientX - drag.startX, drag.maxLeft) - drag.left;
-            drag.dy = clamp(drag.top + event.clientY - drag.startY, drag.maxTop) - drag.top;
+            const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
+            drag.dx = clamp(drag.left + event.clientX - drag.startX, drag.minLeft, drag.maxLeft) - drag.left;
+            drag.dy = clamp(drag.top + event.clientY - drag.startY, drag.minTop, drag.maxTop) - drag.top;
             if (!drag.frame) drag.frame = requestAnimationFrame(() => {
                 drag.frame = 0;
                 drag.element.style.transform = 'translate(' + drag.dx + 'px, ' + drag.dy + 'px)';
@@ -717,6 +725,45 @@
         }
     }
 
+    // Donut commands answer with a brief caption on the donut instead of transcript lines,
+    // so the output never pushes the donut out of view.
+    let donutCaptionTimer = 0;
+    function showDonutCaption(caption, message) {
+        const label = document.getElementById('donut-caption');
+        label.textContent = caption;
+        label.classList.add('is-visible');
+        clearTimeout(donutCaptionTimer);
+        donutCaptionTimer = setTimeout(() => label.classList.remove('is-visible'), 2600);
+        announce(message);
+    }
+
+    function hideDonutCaption() {
+        clearTimeout(donutCaptionTimer);
+        document.getElementById('donut-caption').classList.remove('is-visible');
+    }
+
+    function runDonutCommand(command, word, argument) {
+        terminalWelcome.hidden = false;
+        terminalScreen.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+        if (command === 'donut') {
+            const isRainbow = document.getElementById('terminal-donut').classList.toggle('is-rainbow');
+            try { localStorage.setItem('bryantos-donut-rainbow', isRainbow ? 'true' : 'false'); } catch {}
+            if (isRainbow) showDonutCaption('Rainbow mode on', 'Rainbow mode enabled. Type ' + word + ' again to toggle it off.');
+            else showDonutCaption('Classic mode', 'Rainbow mode disabled. Type ' + word + ' to turn it back on.');
+            return;
+        }
+        const arg = argument.toLowerCase();
+        let dirX, dirY, speed = 6.5;
+        if (arg.includes('left') || arg.includes('west')) { dirX = -1; dirY = 0; }
+        else if (arg.includes('right') || arg.includes('east')) { dirX = 1; dirY = 0; }
+        else if (arg.includes('up') || arg.includes('north')) { dirX = 0; dirY = -1; }
+        else if (arg.includes('down') || arg.includes('south')) { dirX = 0; dirY = 1; }
+        const turbo = ['hyper', 'fast', 'turbo', 'max'].some(term => arg.includes(term));
+        if (turbo) speed = 9.5;
+        if (typeof spinDonut === 'function') spinDonut({ dirX, dirY, speed });
+        showDonutCaption(turbo ? 'Turbo spin!' : 'Whoosh!', 'Spinning the donut. Click and drag it to steer.');
+    }
+
     function runCommand(rawCommand) {
         const text = rawCommand.trim();
         if (!text) return;
@@ -732,10 +779,17 @@
 
         if (command === 'clear' || command === 'home') {
             terminalOutput.replaceChildren();
+            hideDonutCaption();
             terminalWelcome.hidden = false;
             openWindow('terminal', { updateHash: false });
             terminalScreen.scrollTop = 0;
             announce(command === 'clear' ? 'Terminal cleared and reset to home.' : 'Welcome screen restored.');
+            return;
+        }
+
+        if (command === 'donut' || command === 'spin') {
+            runDonutCommand(command, name.toLowerCase(), argument);
+            if (activeWindow === 'terminal') terminalInput.focus({ preventScroll: true });
             return;
         }
 
@@ -885,50 +939,6 @@
                 }
                 applyWallpaper(theme);
                 result.textContent = 'Wallpaper set to ' + theme + '. Make yourself at home.';
-                break;
-            }
-            case 'donut': {
-                terminalWelcome.hidden = false;
-                const donut = document.getElementById('terminal-donut');
-                if (donut) {
-                    const isRainbow = donut.classList.toggle('is-rainbow');
-                    try {
-                        localStorage.setItem('bryantos-donut-rainbow', isRainbow ? 'true' : 'false');
-                    } catch {}
-                    const cmdWord = name.toLowerCase() === 'rainbow' ? 'rainbow' : 'donut';
-                    if (isRainbow) {
-                        result.textContent = '🌈 Prismatic rainbow mode enabled!\nYour 3D ASCII donut is now glowing in full spectrum.\nType ' + cmdWord + ' again to toggle off.';
-                    } else {
-                        result.textContent = '🍩 Rainbow mode disabled. Restored classic terminal phosphor.\nType ' + cmdWord + ' to turn rainbow mode back on.';
-                    }
-                } else {
-                    result.textContent = 'Donut element not found.';
-                }
-                break;
-            }
-            case 'spin': {
-                terminalWelcome.hidden = false;
-                const arg = (argument || '').trim().toLowerCase();
-                let dirX, dirY, speed = 6.5;
-                if (arg.includes('left') || arg.includes('west')) { dirX = -1; dirY = 0; }
-                else if (arg.includes('right') || arg.includes('east')) { dirX = 1; dirY = 0; }
-                else if (arg.includes('up') || arg.includes('north')) { dirX = 0; dirY = -1; }
-                else if (arg.includes('down') || arg.includes('south')) { dirX = 0; dirY = 1; }
-                if (arg.includes('hyper') || arg.includes('fast') || arg.includes('turbo') || arg.includes('max')) {
-                    speed = 9.5;
-                }
-
-                if (typeof spinDonut === 'function') {
-                    spinDonut({ dirX, dirY, speed });
-                }
-
-                const phrases = [
-                    '🍩 Whoosh! Spinning the 3D ASCII donut with high-speed momentum.',
-                    '🍩 Turbo spin activated! The torus is orbiting at high speed.',
-                    '🍩 Flinging the donut into a high-speed momentum spin! Click & drag to steer.'
-                ];
-                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-                result.textContent = phrase + '\nTip: Click and drag the donut in the terminal to steer its spin!';
                 break;
             }
             case 'sudo':
@@ -1134,6 +1144,7 @@
         });
         terminalWelcome.hidden = false;
         terminalOutput.replaceChildren();
+        hideDonutCaption();
         terminalInput.value = '';
         desktopSnapshot = null;
         closeStart();
