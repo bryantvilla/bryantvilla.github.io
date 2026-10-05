@@ -424,6 +424,15 @@ try {
     assert(clearCheck.welcomeVisible, 'terminal welcome should be visible after clear');
     assert(clearCheck.outputEmpty, 'terminal output should be empty after clear');
     assert(clearCheck.captionHidden, 'clear should also hide a donut caption from the previous command');
+    const resetCaptionHidden = await evalCode(`(() => {
+        const input = document.getElementById('terminal-input');
+        input.value = 'spin';
+        document.getElementById('terminal-form').dispatchEvent(new Event('submit', { cancelable: true }));
+        const shown = document.getElementById('donut-caption').classList.contains('is-visible');
+        document.getElementById('reset-desktop').click();
+        return shown && !document.getElementById('donut-caption').classList.contains('is-visible');
+    })()`);
+    assert(resetCaptionHidden, 'Reset desktop should also hide a donut caption from the previous command');
     assert(clearCheck.windowHeight > 300, 'terminal window should not shrink');
     console.log('✅ clear command restores homepage and preserves window size');
 
