@@ -872,6 +872,64 @@ html:not(.os-ready) .resume-document { height: 1000px; flex: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
+/* Phones (portrait, or landscape on touch): readable text and 44px touch targets. Declared after the
+   container queries so these minimums win over the compact window layouts. */
+@media (max-width: 760px), (max-height: 500px) and (pointer: coarse) {
+  .title-bar { min-height: 50px; }
+  .title-bar h2 { font-size: 13px; }
+  .window-controls { gap: 4px; }
+  .window-controls button { width: 44px; height: 44px; }
+  .window-menu { min-height: 44px; }
+  .window-menu > a, .window-menu > button { min-height: 44px; padding-inline: 10px; font-size: 13px; align-items: center; }
+  .window-status, .terminal-status, .readme-window .window-status, .contact-window .window-status > span, .window-menu .menu-right,
+  .terminal-system-line, .boot-line, .word-ruler, .explorer-view-label, .player-now > span:first-child, .player-visuals-status,
+  .myspace-edition, .readme-stamp, .readme-body .readme-stamp { font-size: 11px; }
+  .terminal-status #terminal-hint::after { font-size: 11px; }
+
+  /* Body text */
+  .command-echo, .terminal-role, .terminal-bio, .terminal-guidance, .terminal-output, .terminal-form label,
+  .readme-body p, .readme-link, .plain-link, .experience-list > li, .education-list dd,
+  .work-directory-header p, .work-directory-note, .work-explorer .work-detail h3, .work-explorer .work-detail p,
+  .explorer-task-group h3, .explorer-task-group a, .explorer-task-group button, .explorer-folder-details > div,
+  .player-library > a, .player-library-heading, .player-now p, .media-tracks li, .collection-note,
+  .contact-links > div, .contact-links > a, .contact-links button, .form-field label, .aim-form .form-field label,
+  .aim-header p, .aim-away, .aim-feedback p, .aim-buddies h3, .aim-buddies > a,
+  .window-body.myspace-page, .myspace-nav a, .profile-quote, .profile-photo-row > div, .profile-mood, .profile-contact a,
+  .profile-interests > div, .myspace-blurbs h4, .profile-history .experience-list > li, .profile-history > a,
+  .profile-history .education-list, .profile-history .education-list dd, .word-menu a, .xp-button { font-size: 13px; }
+
+  /* Secondary text */
+  .command-shortcuts > a, .inline-command, .explorer-address, .explorer-toolbar > a, .section-label, .work-list-heading,
+  .work-folder-footer, .work-item summary small, .work-item summary span > span, .work-explorer .work-item summary small,
+  .work-explorer .work-item summary span > span, .work-explorer .work-detail .work-focus,
+  .experience-list > li > span, .experience-list > li > div > span, .profile-history .experience-list > li > span,
+  .player-library-heading small, .player-library-footer, .collection-number, .toolkit-collection > header > span,
+  .track-columns, .player-readout > span, .player-readout strong, .project-files small, .form-note, .aim-form .form-note,
+  .buddy-group, .aim-buddy-note, .aim-away small, .aim-send-row > span, .aim-email a, .aim-email button,
+  .myspace-brand small, .myspace-footer, .word-format { font-size: 12px; }
+
+  /* Touch targets */
+  .command-shortcuts > a, .myspace-nav a, .profile-contact a, .myspace-panel a, .explorer-toolbar > a,
+  .explorer-task-group a, .explorer-task-group button, .player-library > a, .word-menu a, .aim-buddies > a,
+  .contact-links a, .contact-links button, .readme-link, .profile-history > a, .aim-email a, .aim-email button,
+  .os-window .xp-button { min-height: 44px; align-items: center; }
+  .myspace-nav a, .contact-links a, .profile-history > a, .aim-email a { display: flex; }
+  .work-item summary { min-height: 44px; }
+  .player-buttons button { width: 44px; height: 44px; }
+  .terminal-submit { width: 44px; height: 44px; }
+  #terminal-input { min-height: 44px; }
+  /* Inline links grow their hit area without moving the surrounding text. */
+  .terminal-guidance .inline-command, .plain-link, .work-folder-footer a, .terminal-output a { padding-block: 13px; }
+  .terminal-help { align-items: center; }
+  .terminal-help > button { min-height: 44px; }
+  .terminal-guidance .inline-command { padding-inline: 5px; }
+  .profile-photo-row > div > a { min-height: 44px; }
+}
+/* Phones held sideways: give the terminal's welcome every pixel of the short screen. */
+@media (max-height: 500px) and (pointer: coarse) {
+  .terminal-window .window-menu, .terminal-window .window-status { display: none; }
+  .intro-heading h1 { font-size: 30px; line-height: 1.05; margin-block: 2px 4px; }
+}
 @media print {
   .os-ready body { overflow: visible; }
   .os-ready .desktop { display: block; height: auto; padding: 0; }
