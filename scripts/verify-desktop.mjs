@@ -366,6 +366,28 @@ try {
     assert(await evaluate('[...document.querySelectorAll(".desktop-icon")].every(icon=>{const r=icon.getBoundingClientRect();return r.x>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=document.querySelector("#desktop").clientHeight})'),'Icons remain in bounds after resize');
     console.log('Touch selection, activation, dragging, wallpaper and viewport changes: passed');
 
+    // Phones: windows open full screen, the back gesture closes them, and touch targets are at least 40px.
+    await cdp('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:2,mobile:true});
+    await navigate('/');
+    const historyStart=await evaluate('history.length');
+    await evaluate('document.querySelector(".terminal-menu a[data-open=about]").click()');
+    await delay(100);
+    assert(await evaluate('!document.querySelector("#about").hidden && document.querySelector("#about").classList.contains("is-maximized")'),'Phone windows open full screen');
+    assert(await evaluate('location.hash==="#about"'),'Opening a phone window updates the address');
+    assert.equal(await evaluate('history.length'),historyStart+1,'Opening a phone window adds a history entry');
+    const smallTargets=await evaluate(`['terminal','about'].flatMap(id=>[...document.getElementById(id).querySelectorAll('a,button,input,summary')].filter(e=>e.checkVisibility()&&!e.closest('.window-resize-handle')&&!e.classList.contains('window-resize-handle')).map(e=>[e.textContent.trim().slice(0,20)||e.getAttribute('aria-label'),e.getBoundingClientRect()]).filter(([,r])=>r.width&&r.height<40).map(([t,r])=>t+' '+Math.round(r.height)))`);
+    assert.deepEqual(smallTargets,[],'Phone touch targets are at least 40px tall');
+    await evaluate('history.back()');
+    await delay(400);
+    assert(await evaluate('document.querySelector("#about").hidden && !document.querySelector("#terminal").hidden'),'Back gesture closes the phone window and keeps the terminal');
+    assert(await evaluate('location.hash===""'),'Back gesture returns to the previous address');
+    await cdp('Emulation.setDeviceMetricsOverride',{width:844,height:390,deviceScaleFactor:2,mobile:true});
+    await navigate('/');
+    const landscape=await evaluate(`(()=>{const s=document.querySelector('#terminal-screen').getBoundingClientRect(),h=document.querySelector('.intro-heading h1').getBoundingClientRect(),r=document.querySelector('.terminal-role').getBoundingClientRect();return {maximized:document.querySelector('#terminal').classList.contains('is-maximized'),name:h.top>=s.top&&h.bottom<=s.bottom+1,role:r.bottom<=s.bottom+1};})()`);
+    assert.deepEqual(landscape,{maximized:true,name:true,role:true},'Landscape phones show the name and role in a full-screen terminal');
+    await screenshot('mobile-landscape.png');
+    console.log('Phone full-screen windows, back gesture, touch targets and landscape terminal: passed');
+
     await cdp('Emulation.setTouchEmulationEnabled',{enabled:false});
     await cdp('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
     await navigate('/');
